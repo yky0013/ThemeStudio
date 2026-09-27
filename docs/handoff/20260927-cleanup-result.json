@@ -1,0 +1,132 @@
+{
+  "time": "2026-09-27T17:16:13.8753326+08:00",
+  "repository": "https://github.com/yky0013/ThemeStudio",
+  "sourceCommitBeforeCleanup": "a3c5d5ce36d1ea2880ff59ee2ae4bcfeb7926163",
+  "assetsVerified": [
+    {
+      "name": "ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+      "bytes": 228824398,
+      "sha256": "feb381f18740a5b3d38aa370f69d45b2d8b51550fbf7398b4b3a562c3de9000f",
+      "remoteDigest": "sha256:feb381f18740a5b3d38aa370f69d45b2d8b51550fbf7398b4b3a562c3de9000f",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+      "verified": true
+    },
+    {
+      "name": "ThemeStudio-0.1.1-source.zip",
+      "bytes": 72354543,
+      "sha256": "b061ee04df71988aa41467c5bc8c938256deeffc4eaab8deda50675d7675d902",
+      "remoteDigest": "sha256:b061ee04df71988aa41467c5bc8c938256deeffc4eaab8deda50675d7675d902",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/ThemeStudio-0.1.1-source.zip",
+      "verified": true
+    },
+    {
+      "name": "SHA256.txt",
+      "bytes": 203,
+      "sha256": "77bec96980409e17c4479851950040cbe5d0c3085db668de18e34a8994eb4953",
+      "remoteDigest": "sha256:77bec96980409e17c4479851950040cbe5d0c3085db668de18e34a8994eb4953",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/SHA256.txt",
+      "verified": true
+    },
+    {
+      "name": "release.json",
+      "bytes": 576,
+      "sha256": "1555afab485ff6fd04a1161de9e59e9c72ddc5e756f1f3fe25a6750dac4e4bcb",
+      "remoteDigest": "sha256:1555afab485ff6fd04a1161de9e59e9c72ddc5e756f1f3fe25a6750dac4e4bcb",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/release.json",
+      "verified": true
+    },
+    {
+      "name": "windows-legacy-workspace-20260927.zip",
+      "bytes": 275510437,
+      "sha256": "c09eaf9a3bf6510f2d9a44c2e2e5ad329dc01cf26de45a18e38e33a5dc8b43e3",
+      "remoteDigest": "sha256:c09eaf9a3bf6510f2d9a44c2e2e5ad329dc01cf26de45a18e38e33a5dc8b43e3",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/windows-legacy-workspace-20260927.zip",
+      "verified": true
+    },
+    {
+      "name": "windows-project-data-before-cleanup-20260927.zip",
+      "bytes": 55151511,
+      "sha256": "7d14589386a2256da3e042fb41ab76d198b04fb82146863347b7917765943624",
+      "remoteDigest": "sha256:7d14589386a2256da3e042fb41ab76d198b04fb82146863347b7917765943624",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/windows-project-data-before-cleanup-20260927.zip",
+      "verified": true
+    }
+  ],
+  "uninstall": "Uninstalled; registration removed",
+  "deleted": [
+    "C:\\Users\\yky\\AppData\\Local\\ThemeStudio",
+    "C:\\Users\\yky\\AppData\\Local\\DesktopIconWorkbench",
+    "C:\\Users\\yky\\AppData\\Local\\Cursor-Palette",
+    "C:\\Users\\yky\\AppData\\Local\\Lively Wallpaper",
+    "C:\\Users\\yky\\AppData\\Local\\Temp\\Lively Wallpaper",
+    "C:\\Users\\yky\\AppData\\Local\\Temp\\Setup Log 2026-09-27 #001.txt",
+    "E:\\desktop\\windows\\Cursor-Palette",
+    "E:\\desktop\\windows\\docs",
+    "E:\\desktop\\windows\\icon-workbench",
+    "E:\\desktop\\windows\\image-to-ico",
+    "E:\\desktop\\windows\\Lively-Wallpaper",
+    "E:\\desktop\\windows\\Seelen-UI",
+    "E:\\desktop\\windows\\upstream-snapshots",
+    "E:\\desktop\\windows\\wallpaper-workbench",
+    "E:\\desktop\\windows\\windhawk",
+    "E:\\desktop\\windows\\windhawk-mods",
+    "E:\\desktop\\windows\\安装桌面图标工作台.cmd",
+    "E:\\desktop\\windows\\壁纸工作台.lnk",
+    "E:\\desktop\\windows\\启动壁纸工作台.cmd",
+    "E:\\desktop\\windows\\启动壁纸视差预览.cmd",
+    "E:\\desktop\\windows\\启动鼠标指针工作台.cmd",
+    "E:\\desktop\\windows\\启动图标与鼠标工作台.cmd",
+    "E:\\desktop\\windows\\启动图片转ICO.cmd",
+    "E:\\desktop\\windows\\启动源码开发版.cmd",
+    "E:\\desktop\\windows\\启动主题工作台.cmd",
+    "E:\\desktop\\windows\\启动桌面图标工作台.cmd",
+    "E:\\desktop\\windows\\启动桌面主题工作室.cmd",
+    "E:\\desktop\\windows\\鼠标指针工作台.lnk",
+    "E:\\desktop\\windows\\图标与鼠标工作台.lnk",
+    "E:\\desktop\\windows\\图片转ICO.lnk",
+    "E:\\desktop\\windows\\项目大纲.md",
+    "E:\\desktop\\windows\\主题工作台.lnk",
+    "E:\\desktop\\windows\\桌面图标工作台.lnk",
+    "E:\\desktop\\windows\\AGENTS.md",
+    "E:\\desktop\\windows\\windows主题包.txt",
+    "E:\\desktop\\windows\\theme-studio",
+    "E:\\desktop\\windows\\.handoff"
+  ],
+  "retainedInstaller": "E:\\desktop\\windows\\ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+  "retainedInstallerSha256": "feb381f18740a5b3d38aa370f69d45b2d8b51550fbf7398b4b3a562c3de9000f",
+  "currentWallpaper": "E:\\desktop\\图片\\0dpwmx4817qsmm8dgg-16745468140249.png",
+  "currentCursors": {
+    "Arrow": "C:\\Windows\\Resources\\Themes\\ASUS\\Normal Select.ani",
+    "Help": "C:\\Windows\\Resources\\Themes\\ASUS\\Help Select.ani",
+    "AppStarting": "C:\\Windows\\Resources\\Themes\\ASUS\\Working In Background.ani",
+    "Wait": "C:\\Windows\\Resources\\Themes\\ASUS\\Busy.ani",
+    "Crosshair": null,
+    "IBeam": "C:\\Windows\\Resources\\Themes\\ASUS\\Text Select.ani",
+    "NWPen": "C:\\Windows\\Resources\\Themes\\ASUS\\Handwriting.ani",
+    "No": "C:\\Windows\\Resources\\Themes\\ASUS\\Unavailable.ani",
+    "SizeNS": "C:\\Windows\\Resources\\Themes\\ASUS\\Vertical Resize.ani",
+    "SizeWE": "C:\\Windows\\Resources\\Themes\\ASUS\\Horizontal Resize.ani",
+    "SizeNWSE": "C:\\Windows\\Resources\\Themes\\ASUS\\Diagonal Resize 1.ani",
+    "SizeNESW": "C:\\Windows\\Resources\\Themes\\ASUS\\Diagonal Resize 2.ani",
+    "SizeAll": "C:\\Windows\\Resources\\Themes\\ASUS\\Move.ani",
+    "UpArrow": null,
+    "Hand": "C:\\Windows\\Resources\\Themes\\ASUS\\Link Select.ani",
+    "Pin": null,
+    "Person": null
+  },
+  "freeBytes": 63697481728,
+  "state": "Complete: source, legacy prototypes, build outputs, development dependencies, installed Lively engine, shortcuts, settings, imported assets, backups, browser cache and named temporary project files were removed. The workspace contains only the verified installer.",
+  "finalSourceCommitOnGitHub": "a3c5d5ce36d1ea2880ff59ee2ae4bcfeb7926163",
+  "remainingWorkspaceFiles": [
+    {
+      "Name": "ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+      "FullName": "E:\\desktop\\windows\\ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+      "Length": 228824398
+    }
+  ],
+  "finalProjectDataAbsent": true,
+  "finalUninstallRegistrationAbsent": true,
+  "finalProjectProcessesAbsent": true,
+  "finalInstallerSha256": "feb381f18740a5b3d38aa370f69d45b2d8b51550fbf7398b4b3a562c3de9000f",
+  "freeBytesAfterCleanup": 65352331264
+}
