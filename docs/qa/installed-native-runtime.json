@@ -1,0 +1,16 @@
+{
+  "product": "Theme Studio",
+  "version": "0.1.1",
+  "ready": true,
+  "time": "2026-09-27T15:26:52.6478678+08:00",
+  "dataDirectory": "C:\\Users\\yky\\AppData\\Local\\ThemeStudio",
+  "executable": "E:\\desktop\\windows\\theme-studio\\qa\\runtime\\installer\\安装 位置\\ThemeStudio\\ThemeStudio.exe",
+  "nativeWebView": true,
+  "backend": "bundled executable",
+  "ui": {
+    "roles": 17,
+    "shortcuts": 28,
+    "title": "桌面主题工作室"
+  },
+  "error": null
+}

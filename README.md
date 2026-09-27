@@ -4,11 +4,13 @@
 
 ## 启动
 
-双击本目录 `启动.cmd`，或运行 `release/ThemeStudio/ThemeStudio.exe`。请保留整个发布目录。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；构建机器已具备这些系统组件。
+在其他电脑上运行 `installers/ThemeStudio-0.1.1-Windows-x64-Setup.exe`，安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；安装包内置微软官方 x64 WebView2 离线运行库，缺失时安装；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
+
+卸载会保留已应用的外观、素材和备份；要恢复原外观请先在程序内恢复。
 
 新项目数据保存在 `%LOCALAPPDATA%/ThemeStudio`；原工作台数据保持原位。关闭主窗口会关闭它启动的后端进程。
 
-当前状态：EXE 已构建，浏览器中的共享界面已验证；原生 EXE 的启动验收被自动审批拦截，因此尚未确认原生窗口运行。详见 `docs/verification.json`。
+当前状态：0.1.1 原生窗口启动、图片导入/替换/逐字节恢复、自定义中文安装路径、开始菜单入口、卸载和用户数据保留已验证。图文教程位于 `docs/guide/index.html`，离线随程序安装。详见 `docs/installer-verification.json`。
 
 ## 已接入
 
@@ -43,6 +45,7 @@ npm.cmd run check
 npm.cmd test
 npm.cmd run build
 .\tools\package.ps1 -SkipFrontend
+.\tools\build-installer.ps1 -SkipPackage
 ```
 
 开发调试：运行 `tools/start-dev.ps1`，只在本机 4327 端口启动新项目的服务。发布 EXE 使用内嵌 WebView2 和自己的后端，不需要 Node/Python 开发环境。
@@ -52,3 +55,5 @@ npm.cmd run build
 来源导入清单：`docs/source-imports.json`、`docs/desktop-source-imports.json`。固定上游源码、作者声明和各自许可证保存在 `vendor/` 与 `licenses/`。新整合代码采用 AGPL-3.0-or-later；Windhawk 宿主及模组的原许可证仍分别适用，不能将全部模组统一视为 MIT。Microsoft WebView2 SDK 的许可和 notice 随发布目录附带。
 
 该项目是基于这些源码的独立衍生项目，不是 Seelen 或 Windhawk 的官方发行版。原目录和旧入口保留，后续整合开发在本目录进行。
+
+安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；官方运行库下载来源及哈希在 `config/webview2-runtime.json`，运行 `tools/fetch-runtime.ps1` 获取锁定的离线运行库。分发时同时提供匹配源码压缩包，保留许可证及作者声明。

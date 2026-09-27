@@ -19,8 +19,8 @@ import "../../vendor/Seelen-UI/src/ui/react/settings/styles/variables.css";
 import cs from "./studio.module.css";
 
 const messages = {
-  "zh-CN": { name: "桌面主题工作室", subtitle: "让桌面，成为你的样子", native: "桌面应用", local: "本机开发", collapse: "展开或收起导航", desktop: "桌面图标", cursors: "鼠标指针", parallax: "壁纸与视差", seelen: "Seelen 外观", windhawk: "Windhawk 模组", source: "查看源码", draft: "已选配置", appearance: "外观", light: "浅色", dark: "深色", scope: "图标和指针可直接应用；壁纸视差可交互预览，Seelen 外观与 Windhawk 模组保存为组合配置。", about: "基于 Seelen UI 与 Windhawk", version: "独立项目 · v0.1.0" },
-  en: { name: "Theme Studio", subtitle: "Make your desktop your own", native: "Desktop app", local: "Local development", collapse: "Expand or collapse navigation", desktop: "Desktop icons", cursors: "Mouse pointers", parallax: "Wallpaper & parallax", seelen: "Seelen appearance", windhawk: "Windhawk mods", source: "View source", draft: "In draft", appearance: "Appearance", light: "Light", dark: "Dark", scope: "Icons and cursors apply to Windows. Wallpaper parallax is interactive; Seelen appearance and Windhawk mods are saved as composition settings.", about: "Based on Seelen UI and Windhawk", version: "Independent project · v0.1.0" },
+  "zh-CN": { name: "桌面主题工作室", subtitle: "让桌面，成为你的样子", native: "桌面应用", local: "本机开发", collapse: "展开或收起导航", desktop: "桌面图标", cursors: "鼠标指针", parallax: "壁纸与视差", seelen: "Seelen 外观", windhawk: "Windhawk 模组", source: "查看源码", draft: "已选配置", appearance: "外观", light: "浅色", dark: "深色", scope: "图标和指针可直接应用；壁纸视差可交互预览，Seelen 外观与 Windhawk 模组保存为组合配置。", about: "基于 Seelen UI 与 Windhawk", version: "独立项目 · v0.1.1" },
+  en: { name: "Theme Studio", subtitle: "Make your desktop your own", native: "Desktop app", local: "Local development", collapse: "Expand or collapse navigation", desktop: "Desktop icons", cursors: "Mouse pointers", parallax: "Wallpaper & parallax", seelen: "Seelen appearance", windhawk: "Windhawk mods", source: "View source", draft: "In draft", appearance: "Appearance", light: "Light", dark: "Dark", scope: "Icons and cursors apply to Windows. Wallpaper parallax is interactive; Seelen appearance and Windhawk mods are saved as composition settings.", about: "Based on Seelen UI and Windhawk", version: "Independent project · v0.1.1" },
 };
 await i18n.use(initReactI18next).init({ lng: localStorage.getItem("theme-studio.language") || "zh-CN", fallbackLng: "en", interpolation: { escapeValue: false }, resources: {
   en: { translation: { ...(yaml.load(enYaml) as object), studio: messages.en } },
@@ -62,6 +62,7 @@ function Studio() {
         footer={<><span className={cs.sourceNote}>{text.about}</span><span className={cs.version}>{text.version}</span></>} />
       <div className={cs.workspace}>
         <header className={cs.header}><div><h1>{text.name}</h1><p>{text.subtitle}</p></div><span className={cs.runtime}>{isDesktopApp ? text.native : text.local}</span>
+          <a href="/help/index.html" target="_blank" rel="noopener noreferrer">{language === "en" ? "User guide" : "图文教程"}</a>
           <button onClick={() => setDark(!dark)} aria-label={text.appearance}>{dark ? "☀ " + text.light : "☾ " + text.dark}</button>
           <button onClick={() => { const next = language === "en" ? "zh-CN" : "en"; setLanguage(next); localStorage.setItem("theme-studio.language", next); void i18n.changeLanguage(next); }}>{language === "en" ? "中文" : "English"}</button>
         </header>

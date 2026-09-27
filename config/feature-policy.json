@@ -88,7 +88,8 @@
   },
   "desktopShell": {
     "compiled": true,
-    "runtimeVerified": false,
-    "runtimeVerificationBlock": "automatic approval rejected native EXE launch with blocked by policy"
+    "runtimeVerified": true,
+    "version": "0.1.1",
+    "evidence": "docs/installer-verification.json"
   }
 }

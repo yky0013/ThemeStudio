@@ -1,0 +1,10 @@
+{
+  "url": "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/06fb6ad8-1976-4e78-9ceb-3ae170edebde/MicrosoftEdgeWebView2RuntimeInstallerX64.exe",
+  "entryUrl": "https://go.microsoft.com/fwlink/?linkid=2124701",
+  "size": 212213456,
+  "sha256": "771042DB15CB5C463BAC51A8408E70183D7130E8AC946709384C2223DA582C1B",
+  "signature": "Valid",
+  "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+  "retrieved": "2026-09-27T14:58:01.3729251+08:00",
+  "installerFileVersion": "1.3.271.7"
+}

@@ -1,6 +1,8 @@
 node_modules/
 .venv/
 .cache/
+.tools/
+installers/
 build/
 dist/
 release/

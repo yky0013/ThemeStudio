@@ -21,4 +21,4 @@
 
 ## 验证说明
 
-本轮源码、TypeScript、Python 测试和打包结果见 `verification.json`。启动新 EXE 的原生验收脚本被自动审批以 `blocked by policy` 拒绝，未给出具体理由；没有换用其他渠道重试该启动动作。独立主窗口的运行仍记为未验证。浏览器共享界面的检查不替代该原生运行检查。
+本轮源码、TypeScript、Python 测试和打包结果见 `verification.json`。首轮 EXE 启动脚本曾被自动审批拒绝；本轮安装包任务已通过 computer-use 正常启动并核对原生窗口，还完成自定义路径安装、启动和卸载实测。原生 PNG 图标替换与恢复的证据位于 `docs/qa/native-icons-roundtrip.json`。最后一次教程浏览器页面检查因工具无法确认当前 URL 而停止，未继续界面操作。

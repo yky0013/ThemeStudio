@@ -1,0 +1,718 @@
+[
+  {
+    "name": "@ant-design/colors",
+    "version": "8.0.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_ant-design_colors-8.0.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@ant-design/cssinjs",
+    "version": "2.1.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_ant-design_cssinjs-2.1.2/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@ant-design/cssinjs-utils",
+    "version": "2.1.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_ant-design_cssinjs-utils-2.1.2/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@ant-design/fast-color",
+    "version": "3.0.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_ant-design_fast-color-3.0.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@ant-design/icons",
+    "version": "6.3.4",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_ant-design_icons-6.3.4/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@ant-design/icons-svg",
+    "version": "4.6.0",
+    "origin": "bundled frontend package; shared repository LICENSE, verified against github.com/ant-design/ant-design-icons/blob/master/LICENSE",
+    "notices": [
+      "licenses/third-party/_ant-design_icons-svg-4.6.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@ant-design/react-slick",
+    "version": "2.0.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_ant-design_react-slick-2.0.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@babel/runtime",
+    "version": "7.29.7",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_babel_runtime-7.29.7/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@emotion/hash",
+    "version": "0.8.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_emotion_hash-0.8.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@emotion/is-prop-valid",
+    "version": "1.4.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_emotion_is-prop-valid-1.4.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@emotion/memoize",
+    "version": "0.9.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_emotion_memoize-0.9.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@emotion/unitless",
+    "version": "0.7.5",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_emotion_unitless-0.7.5/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/async-validator",
+    "version": "6.0.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_async-validator-6.0.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/cascader",
+    "version": "1.14.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_cascader-1.14.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/checkbox",
+    "version": "2.0.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_checkbox-2.0.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/collapse",
+    "version": "1.2.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_collapse-1.2.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/color-picker",
+    "version": "3.1.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_color-picker-3.1.1/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/context",
+    "version": "2.0.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_context-2.0.2/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/dialog",
+    "version": "1.8.4",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_dialog-1.8.4/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/drawer",
+    "version": "1.4.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_drawer-1.4.2/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/dropdown",
+    "version": "1.0.3",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_dropdown-1.0.3/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/form",
+    "version": "1.8.6",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_form-1.8.6/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/image",
+    "version": "1.9.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_image-1.9.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/input",
+    "version": "1.1.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_input-1.1.2/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/input-number",
+    "version": "1.6.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_input-number-1.6.2/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/mentions",
+    "version": "1.6.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_mentions-1.6.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/menu",
+    "version": "1.2.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_menu-1.2.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/mini-decimal",
+    "version": "1.1.4",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_mini-decimal-1.1.4/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/motion",
+    "version": "1.3.3",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_motion-1.3.3/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/mutate-observer",
+    "version": "2.0.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_mutate-observer-2.0.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/notification",
+    "version": "1.2.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_notification-1.2.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/overflow",
+    "version": "1.0.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_overflow-1.0.1/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/pagination",
+    "version": "1.2.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_pagination-1.2.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/picker",
+    "version": "1.9.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_picker-1.9.1/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/portal",
+    "version": "2.2.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_portal-2.2.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/progress",
+    "version": "1.0.3",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_progress-1.0.3/1-LICENSE",
+      "licenses/third-party/_rc-component_progress-1.0.3/2-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/qrcode",
+    "version": "1.1.3",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_qrcode-1.1.3/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/rate",
+    "version": "1.0.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_rate-1.0.1/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/resize-observer",
+    "version": "1.1.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_resize-observer-1.1.2/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/segmented",
+    "version": "1.3.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_segmented-1.3.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/select",
+    "version": "1.6.15",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_select-1.6.15/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/slider",
+    "version": "1.0.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_slider-1.0.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/steps",
+    "version": "1.2.3",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_steps-1.2.3/1-LICENSE",
+      "licenses/third-party/_rc-component_steps-1.2.3/2-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/switch",
+    "version": "1.0.3",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_switch-1.0.3/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/table",
+    "version": "1.9.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_table-1.9.1/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/tabs",
+    "version": "1.7.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_tabs-1.7.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/textarea",
+    "version": "1.1.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_textarea-1.1.2/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/tooltip",
+    "version": "1.4.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_tooltip-1.4.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/tour",
+    "version": "2.3.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_tour-2.3.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/tree",
+    "version": "1.2.4",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_tree-1.2.4/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/tree-select",
+    "version": "1.8.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_tree-select-1.8.0/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "@rc-component/trigger",
+    "version": "3.10.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_trigger-3.10.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/upload",
+    "version": "1.1.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_upload-1.1.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/util",
+    "version": "1.13.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_util-1.13.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@rc-component/virtual-list",
+    "version": "1.5.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_rc-component_virtual-list-1.5.2/1-LICENSE"
+    ]
+  },
+  {
+    "name": "@tauri-apps/api",
+    "version": "2.11.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/_tauri-apps_api-2.11.0/1-LICENSE_APACHE-2.0",
+      "licenses/third-party/_tauri-apps_api-2.11.0/2-LICENSE_MIT"
+    ]
+  },
+  {
+    "name": "antd",
+    "version": "6.3.6",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/antd-6.3.6/1-LICENSE"
+    ]
+  },
+  {
+    "name": "clsx",
+    "version": "2.1.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/clsx-2.1.1/1-license"
+    ]
+  },
+  {
+    "name": "compute-scroll-into-view",
+    "version": "3.1.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/compute-scroll-into-view-3.1.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "dayjs",
+    "version": "1.11.23",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/dayjs-1.11.23/1-LICENSE"
+    ]
+  },
+  {
+    "name": "esm-env",
+    "version": "1.2.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/esm-env-1.2.2/1-LICENSE"
+    ]
+  },
+  {
+    "name": "html-parse-stringify",
+    "version": "3.1.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/html-parse-stringify-3.1.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "i18next",
+    "version": "26.0.6",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/i18next-26.0.6/1-LICENSE"
+    ]
+  },
+  {
+    "name": "is-mobile",
+    "version": "5.0.0",
+    "origin": "bundled frontend package; full MIT notice is embedded in README",
+    "notices": [
+      "licenses/third-party/is-mobile-5.0.0/1-README.md"
+    ]
+  },
+  {
+    "name": "js-yaml",
+    "version": "4.1.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/js-yaml-4.1.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "json2mq",
+    "version": "0.2.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/json2mq-0.2.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "preact",
+    "version": "10.29.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/preact-10.29.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "react-i18next",
+    "version": "17.0.4",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/react-i18next-17.0.4/1-LICENSE"
+    ]
+  },
+  {
+    "name": "react-is",
+    "version": "19.3.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/react-is-19.3.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "scroll-into-view-if-needed",
+    "version": "3.1.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/scroll-into-view-if-needed-3.1.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "string-convert",
+    "version": "0.2.1",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/string-convert-0.2.1/1-LICENSE"
+    ]
+  },
+  {
+    "name": "styled-components",
+    "version": "6.5.3",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/styled-components-6.5.3/1-LICENSE"
+    ]
+  },
+  {
+    "name": "stylis",
+    "version": "4.3.6",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/stylis-4.3.6/1-LICENSE"
+    ]
+  },
+  {
+    "name": "stylis",
+    "version": "4.4.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/stylis-4.4.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "svelte",
+    "version": "5.55.4",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/svelte-5.55.4/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "throttle-debounce",
+    "version": "5.0.2",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/throttle-debounce-5.0.2/1-LICENSE.md"
+    ]
+  },
+  {
+    "name": "use-sync-external-store",
+    "version": "1.7.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/use-sync-external-store-1.7.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "void-elements",
+    "version": "3.1.0",
+    "origin": "bundled frontend package",
+    "notices": [
+      "licenses/third-party/void-elements-3.1.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "Pillow",
+    "version": "12.3.0",
+    "origin": "Python runtime / packaging component",
+    "notices": [
+      "licenses/third-party/Pillow-12.3.0/1-LICENSE"
+    ]
+  },
+  {
+    "name": "pywin32",
+    "version": "312",
+    "origin": "Python runtime / packaging component",
+    "notices": [
+      "licenses/third-party/pywin32-312/1-license.txt",
+      "licenses/third-party/pywin32-312/2-License.txt",
+      "licenses/third-party/pywin32-312/3-LICENSE.txt",
+      "licenses/third-party/pywin32-312/4-Scintilla-License.txt",
+      "licenses/third-party/pywin32-312/5-license.txt",
+      "licenses/third-party/pywin32-312/6-License.txt",
+      "licenses/third-party/pywin32-312/7-LICENSE",
+      "licenses/third-party/pywin32-312/8-License.txt",
+      "licenses/third-party/pywin32-312/9-LICENSE.txt",
+      "licenses/third-party/pywin32-312/10-License.txt",
+      "licenses/third-party/pywin32-312/11-License.txt",
+      "licenses/third-party/pywin32-312/12-License.txt",
+      "licenses/third-party/pywin32-312/13-License.txt",
+      "licenses/third-party/pywin32-312/14-License.txt",
+      "licenses/third-party/pywin32-312/15-MAPIStubLibrary-License.txt",
+      "licenses/third-party/pywin32-312/16-NOTICE.md"
+    ]
+  },
+  {
+    "name": "pyinstaller",
+    "version": "6.22.3",
+    "origin": "Python runtime / packaging component",
+    "notices": [
+      "licenses/third-party/pyinstaller-6.22.3/1-COPYING.txt"
+    ]
+  },
+  {
+    "name": "altgraph",
+    "version": "0.17.5",
+    "origin": "Python runtime / packaging component",
+    "notices": [
+      "licenses/third-party/altgraph-0.17.5/1-LICENSE"
+    ]
+  },
+  {
+    "name": "packaging",
+    "version": "26.3",
+    "origin": "Python runtime / packaging component",
+    "notices": [
+      "licenses/third-party/packaging-26.3/1-LICENSE",
+      "licenses/third-party/packaging-26.3/2-LICENSE.APACHE",
+      "licenses/third-party/packaging-26.3/3-LICENSE.BSD"
+    ]
+  },
+  {
+    "name": "pefile",
+    "version": "2024.8.26",
+    "origin": "Python runtime / packaging component",
+    "notices": [
+      "licenses/third-party/pefile-2024.8.26/1-LICENSE"
+    ]
+  },
+  {
+    "name": "pywin32-ctypes",
+    "version": "0.2.3",
+    "origin": "Python runtime / packaging component",
+    "notices": [
+      "licenses/third-party/pywin32-ctypes-0.2.3/1-LICENSE.txt"
+    ]
+  },
+  {
+    "name": "Python",
+    "version": "3.14.0",
+    "origin": "bundled Python runtime",
+    "notices": [
+      "licenses/third-party/Python-3.14.0/1-LICENSE.txt"
+    ]
+  },
+  {
+    "name": "Inno-Setup",
+    "version": "6.7.3",
+    "origin": "installer runtime",
+    "notices": [
+      "licenses/third-party/Inno-Setup-6.7.3/1-license.txt"
+    ]
+  }
+]

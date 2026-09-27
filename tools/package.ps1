@@ -7,6 +7,8 @@ $studioSdk = Join-Path $studioRoot '.cache\webview2'
 Push-Location -LiteralPath $studioRoot
 try {
     if (-not $SkipFrontend) { & npm.cmd run build; if ($LASTEXITCODE -ne 0) { throw 'Frontend build failed.' } }
+    & $studioPython -X utf8 tools\collect-licenses.py
+    if ($LASTEXITCODE -ne 0) { throw 'Dependency notices are incomplete.' }
     & $studioPython -X utf8 -m unittest discover -s components\icon-workbench\tests -p 'test_*.py' -q
     if ($LASTEXITCODE -ne 0) { throw 'Native backend tests failed.' }
     & $studioPython -m PyInstaller --noconfirm --onedir --console --name ThemeStudio.Backend --hidden-import win32timezone --paths components\image-to-ico --distpath build\backend --workpath build\pyinstaller --specpath build\spec components\icon-workbench\desktop_bridge.py

@@ -1,0 +1,12 @@
+{
+  "customPath": "E:\\desktop\\windows\\theme-studio\\qa\\runtime\\installer\\安装 位置\\ThemeStudio",
+  "registeredDisplayName": "桌面主题工作室",
+  "uninstallRegistered": true,
+  "uninstallerExists": true,
+  "guideInstalled": true,
+  "applicationShortcut": true,
+  "guideShortcut": true,
+  "uninstallShortcut": true,
+  "userDataRetained": true,
+  "payloadHashesMatch": true
+}

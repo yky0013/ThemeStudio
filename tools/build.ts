@@ -36,4 +36,5 @@ await esbuild.build({ absWorkingDir: project, entryPoints: { app: "src/app/main.
 fs.copyFileSync(path.join(project, "src/app/index.html"), path.join(project, "dist/index.html"));
 fs.cpSync(path.join(project, "vendor/Seelen-UI/src/ui/react/settings/public/fixtures"), path.join(project, "dist/fixtures"), { recursive: true });
 fs.cpSync(path.join(project, "licenses"), path.join(project, "dist/licenses"), { recursive: true });
+if (fs.existsSync(path.join(project, "docs/guide"))) fs.cpSync(path.join(project, "docs/guide"), path.join(project, "dist/help"), { recursive: true });
 console.log(`Theme Studio built with Seelen navigation/media and Windhawk card components; ${mods.length} source-backed mods.`);

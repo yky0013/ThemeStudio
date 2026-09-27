@@ -1,0 +1,12 @@
+[
+  {
+    "name": "示例工具",
+    "status": "restored",
+    "restoredExactly": true
+  },
+  {
+    "name": "示例文档",
+    "status": "restored",
+    "restoredExactly": true
+  }
+]

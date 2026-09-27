@@ -11,7 +11,7 @@
 .header h1 { margin: 0; font-size: 21px; letter-spacing: -.4px; }
 .header p { margin: 4px 0 0; color: light-dark(#768195,#aab4c4); font-size: 11px; }
 .header > div { margin-right: auto; }
-.header button, .mod select { border: 1px solid light-dark(#d7dce7,#ffffff22); background: light-dark(#fff,#262c3c); color: inherit; border-radius: 8px; padding: 7px 10px; cursor: pointer; font-size: 12px; }
+.header button, .header > a, .mod select { border: 1px solid light-dark(#d7dce7,#ffffff22); background: light-dark(#fff,#262c3c); color: inherit; border-radius: 8px; padding: 7px 10px; cursor: pointer; font-size: 12px; text-decoration: none; }
 .runtime { font-size: 10px; padding: 5px 9px; border-radius: 20px; color: light-dark(#47704c,#a2d6ab); background: light-dark(#e9f3eb,#203629); }
 .content { overflow: auto; min-width: 0; padding: 18px 24px 0; scroll-behavior: smooth; }
 .content > :last-child { padding-bottom: 10px; }

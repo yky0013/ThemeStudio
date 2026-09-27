@@ -11,8 +11,11 @@
   "windowsHostCompilation": "passed",
   "backendPackaging": "passed",
   "nativeWindowRuntime": {
-    "status": "not_verified",
-    "reason": "automatic approval rejected starting the new EXE test with blocked by policy; did not retry via another route"
+    "status": "verified",
+    "method": "computer-use native window plus app readiness report",
+    "uiRoles": 17,
+    "desktopShortcuts": 28,
+    "customInstallPathVerified": true
   },
   "browser": {
     "url": "http://127.0.0.1:4327",
@@ -38,5 +41,7 @@
     "files": 102,
     "bytes": 42442249,
     "manifest": "release-manifest.json"
-  }
+  },
+  "version": "0.1.1",
+  "installerVerification": "installer-verification.json"
 }

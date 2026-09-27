@@ -16,13 +16,13 @@
   },
   {
     "path": "README.md",
-    "size": 3864,
-    "sha256": "1dec4f5ccac7f35769024a2318836e56984637acbcf4d700c6bd7d6d52ceade9"
+    "size": 4755,
+    "sha256": "92d0f08e06f23da0b82a06c5946e9ee4d3cee59ad389b15db725a98f27ac2f5d"
   },
   {
     "path": "ThemeStudio.exe",
-    "size": 22016,
-    "sha256": "3327d1cca86c2fb5b62376899b6e2391a051e3dea3e0e526fd712be135be931f"
+    "size": 23552,
+    "sha256": "ba8e030fbf5fe83f88e305591fd5d8b27adcd2350591adb963cfdbdf90fe05be"
   },
   {
     "path": "ThemeStudio.exe.config",
@@ -60,6 +60,11 @@
     "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
   },
   {
+    "path": "licenses/third-party-index.json",
+    "size": 19212,
+    "sha256": "296e2e0d96bc9c5349d29a1b6ee0319f25c3ec6d685b8758189f512141837798"
+  },
+  {
     "path": "licenses/Windhawk-GPL-3.0.txt",
     "size": 35132,
     "sha256": "ca24ebc0d4fa9c155c6f9459dd1db7d762c09c0200b3793d00b5d09e60abf431"
@@ -71,13 +76,13 @@
   },
   {
     "path": "wwwroot/app.css",
-    "size": 36637,
-    "sha256": "a565ee5874b5675bae6624de4e739524175ac66c0987a84d1546a48141afae98"
+    "size": 36682,
+    "sha256": "ae438cb7b3bd3161ba14b7429ab5c0531a8ed57be9f149f54bc8d87a22e81225"
   },
   {
     "path": "wwwroot/app.js",
-    "size": 1218021,
-    "sha256": "173914d2f455e73d6c14212d1a7331d2af68b3e9e78b77d7576e43f12614c72c"
+    "size": 1218154,
+    "sha256": "3dfb9d4fab643718825a152eab3f4196d5857d429c6debd4e3bfc3c4ca2f3d46"
   },
   {
     "path": "wwwroot/index.html",
@@ -93,6 +98,16 @@
     "path": "wwwroot/fixtures/parallax-motion.mp4",
     "size": 1237795,
     "sha256": "9cf9656c9a7b34ca6f99fd6da88a430bfea1295f7a766712f2eeb489f471e907"
+  },
+  {
+    "path": "wwwroot/help/guide.css",
+    "size": 3582,
+    "sha256": "0eeb1872c9229579176d7c0214057caade762266edf6d4b1578a18dfec009bc2"
+  },
+  {
+    "path": "wwwroot/help/index.html",
+    "size": 11019,
+    "sha256": "2289a07daac56309ba183a6c8bb536fd083a30f555428fe14f6c94e8a8d999ba"
   },
   {
     "path": "wwwroot/licenses/Cursor-Palette-MIT.txt",
@@ -113,6 +128,571 @@
     "path": "wwwroot/licenses/Windhawk-mods-license-policy.md",
     "size": 2008,
     "sha256": "8541e4f1f9961a27a4ac560f20b6536884a75c2f36ff30ae60a48f055216bd0b"
+  },
+  {
+    "path": "wwwroot/help/images/app-home.jpg",
+    "size": 94945,
+    "sha256": "4196be72edfc5b5d31efc0d20bb2979b60fb9e938cdf21bfc5834c656f25d953"
+  },
+  {
+    "path": "wwwroot/help/images/cursors.jpg",
+    "size": 106920,
+    "sha256": "ec78b3dec6463651205310f5d2dab44d50bb9ad2ba8140324fa67fab33a23bf1"
+  },
+  {
+    "path": "wwwroot/help/images/icon-ready.jpg",
+    "size": 91322,
+    "sha256": "81111a4ad47bdfb0bee48b8dd9338b47ccd1edede9d27dd42ad17bcaf6ccee07"
+  },
+  {
+    "path": "wwwroot/help/images/icon-restore.jpg",
+    "size": 85972,
+    "sha256": "c0e0fa34d0e13b4a3e594df4c007cc3afab4c43fecdbc6692f8dab0f0afe0f26"
+  },
+  {
+    "path": "wwwroot/help/images/install-path.jpg",
+    "size": 35072,
+    "sha256": "48e045d64226016f546219ec4ef5d0fd34ac131f887f001c3327c77853ef4f86"
+  },
+  {
+    "path": "wwwroot/help/images/uninstall.jpg",
+    "size": 17486,
+    "sha256": "47452b3a4f7347911249da402854246704101db6c2905b26c985bf7332734158"
+  },
+  {
+    "path": "licenses/third-party/altgraph-0.17.5/1-LICENSE",
+    "size": 1002,
+    "sha256": "6c194d6db0c64d45535d10c95142b9b0cda7b7dcc7f1ddee302b3d536f3dbe46"
+  },
+  {
+    "path": "licenses/third-party/antd-6.3.6/1-LICENSE",
+    "size": 1099,
+    "sha256": "3c82654bb472ebbcacc4c1ff00f94aa8c60c4b7ee011b16bafcbacecc3703458"
+  },
+  {
+    "path": "licenses/third-party/clsx-2.1.1/1-license",
+    "size": 1104,
+    "sha256": "9a9edad7baae52622bddf3c15b2ef8a33d2c89f2d25408ad13e8a7481c6b0c97"
+  },
+  {
+    "path": "licenses/third-party/compute-scroll-into-view-3.1.1/1-LICENSE",
+    "size": 1067,
+    "sha256": "dfe2b2d612c7c1de1f32dcab5969bd68ecac0022a7582ca8cd4594729b9c8664"
+  },
+  {
+    "path": "licenses/third-party/dayjs-1.11.23/1-LICENSE",
+    "size": 1072,
+    "sha256": "5faab7526d055651be3aab769d58897be6bd91f3d39d137f25f12dba1b31d5dc"
+  },
+  {
+    "path": "licenses/third-party/esm-env-1.2.2/1-LICENSE",
+    "size": 1063,
+    "sha256": "6df5276ee7531fcc5446f19082c12e77bb6c5f081fd2b6d6cf88180a5ee36acd"
+  },
+  {
+    "path": "licenses/third-party/html-parse-stringify-3.1.0/1-LICENSE",
+    "size": 1092,
+    "sha256": "f51aa7a410f3d3ff9352a5422b76c072588ac76b63861f59447502caeacacc16"
+  },
+  {
+    "path": "licenses/third-party/i18next-26.0.6/1-LICENSE",
+    "size": 1082,
+    "sha256": "1cd0a2b02a6cc40ef8ee16310d13eeffdd7b5de4a562fd3ee7c921d8eb54f60a"
+  },
+  {
+    "path": "licenses/third-party/Inno-Setup-6.7.3/1-license.txt",
+    "size": 1521,
+    "sha256": "2e5346868c2a18434489824e11d65c3031620f792fefc415d05f19cd441abf5c"
+  },
+  {
+    "path": "licenses/third-party/is-mobile-5.0.0/1-README.md",
+    "size": 2475,
+    "sha256": "1f1f35b6a103d7b010f51a6d7d61e3e47dbc71db2c69cbb7c0ffd40c641b04e2"
+  },
+  {
+    "path": "licenses/third-party/js-yaml-4.1.0/1-LICENSE",
+    "size": 1084,
+    "sha256": "a07bc24468b9654ce76a547d47a2db282d07733b715db4c73a98bd63961f9550"
+  },
+  {
+    "path": "licenses/third-party/json2mq-0.2.0/1-LICENSE",
+    "size": 1080,
+    "sha256": "95d848d55392bb8239b53cb7a6405bf3914bdab56d1a0d26f3af5f7aced776eb"
+  },
+  {
+    "path": "licenses/third-party/packaging-26.3/1-LICENSE",
+    "size": 197,
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  {
+    "path": "licenses/third-party/packaging-26.3/2-LICENSE.APACHE",
+    "size": 10174,
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "path": "licenses/third-party/packaging-26.3/3-LICENSE.BSD",
+    "size": 1344,
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  },
+  {
+    "path": "licenses/third-party/pefile-2024.8.26/1-LICENSE",
+    "size": 1083,
+    "sha256": "b44409c067c6da52bfb54bb6624fb11a7b52157c3a13ae1400232f8196e86ad3"
+  },
+  {
+    "path": "licenses/third-party/Pillow-12.3.0/1-LICENSE",
+    "size": 78016,
+    "sha256": "4f7866a74802c6326f81faff59a56546b6aec2b10b91973e0e9308de95e79857"
+  },
+  {
+    "path": "licenses/third-party/preact-10.29.1/1-LICENSE",
+    "size": 1087,
+    "sha256": "1fe6958409c8c257a70c587a18b6f7f412b179b456630790d30b2ec9a8e4b7d4"
+  },
+  {
+    "path": "licenses/third-party/pyinstaller-6.22.3/1-COPYING.txt",
+    "size": 32604,
+    "sha256": "0598064c7d2718e38d7914a7d08343b2fa008e3bea9ebba2aa7a6ffa5900dd64"
+  },
+  {
+    "path": "licenses/third-party/Python-3.14.0/1-LICENSE.txt",
+    "size": 35407,
+    "sha256": "935cf13e19f8c31b497d20b05d73623431a226b230c3599bc30fa3348979bc68"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/1-license.txt",
+    "size": 26925,
+    "sha256": "5ea2f23c7f00c3006bacf267183e816d8d4b6dc95ea57a4ddb0ff81de6d8719e"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/10-License.txt",
+    "size": 873,
+    "sha256": "57ec79bbeab4fd1cf7460a7ad450d2ab01471810459aeae9e75e4c66b472095f"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/11-License.txt",
+    "size": 1541,
+    "sha256": "a74d826efb242db087b850348e20abbfd591b51e2081f2048735290913872924"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/12-License.txt",
+    "size": 1541,
+    "sha256": "a74d826efb242db087b850348e20abbfd591b51e2081f2048735290913872924"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/13-License.txt",
+    "size": 1570,
+    "sha256": "fad39c18fc3825fa278db1c86fd52cf88d7c525b3c2fbf7817fa383cbae4d423"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/14-License.txt",
+    "size": 1570,
+    "sha256": "fad39c18fc3825fa278db1c86fd52cf88d7c525b3c2fbf7817fa383cbae4d423"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/15-MAPIStubLibrary-License.txt",
+    "size": 1087,
+    "sha256": "1c4cf44d2fb8bf2d10214d6da80cc9e05502824cc4460f35be4c7bcb4cde53da"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/16-NOTICE.md",
+    "size": 476,
+    "sha256": "dedf997c8f5568a0e0aff57d009f501226ea30c401323d67912b6a8f8735a825"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/2-License.txt",
+    "size": 1541,
+    "sha256": "a74d826efb242db087b850348e20abbfd591b51e2081f2048735290913872924"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/3-LICENSE.txt",
+    "size": 12540,
+    "sha256": "a0fa1e7b8a4230055685e796548ac084a6c0eea395294574093bba72efd9191b"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/4-Scintilla-License.txt",
+    "size": 873,
+    "sha256": "57ec79bbeab4fd1cf7460a7ad450d2ab01471810459aeae9e75e4c66b472095f"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/5-license.txt",
+    "size": 26925,
+    "sha256": "5ea2f23c7f00c3006bacf267183e816d8d4b6dc95ea57a4ddb0ff81de6d8719e"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/6-License.txt",
+    "size": 1570,
+    "sha256": "fad39c18fc3825fa278db1c86fd52cf88d7c525b3c2fbf7817fa383cbae4d423"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/7-LICENSE",
+    "size": 1087,
+    "sha256": "1c4cf44d2fb8bf2d10214d6da80cc9e05502824cc4460f35be4c7bcb4cde53da"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/8-License.txt",
+    "size": 1541,
+    "sha256": "a74d826efb242db087b850348e20abbfd591b51e2081f2048735290913872924"
+  },
+  {
+    "path": "licenses/third-party/pywin32-312/9-LICENSE.txt",
+    "size": 12540,
+    "sha256": "a0fa1e7b8a4230055685e796548ac084a6c0eea395294574093bba72efd9191b"
+  },
+  {
+    "path": "licenses/third-party/pywin32-ctypes-0.2.3/1-LICENSE.txt",
+    "size": 1644,
+    "sha256": "dfa83b3e2709adfcdb838d9ad55823ca674abb780e60563d9dd9544ccbf785e9"
+  },
+  {
+    "path": "licenses/third-party/react-i18next-17.0.4/1-LICENSE",
+    "size": 1083,
+    "sha256": "29b8ae456ef442e53a98df183ad088cf98c2ece73aa84c462330c43e665b8ab2"
+  },
+  {
+    "path": "licenses/third-party/react-is-19.3.0/1-LICENSE",
+    "size": 1088,
+    "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+  },
+  {
+    "path": "licenses/third-party/scroll-into-view-if-needed-3.1.0/1-LICENSE",
+    "size": 1067,
+    "sha256": "62b9f69bb4ccf131e7e4cc8ce6ec5b4acf3d9848f0ac73c3c2f285d716ff1b5c"
+  },
+  {
+    "path": "licenses/third-party/string-convert-0.2.1/1-LICENSE",
+    "size": 1078,
+    "sha256": "8e7a0e17a14c91d325c22a8ade50da3aaa5a97e321beebbdce77d63fc719a1c2"
+  },
+  {
+    "path": "licenses/third-party/styled-components-6.5.3/1-LICENSE",
+    "size": 1100,
+    "sha256": "5b893305a717230e5b0024ff5ca3eec1dc05ba600c9b140730488d97ce56f1e6"
+  },
+  {
+    "path": "licenses/third-party/stylis-4.3.6/1-LICENSE",
+    "size": 1078,
+    "sha256": "88c579c6ee44b41137a21321190d177982e5b17d4fa1b83a4a2e3ea325a8fc9a"
+  },
+  {
+    "path": "licenses/third-party/stylis-4.4.0/1-LICENSE",
+    "size": 1078,
+    "sha256": "88c579c6ee44b41137a21321190d177982e5b17d4fa1b83a4a2e3ea325a8fc9a"
+  },
+  {
+    "path": "licenses/third-party/svelte-5.55.4/1-LICENSE.md",
+    "size": 1126,
+    "sha256": "06257f4847b13a49a039efb17b944c141e71b12fd8d231b362d86919067d77a3"
+  },
+  {
+    "path": "licenses/third-party/throttle-debounce-5.0.2/1-LICENSE.md",
+    "size": 2146,
+    "sha256": "b07649c798231a321f90abbb329c15e41a8b5ec5e814dde3e60cd4a470e3b012"
+  },
+  {
+    "path": "licenses/third-party/use-sync-external-store-1.7.0/1-LICENSE",
+    "size": 1088,
+    "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+  },
+  {
+    "path": "licenses/third-party/void-elements-3.1.0/1-LICENSE",
+    "size": 1070,
+    "sha256": "405a272eaef556691ad7dda96db3237c9544afe18725842a1a5b3ec308960222"
+  },
+  {
+    "path": "licenses/third-party/_ant-design_colors-8.0.1/1-LICENSE",
+    "size": 1099,
+    "sha256": "5d367fb0a07340571542eb4ee8eb1add62d37b71bad6786a57c2e9a86bf76c70"
+  },
+  {
+    "path": "licenses/third-party/_ant-design_cssinjs-2.1.2/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_ant-design_cssinjs-utils-2.1.2/1-LICENSE",
+    "size": 1115,
+    "sha256": "4973f756e858531bdae451f98054278dabd2ef50fc4d3dbccc084ee35964ad3d"
+  },
+  {
+    "path": "licenses/third-party/_ant-design_fast-color-3.0.1/1-LICENSE",
+    "size": 1115,
+    "sha256": "4973f756e858531bdae451f98054278dabd2ef50fc4d3dbccc084ee35964ad3d"
+  },
+  {
+    "path": "licenses/third-party/_ant-design_icons-6.3.4/1-LICENSE",
+    "size": 1099,
+    "sha256": "5d367fb0a07340571542eb4ee8eb1add62d37b71bad6786a57c2e9a86bf76c70"
+  },
+  {
+    "path": "licenses/third-party/_ant-design_icons-svg-4.6.0/1-LICENSE",
+    "size": 1099,
+    "sha256": "5d367fb0a07340571542eb4ee8eb1add62d37b71bad6786a57c2e9a86bf76c70"
+  },
+  {
+    "path": "licenses/third-party/_ant-design_react-slick-2.0.0/1-LICENSE",
+    "size": 1080,
+    "sha256": "95d848d55392bb8239b53cb7a6405bf3914bdab56d1a0d26f3af5f7aced776eb"
+  },
+  {
+    "path": "licenses/third-party/_babel_runtime-7.29.7/1-LICENSE",
+    "size": 1106,
+    "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+  },
+  {
+    "path": "licenses/third-party/_emotion_hash-0.8.0/1-LICENSE",
+    "size": 1087,
+    "sha256": "6e8d23763cf7cb707ad8f6677aa502ebeca1dda447e6d6e57f6549c1625b9c4a"
+  },
+  {
+    "path": "licenses/third-party/_emotion_is-prop-valid-1.4.0/1-LICENSE",
+    "size": 1087,
+    "sha256": "6e8d23763cf7cb707ad8f6677aa502ebeca1dda447e6d6e57f6549c1625b9c4a"
+  },
+  {
+    "path": "licenses/third-party/_emotion_memoize-0.9.0/1-LICENSE",
+    "size": 1087,
+    "sha256": "6e8d23763cf7cb707ad8f6677aa502ebeca1dda447e6d6e57f6549c1625b9c4a"
+  },
+  {
+    "path": "licenses/third-party/_emotion_unitless-0.7.5/1-LICENSE",
+    "size": 1087,
+    "sha256": "6e8d23763cf7cb707ad8f6677aa502ebeca1dda447e6d6e57f6549c1625b9c4a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_async-validator-6.0.0/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_cascader-1.14.0/1-LICENSE.md",
+    "size": 1085,
+    "sha256": "4b34f19e8c9e5c66aaf2dd07b7c15a5c3cf24a0095a760dca8473320ffde6b99"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_checkbox-2.0.0/1-LICENSE.md",
+    "size": 1082,
+    "sha256": "212a6f81849cae76de28ce0c35286ae750488cdc2ed25b19d4f144da21125521"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_collapse-1.2.0/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_color-picker-3.1.1/1-LICENSE.md",
+    "size": 1085,
+    "sha256": "8a894af015d320e0d534a14d6ae1895e07cb072678050d34b66be7e579c36a67"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_context-2.0.2/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_dialog-1.8.4/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_drawer-1.4.2/1-LICENSE",
+    "size": 1100,
+    "sha256": "6db0a962e5898831124a7e7465d4cf3ad849d121f97a618046b7a7f41fd2b031"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_dropdown-1.0.3/1-LICENSE",
+    "size": 1115,
+    "sha256": "4973f756e858531bdae451f98054278dabd2ef50fc4d3dbccc084ee35964ad3d"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_form-1.8.6/1-LICENSE",
+    "size": 1079,
+    "sha256": "8781f0ca192057330d7fbab763f8bcd3c8e671032f98e9cf1f8c82d6748e5654"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_image-1.9.0/1-LICENSE.md",
+    "size": 1100,
+    "sha256": "416bff691c8396d61bc16127f6271f133ca9094a34f7c3d5496ff1a3abc45766"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_input-1.1.2/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_input-number-1.6.2/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_mentions-1.6.0/1-LICENSE.md",
+    "size": 1085,
+    "sha256": "8a894af015d320e0d534a14d6ae1895e07cb072678050d34b66be7e579c36a67"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_menu-1.2.0/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_mini-decimal-1.1.4/1-LICENSE",
+    "size": 1079,
+    "sha256": "8781f0ca192057330d7fbab763f8bcd3c8e671032f98e9cf1f8c82d6748e5654"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_motion-1.3.3/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_mutate-observer-2.0.1/1-LICENSE",
+    "size": 1079,
+    "sha256": "8781f0ca192057330d7fbab763f8bcd3c8e671032f98e9cf1f8c82d6748e5654"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_notification-1.2.0/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_overflow-1.0.1/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_pagination-1.2.0/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_picker-1.9.1/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_portal-2.2.1/1-LICENSE",
+    "size": 1079,
+    "sha256": "8781f0ca192057330d7fbab763f8bcd3c8e671032f98e9cf1f8c82d6748e5654"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_progress-1.0.3/1-LICENSE",
+    "size": 1080,
+    "sha256": "53eb8e75d95517110e08f54e1c4007e2204f2de512cca6ca0ac2f9aeb4e6e0f8"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_progress-1.0.3/2-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_qrcode-1.1.3/1-LICENSE",
+    "size": 1115,
+    "sha256": "4973f756e858531bdae451f98054278dabd2ef50fc4d3dbccc084ee35964ad3d"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_rate-1.0.1/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_resize-observer-1.1.2/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_segmented-1.3.0/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_select-1.6.15/1-LICENSE.md",
+    "size": 1085,
+    "sha256": "4b34f19e8c9e5c66aaf2dd07b7c15a5c3cf24a0095a760dca8473320ffde6b99"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_slider-1.0.1/1-LICENSE",
+    "size": 1115,
+    "sha256": "4973f756e858531bdae451f98054278dabd2ef50fc4d3dbccc084ee35964ad3d"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_steps-1.2.3/1-LICENSE",
+    "size": 1080,
+    "sha256": "53eb8e75d95517110e08f54e1c4007e2204f2de512cca6ca0ac2f9aeb4e6e0f8"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_steps-1.2.3/2-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_switch-1.0.3/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_table-1.9.1/1-LICENSE.md",
+    "size": 1100,
+    "sha256": "416bff691c8396d61bc16127f6271f133ca9094a34f7c3d5496ff1a3abc45766"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_tabs-1.7.0/1-LICENSE.md",
+    "size": 1083,
+    "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_textarea-1.1.2/1-LICENSE.md",
+    "size": 1081,
+    "sha256": "2481b61123d4f8be84e11847d4bc9684f2aa073d1d2a3275e36fdb7f1cff019a"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_tooltip-1.4.0/1-LICENSE",
+    "size": 1116,
+    "sha256": "59d606be3d687e4dfcaecb9aebcebeb048c940ee613a4a820b759e0345d31e8d"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_tour-2.3.0/1-LICENSE",
+    "size": 1079,
+    "sha256": "8781f0ca192057330d7fbab763f8bcd3c8e671032f98e9cf1f8c82d6748e5654"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_tree-1.2.4/1-LICENSE.md",
+    "size": 1100,
+    "sha256": "6db0a962e5898831124a7e7465d4cf3ad849d121f97a618046b7a7f41fd2b031"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_tree-select-1.8.0/1-LICENSE.md",
+    "size": 1100,
+    "sha256": "6db0a962e5898831124a7e7465d4cf3ad849d121f97a618046b7a7f41fd2b031"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_trigger-3.10.1/1-LICENSE",
+    "size": 1115,
+    "sha256": "4973f756e858531bdae451f98054278dabd2ef50fc4d3dbccc084ee35964ad3d"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_upload-1.1.1/1-LICENSE",
+    "size": 1096,
+    "sha256": "883dc1623d6382c603f2b66f6a04eff69f835d61b638a67923156b4ac772fda6"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_util-1.13.0/1-LICENSE",
+    "size": 1152,
+    "sha256": "f3ae1f96cf22ff7028a4a908b2bf099968391fe06785e4d830926b07e5125ea6"
+  },
+  {
+    "path": "licenses/third-party/_rc-component_virtual-list-1.5.2/1-LICENSE",
+    "size": 1116,
+    "sha256": "59d606be3d687e4dfcaecb9aebcebeb048c940ee613a4a820b759e0345d31e8d"
+  },
+  {
+    "path": "licenses/third-party/_tauri-apps_api-2.11.0/1-LICENSE_APACHE-2.0",
+    "size": 10174,
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "path": "licenses/third-party/_tauri-apps_api-2.11.0/2-LICENSE_MIT",
+    "size": 1090,
+    "sha256": "9dd42ea92cff2ede5cd477cbfcce051b2d0115c0ac7f368ee88cb545055dff1d"
   },
   {
     "path": "backend/_internal/api-ms-win-core-console-l1-1-0.dll",

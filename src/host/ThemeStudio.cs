@@ -14,6 +14,12 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using System.Reflection;
+
+[assembly: AssemblyTitle("Theme Studio")]
+[assembly: AssemblyProduct("桌面主题工作室")]
+[assembly: AssemblyVersion("0.1.1.0")]
+[assembly: AssemblyFileVersion("0.1.1.0")]
 
 internal static class Program
 {
@@ -36,6 +42,7 @@ internal sealed class StudioWindow : Form
     private const string VirtualHost = "app.theme-studio.invalid";
     private readonly string dataDirectory;
     private readonly string smokeDirectory;
+    private readonly string scanDirectory;
     private readonly JavaScriptSerializer json = new JavaScriptSerializer { MaxJsonLength = 48 * 1024 * 1024, RecursionLimit = 100 };
     private readonly WebView2 view = new WebView2 { Dock = DockStyle.Fill };
     private readonly SemaphoreSlim bridgeLock = new SemaphoreSlim(1, 1);
@@ -52,10 +59,16 @@ internal sealed class StudioWindow : Form
     {
         smokeDirectory = smoke;
         dataDirectory = smoke == null ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ThemeStudio") : Path.Combine(smoke, "data");
+        scanDirectory = smoke == null ? null : Path.Combine(smoke, "desktop");
+#if TUTORIAL_MODE
+        dataDirectory = Path.Combine(Application.StartupPath, "demo", "data");
+        scanDirectory = Path.Combine(Application.StartupPath, "demo", "desktop");
+#endif
         Directory.CreateDirectory(dataDirectory);
         Text = "桌面主题工作室";
         Width = 1360; Height = 920; MinimumSize = new Size(900, 650);
         StartPosition = FormStartPosition.CenterScreen;
+        AutoScaleDimensions = new SizeF(96F, 96F);
         AutoScaleMode = AutoScaleMode.Dpi;
         try { Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { }
         Controls.Add(view);
@@ -80,6 +93,12 @@ internal sealed class StudioWindow : Form
     private void OpenExternal(string address)
     {
         Uri uri;
+        if (IsLocal(address))
+        {
+            if (new Uri(address).AbsolutePath == "/help/index.html")
+                Process.Start(new ProcessStartInfo(Path.Combine(Application.StartupPath, "wwwroot", "help", "index.html")) { UseShellExecute = true });
+            return;
+        }
         if (Uri.TryCreate(address, UriKind.Absolute, out uri) && (uri.Scheme == "https" || uri.Scheme == "http"))
             Process.Start(new ProcessStartInfo(address) { UseShellExecute = true });
     }
@@ -120,7 +139,7 @@ internal sealed class StudioWindow : Form
     {
         if (backend != null && !backend.HasExited) return;
         var arguments = "--data-dir " + Quote(dataDirectory);
-        if (smokeDirectory != null) arguments += " --scan-dir " + Quote(Path.Combine(smokeDirectory, "desktop"));
+        if (scanDirectory != null) arguments += " --scan-dir " + Quote(scanDirectory);
         var executable = Path.Combine(Application.StartupPath, "backend", "ThemeStudio.Backend.exe");
         var info = new ProcessStartInfo(executable, arguments) {
             WorkingDirectory = Path.GetDirectoryName(executable), UseShellExecute = false, CreateNoWindow = true,
@@ -186,7 +205,7 @@ internal sealed class StudioWindow : Form
     {
         var destination = smokeDirectory ?? Path.Combine(dataDirectory, "diagnostics");
         Directory.CreateDirectory(destination);
-        var report = new { product = "Theme Studio", version = "0.1.0", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
+        var report = new { product = "Theme Studio", version = "0.1.1", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
             executable = Application.ExecutablePath, nativeWebView = true, backend = "bundled executable", ui = payload, error = error };
         File.WriteAllText(Path.Combine(destination, "native-runtime.json"), json.Serialize(report), new UTF8Encoding(false));
     }
