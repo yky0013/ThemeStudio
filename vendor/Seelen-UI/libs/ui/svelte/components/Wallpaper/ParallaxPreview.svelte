@@ -1,16 +1,19 @@
 <script lang="ts">
   import { tick, untrack } from "svelte";
   import type { Wallpaper, WallpaperInstanceSettings } from "@seelen-ui/lib/types";
-  import type { ParallaxSettings } from "../../../shared/wallpaper-parallax/motion.ts";
+  import type { ParallaxSettings, Rect } from "../../../shared/wallpaper-parallax/motion.ts";
   import ParallaxLayer from "./ParallaxLayer.svelte";
   import ImageWallpaper from "./components/ImageWallpaper.svelte";
   import VideoWallpaper from "./components/VideoWallpaper.svelte";
 
-  let { initialSettings, onMediaError }: { initialSettings: ParallaxSettings; onMediaError?: () => void } = $props();
+  let { initialSettings, onMediaError, onMediaLoad, desktop = false }:
+    { initialSettings: ParallaxSettings; onMediaError?: () => void; onMediaLoad?: () => void; desktop?: boolean } = $props();
   let settings = $state(untrack(() => initialSettings));
   let source = $state("./fixtures/parallax-landscape.svg");
   let kind = $state<"image" | "video">("image");
   let paused = $state(false);
+  let pointer = $state<[number, number] | null>(null);
+  let sourceBounds = $state<Rect | undefined>(undefined);
   // A preview resource only supplies an element id. sourceOverride keeps the
   // original media components away from Tauri file conversion in the browser.
   const definition = { id: "@workbench/preview", metadata: { path: "" }, filename: "preview" } as Wallpaper;
@@ -22,16 +25,17 @@
 
   export function setOptions(next: ParallaxSettings) { settings = next; }
   export function setPaused(next: boolean) { paused = next; }
+  export function setPointer(x: number, y: number, bounds: Rect) { pointer = [x, y]; sourceBounds = bounds; }
   export async function setMedia(nextKind: "image" | "video", nextSource: string) {
     kind = nextKind; source = nextSource; paused = false;
     await tick();
   }
 </script>
 
-<ParallaxLayer options={settings} {paused} localPointer>
+<ParallaxLayer options={settings} {paused} {pointer} {sourceBounds} localPointer={!desktop}>
   {#if kind === "video"}
-    <VideoWallpaper {definition} {config} {paused} muted sourceOverride={source} onError={onMediaError} />
+    <VideoWallpaper {definition} {config} {paused} muted sourceOverride={source} onLoad={onMediaLoad} onError={onMediaError} />
   {:else}
-    <ImageWallpaper {definition} {config} sourceOverride={source} onError={onMediaError} />
+    <ImageWallpaper {definition} {config} sourceOverride={source} onLoad={onMediaLoad} onError={onMediaError} />
   {/if}
 </ParallaxLayer>

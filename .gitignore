@@ -12,3 +12,11 @@ qa/runtime/
 __pycache__/
 vendor/**/target/
 vendor/**/node_modules/
+docs/research/**/assets/
+docs/research/**/payload_inspection/
+docs/research/**/inno-6.7.3/
+docs/research/**/source-079c385/
+docs/research/**/*.exe
+docs/research/**/*.zip
+docs/research/**/*.7z
+docs/research/**/*.Msix

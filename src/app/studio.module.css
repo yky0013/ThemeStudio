@@ -21,6 +21,21 @@
 .mod > :first-child { flex: 1; }
 .mod small { font-size: 10px; color: light-dark(#80899b,#b4bdce); }
 .mod a { font-size: 11px; white-space: nowrap; color: light-dark(#7864be,#b6a3ef); }
+.enginePanel { margin-top: 20px; padding-top: 18px; border-top: 1px solid light-dark(#e2e5ed,#ffffff20); }
+.engineHeading { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.engineHeading h3, .engineCards h4 { margin: 0; }
+.enginePanel button { padding: 8px 12px; border-radius: 8px; background: light-dark(#fff,#252b38); color: inherit; border: 1px solid light-dark(#d6dce7,#ffffff25); cursor: pointer; font-size: 12px; }
+.enginePanel button:disabled { opacity: .5; cursor: default; }
+.engineCards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 14px; }
+.engineCards > div { padding: 16px; background: light-dark(#f7f8fc,#ffffff08); border-radius: 10px; }
+.engineCards p, .engineNote, .engineError, .modStatus { font-size: 12px; line-height: 1.7; }
+.engineActions { display: flex; gap: 8px; flex-wrap: wrap; }
+.engineError { color: light-dark(#ac4038,#f4b4ac); white-space: pre-wrap; overflow-wrap: anywhere; }
+.engineNote { color: light-dark(#778197,#aab6ca); }
+.modStatus { margin-top: 12px; }
+.modStatus > div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 2px; }
+.modStatus strong { color: light-dark(#4f7b5c,#99cdaa); font-weight: 500; }
+@media(max-width:720px) { .engineCards { grid-template-columns: 1fr; } }
 .mod :global(.ant-card-meta-description) { font-size: 12px; line-height: 1.7; }
 .mod :global(.ant-card) { background: light-dark(#fff,#ffffff06); }
 @media(max-width:1000px) { .shell > nav { width: 175px; } .content { padding: 14px 14px 0; } .header { padding: 12px 16px; } }

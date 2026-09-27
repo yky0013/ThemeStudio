@@ -12,7 +12,8 @@ try {
     if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notlike '*Microsoft Corporation*') { throw 'Bundled runtime is not a verified Microsoft binary.' }
     & $studioCompiler /Q installer\ThemeStudio.iss
     if ($LASTEXITCODE -ne 0) { throw 'Installer compilation failed.' }
-    $installer = Join-Path $studioRoot 'installers\ThemeStudio-0.1.1-Windows-x64-Setup.exe'
+    $version = (Get-Content -LiteralPath 'package.json' -Raw | ConvertFrom-Json).version
+    $installer = Join-Path $studioRoot ('installers\ThemeStudio-' + $version + '-Windows-x64-Setup.exe')
     Get-FileHash -LiteralPath $installer -Algorithm SHA256
     Write-Output $installer
 } finally { Pop-Location }

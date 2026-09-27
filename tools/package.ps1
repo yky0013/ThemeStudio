@@ -25,9 +25,34 @@ try {
     Copy-Item -LiteralPath (Join-Path $studioSdk 'LICENSE.txt') -Destination (Join-Path $studioRelease 'licenses\Microsoft-WebView2-LICENSE.txt') -Force
     Copy-Item -LiteralPath (Join-Path $studioSdk 'NOTICE.txt') -Destination (Join-Path $studioRelease 'licenses\Microsoft-WebView2-NOTICE.txt') -Force
     $studioCompiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
-    & $studioCompiler /nologo /target:winexe /platform:x64 /optimize+ ('/out:' + (Join-Path $studioRelease 'ThemeStudio.exe')) /win32manifest:src\host\app.manifest /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll ('/r:' + (Join-Path $studioRelease 'Microsoft.Web.WebView2.Core.dll')) ('/r:' + (Join-Path $studioRelease 'Microsoft.Web.WebView2.WinForms.dll')) src\host\ThemeStudio.cs
+    $studioHostSources = @(Get-ChildItem -LiteralPath 'src\host' -Filter '*.cs' -File | Select-Object -ExpandProperty FullName)
+    & $studioCompiler /nologo /target:winexe /platform:x64 /optimize+ ('/out:' + (Join-Path $studioRelease 'ThemeStudio.exe')) /win32manifest:src\host\app.manifest /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll ('/r:' + (Join-Path $studioRelease 'Microsoft.Web.WebView2.Core.dll')) ('/r:' + (Join-Path $studioRelease 'Microsoft.Web.WebView2.WinForms.dll')) @studioHostSources
     if ($LASTEXITCODE -ne 0) { throw 'Windows host compilation failed.' }
     Copy-Item -LiteralPath 'src\host\ThemeStudio.exe.config' -Destination $studioRelease -Force
     Copy-Item -LiteralPath 'README.md' -Destination $studioRelease -Force
+    $studioRuntimeOutput = Join-Path $studioRelease 'runtimes'
+    New-Item -ItemType Directory -Path $studioRuntimeOutput -Force | Out-Null
+    if (-not (Test-Path -LiteralPath '.cache\runtimes\seelen-engine\seelen-ui.exe') -or -not (Test-Path -LiteralPath '.cache\runtimes\windhawk\Compiler\bin\clang++.exe')) { throw 'Pinned upstream runtime payloads are missing; prepare-runtimes must complete before packaging.' }
+    $seelenOutput = Join-Path $studioRuntimeOutput 'seelen'
+    New-Item -ItemType Directory -Path $seelenOutput -Force | Out-Null
+    foreach ($runtimeFile in Get-ChildItem -LiteralPath '.cache\runtimes\seelen-engine' -Force) { Copy-Item -LiteralPath $runtimeFile.FullName -Destination $seelenOutput -Recurse -Force }
+    $windhawkOutput = Join-Path $studioRuntimeOutput 'windhawk'
+    New-Item -ItemType Directory -Path $windhawkOutput -Force | Out-Null
+    foreach ($runtimeFile in @('windhawk.exe','windhawk-cli.exe','windhawk-core.dll','windhawk-ui.exe','windhawk-mod.exe','windhawk-mod-elevated.exe','windhawk-mod-uiaccess.exe','Compiler','UI','ModsRuntime')) { Copy-Item -LiteralPath (Join-Path '.cache\runtimes\windhawk' $runtimeFile) -Destination $windhawkOutput -Recurse -Force }
+    New-Item -ItemType Directory -Path (Join-Path $windhawkOutput 'Engine') -Force | Out-Null
+    Copy-Item -LiteralPath '.cache\runtimes\windhawk\Engine\2.0' -Destination (Join-Path $windhawkOutput 'Engine') -Recurse -Force
+    New-Item -ItemType Directory -Path (Join-Path $windhawkOutput 'AppData\Engine\Mods') -Force | Out-Null
+    foreach ($runtimeLibrary in Get-ChildItem -LiteralPath '.cache\runtimes\windhawk\AppData\Engine\Mods' -Recurse -File | Where-Object { $_.Extension -eq '.whl' -or $_.Name -eq 'windhawk-mod-shim.dll' }) {
+        $libraryOutput = Join-Path $windhawkOutput ('AppData\Engine\Mods\' + $runtimeLibrary.Directory.Name)
+        New-Item -ItemType Directory -Path $libraryOutput -Force | Out-Null
+        Copy-Item -LiteralPath $runtimeLibrary.FullName -Destination $libraryOutput -Force
+    }
+    $studioResources = Join-Path $studioRelease 'resources'
+    New-Item -ItemType Directory -Path $studioResources -Force | Out-Null
+    Copy-Item -LiteralPath 'config\runtime-distributions.json' -Destination $studioResources -Force
+    Copy-Item -LiteralPath 'vendor\Seelen-UI\src\ui\react\settings\modules\themeWorkbench\domain\catalog.json' -Destination (Join-Path $studioResources 'mod-catalog.json') -Force
+    Copy-Item -LiteralPath 'vendor\windhawk-mods\mods' -Destination (Join-Path $studioResources 'windhawk-mods') -Recurse -Force
+    Copy-Item -LiteralPath 'vendor\Seelen-UI\src\static\themes' -Destination (Join-Path $studioResources 'seelen-themes') -Recurse -Force
+    Copy-Item -LiteralPath 'vendor\runtime-sources\Seelen-UI-2.8.6\LICENSE' -Destination (Join-Path $studioRelease 'licenses\Seelen-Runtime-2.8.6-AGPL.txt') -Force
     Write-Output (Join-Path $studioRelease 'ThemeStudio.exe')
 } finally { Pop-Location }

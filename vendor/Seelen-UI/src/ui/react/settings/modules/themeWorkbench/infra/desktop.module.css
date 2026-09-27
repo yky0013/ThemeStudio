@@ -12,7 +12,16 @@
 .toolbar > input { flex: 1; min-width: 150px; }
 .toolbar label { display: flex; gap: 8px; align-items: center; font-size: 12px; }
 .iconLayout { display: grid; grid-template-columns: minmax(0, 1fr) 245px; gap: 20px; }
-.shortcuts { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: 8px; max-height: 350px; overflow: auto; align-content: start; }
+.shortcuts { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; max-height: 480px; overflow: auto; align-content: start; padding: 2px; }
+.pair { padding: 10px; border: 1px solid light-dark(#dfe3ed, #ffffff25); border-radius: 10px; display: grid; grid-template-columns: minmax(0, 1fr) 18px 54px; align-items: center; gap: 8px; min-width: 0; }
+.shortcuts .pairSource { display: flex; align-items: center; border: 0; padding: 0; gap: 7px; min-width: 0; }
+.section .targetButton { display: flex; gap: 8px; align-items: center; background: transparent; border: 0; padding: 2px; text-align: left; min-width: 0; }
+.targetButton span { min-width: 0; }
+.pairArrow { color: #7967c6; text-align: center; font-size: 18px; }
+.section .assignedPicture { padding: 5px; width: 54px; height: 54px; border-style: dashed; }
+.assignedPicture img { width: 42px; height: 42px; object-fit: contain; }
+.assignedPicture > span { font-size: 25px; color: #7967c6; }
+.section .pairSelect { grid-column: 1 / -1; width: 100%; min-width: 0; padding: 7px 9px; }
 .shortcuts label { padding: 10px; border: 1px solid light-dark(#dfe3ed, #ffffff25); border-radius: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 0; }
 .shortcuts img { object-fit: contain; flex-shrink: 0; }
 .shortcuts label > span { overflow: hidden; }

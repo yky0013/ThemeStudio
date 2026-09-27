@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import type { DesktopClient } from "../../vendor/Seelen-UI/src/ui/react/settings/modules/themeWorkbench/domain/desktop.ts";
 
-type Message = { id: number; result?: unknown; error?: string };
+type Message = { id: number; result?: unknown; error?: string; event?: string; stage?: string; name?: string };
 interface NativeWebView {
   postMessage(value: unknown): void;
   addEventListener(type: "message", callback: (event: MessageEvent<Message>) => void): void;
@@ -12,6 +12,7 @@ let sequence = 0;
 let session = "";
 const pending = new Map<number, { resolve: (value: unknown) => void; reject: (error: Error) => void }>();
 native?.addEventListener("message", ({ data }) => {
+  if (data.event === "runtime.progress") { document.dispatchEvent(new CustomEvent("theme-studio-runtime-progress", { detail: data })); return; }
   const request = pending.get(data.id);
   if (!request) return;
   pending.delete(data.id);

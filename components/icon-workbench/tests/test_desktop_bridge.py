@@ -58,6 +58,39 @@ class DesktopBridgeTests(unittest.TestCase):
                 path = self.bridge.store.icons_dir / (item['id'] + '.ico')
                 self.assertTrue(path.is_file())
 
+    def test_individual_pictures_are_applied_to_their_own_shortcuts_and_restored(self):
+        original = {path: path.read_bytes() for path in (self.link, self.url)}
+        first = self.bridge.dispatch('icons.import', upload_image(name='第一张.png'))
+        stream = io.BytesIO()
+        Image.new('RGBA', (160, 160), '#36aa72').save(stream, format='PNG')
+        second = self.bridge.dispatch('icons.import', {'name': '第二张.png', 'data': base64.b64encode(stream.getvalue()).decode()})
+        state = self.bridge.state()
+        rows = state['shortcuts']
+        pairs = [{**rows[0], 'icon': first['id']}, {**rows[1], 'icon': second['id']}]
+        mappings = {item['id']: item['icon'] for item in pairs}
+        self.bridge.dispatch('icons.assign', {'mappings': mappings})
+        reopened = DesktopBridge(self.root / 'data', [(self.desktop, '测试桌面')])
+        self.assertEqual(reopened.state()['mappings'], mappings)
+        result = self.bridge.dispatch('icons.apply', {'items': pairs})
+        self.assertEqual([item['status'] for item in result['entries']], ['applied', 'applied'])
+        for item in pairs:
+            path = self.link if item['kind'] == '.lnk' else self.url
+            self.assertEqual(Path(shortcut_info(path)['icon_path']).name, item['icon'] + '.ico')
+        self.bridge.dispatch('icons.restore', {'id': result['id']})
+        for path, content in original.items():
+            self.assertEqual(path.read_bytes(), content)
+
+    def test_missing_picture_or_duplicate_shortcut_cannot_partially_apply(self):
+        icon = self.bridge.dispatch('icons.import', upload_image())
+        rows = self.bridge.state()['shortcuts']
+        original = {path: path.read_bytes() for path in (self.link, self.url)}
+        for items in ([{**rows[0], 'icon': icon['id']}, rows[1]],
+                      [{**rows[0], 'icon': icon['id']}, {**rows[0], 'icon': icon['id']}]):
+            with self.assertRaises(ValueError):
+                self.bridge.dispatch('icons.apply', {'items': items})
+            for path, content in original.items():
+                self.assertEqual(path.read_bytes(), content)
+
     def test_stale_shortcut_cannot_be_overwritten(self):
         icon = self.bridge.dispatch('icons.import', upload_image())
         row = next(s for s in self.bridge.state()['shortcuts'] if s['kind'] == '.url')

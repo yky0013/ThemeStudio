@@ -16,7 +16,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/accent-color-sync.wh.cpp",
-      "sha256": "0176aa56d1a5ea4df105e8324c21793596dd73e10a5733126f710aaa808a6a58",
+      "sha256": "80c1bf96391946a33684fe0f25c3af0ff67be3c7d51c07fc2f94eb4ac3da5586",
       "themeChoices": []
     },
     {
@@ -280,7 +280,7 @@
       "architecture": [],
       "license": "BSD-3-Clause",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/always-allow-ctrl-shift-enter.wh.cpp",
-      "sha256": "572e726d93190c2ec27ae7c37a22939a25c2db3fd21f2cf98be0bc75dea1787f",
+      "sha256": "68ca4e98f6c83e25968d1314485382ecf9edaec37324ffb35aea72a3d7db82e8",
       "themeChoices": []
     },
     {
@@ -310,7 +310,7 @@
       "architecture": [],
       "license": "GPL-3.0-or-later",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/amd-radeon-software-window-fix.wh.cpp",
-      "sha256": "bf9f1e4e371ab5b3e6fcc62297011c130b6f4b0e1d5c6498b3a8cbc5ec423635",
+      "sha256": "55ab2fb51aed94b7f33c62c751077c22b0310d14232baf601460bf690cb0127d",
       "themeChoices": []
     },
     {
@@ -404,7 +404,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/auto-theme-switcher.wh.cpp",
-      "sha256": "421ac8b0eef2c7dc6e65d374d4c5712113671d7e974e42b593daeaa30785609b",
+      "sha256": "0a42b9ce5189c1ded541acc4027a7a6a790988a36032cd70ddda93d65e4b6b4b",
       "themeChoices": []
     },
     {
@@ -522,7 +522,7 @@
       "architecture": [],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/better-volume-mixer.wh.cpp",
-      "sha256": "949ee6895851102c6ced597e7f3856eab7573b53b1ff9048fd7976ba44320fa1",
+      "sha256": "38fa6d70864288be829f4f46101df745ca75b99d8216c38379a679cd12cc2f5c",
       "themeChoices": [
         {
           "id": "system",
@@ -584,7 +584,7 @@
       "architecture": [],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/block-windows-startmenu-and-hosts.wh.cpp",
-      "sha256": "8c0f401ed4528d6b6d7524b00eabe0954eec0ec166c4c86cdae6bff094330e69",
+      "sha256": "f07c8a6ed3aeaf0d11899f21f43faefc0f41180f9fea86c67ea2061223614842",
       "themeChoices": []
     },
     {
@@ -767,7 +767,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/change-tray-icons.wh.cpp",
-      "sha256": "8510fc8fc91a7b19f654df14fa64976c3db23e6528d2e38f2f04b78952fb4490",
+      "sha256": "80cb7928add615f23051fec7120f4d6cca1c4b8728965e90e37d9b0b633e072f",
       "themeChoices": []
     },
     {
@@ -797,7 +797,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/chinese-ime-fixed-mode.wh.cpp",
-      "sha256": "71e9505d2f1968ecca3dff84e1adfe1916550c79f8af317619be86275e46f51e",
+      "sha256": "930b782bc9ac8d66e9a0355b7b2f04d4b8f5015386ada86dc427eee95d6581ec",
       "themeChoices": []
     },
     {
@@ -1052,7 +1052,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/classic-expand-buttons.wh.cpp",
-      "sha256": "116dca98e95fd8a66aeb1f6e1d6e169d4dc62c6ffc3c5b1bbd9d32e840ff7a08",
+      "sha256": "2507f92d4d7badab40866d23b80aaefeb3e1998df86085f40aec455c4329d800",
       "themeChoices": []
     },
     {
@@ -1159,7 +1159,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/classic-list-group-fix.wh.cpp",
-      "sha256": "bb4b9c9f9bdb7495831cbbfba976ddbed67e969a9c0eaa963c85ed674850a60a",
+      "sha256": "9af501e3f0baf5ae5df15e6c8e836bd9020ec5bf34aba3d94d989530a7da37ab",
       "themeChoices": []
     },
     {
@@ -1296,7 +1296,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/classic-taskbar-background-fix.wh.cpp",
-      "sha256": "6f73c630db3b9759aeb8ee54a88c342674c4b4ed4bec4ad195aa077433a8d6ea",
+      "sha256": "058f52c779875825cbe327130d18266c0226532317f006a27a4605f87f139920",
       "themeChoices": []
     },
     {
@@ -1522,7 +1522,7 @@
       "architecture": [],
       "license": "BSD-3-Clause",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/classic-tree-view-expando-fade-fix.wh.cpp",
-      "sha256": "b1c48a89bf34a48e2904b7111fb979924734664a103afbc30f8493c226745eb2",
+      "sha256": "316796be43281ab4738c5cec8dab6ccc17218f697e388d51ac982ed7a3ae422f",
       "themeChoices": []
     },
     {
@@ -1619,7 +1619,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/close-explorer-on-esc.wh.cpp",
-      "sha256": "beb3691dca729d81b1ccb7442a1605bda8985d1c71aae240a738d33e1ab7008b",
+      "sha256": "50fb953467dc2cf0bbd9da74d3a15f00a6d5bf8b3e1eb36f1f936a133e23dc49",
       "themeChoices": []
     },
     {
@@ -1743,7 +1743,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/console-quick-paste.wh.cpp",
-      "sha256": "95302be0b649a4cd8be0c2032e4f52215dfad45dab6593998f5d85e7e3d09558",
+      "sha256": "c916f75531b9e30edf082f4baff87355a02345d6c4236d7b1d15292154f5018b",
       "themeChoices": []
     },
     {
@@ -1758,7 +1758,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/context-menu-preloader.wh.cpp",
-      "sha256": "2a99e45b816630911c4a1904fc9a91cd0e1d25d31a4ca48e2bd24b9681d05167",
+      "sha256": "e2b7f2b07fb52944e833dc93e446e55dbec64f4a3b169b08bcae43bd1127485c",
       "themeChoices": []
     },
     {
@@ -2007,7 +2007,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/dark-menus.wh.cpp",
-      "sha256": "b23684560f8ffd73712ef622e8b6d19b56605df0162cd7f4612a1bf21146b3ac",
+      "sha256": "89d8b2a559e428070c6792073ac3d37832f1e3922c701897806e124bca301a6c",
       "themeChoices": []
     },
     {
@@ -2154,7 +2154,7 @@
       "architecture": [],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/desktop-marquee-fade.wh.cpp",
-      "sha256": "360c04d9cd4767e8bd5f77179638d0c62be712afd60fc997d682e45a7fead2fb",
+      "sha256": "4627202de0aa02cdeb4c4d10c1c8d4b51aa8b77662994fe7954fd1584fc48897",
       "themeChoices": []
     },
     {
@@ -2188,7 +2188,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/desktop-rect-select.wh.cpp",
-      "sha256": "1bd77deec7b1c17f472b8e31e0635d094b41201584fe2f4b4c79d379cdd3147b",
+      "sha256": "3d09abbc0f64f4139d93b0e60df757033c55771ca60839acfeddf9e4c42ad0e0",
       "themeChoices": []
     },
     {
@@ -2340,7 +2340,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/disable-open-close-anims.wh.cpp",
-      "sha256": "19832552939b9ae2a4445b2bef99b6e81e2a4aefdccee7b2c7e8aff4e1ac6552",
+      "sha256": "29237afcee790e4d08fd26ab4d5271a34a3148e9661658e10f370b67e5bb7935",
       "themeChoices": []
     },
     {
@@ -2479,7 +2479,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/disk-usage-bar-color.wh.cpp",
-      "sha256": "bfb0b64a9f69d4213039f7aab265e992bd8c3b24cf84cf4179b63de5f2c4072c",
+      "sha256": "46e455b528292f10fa90e336a396c1a7ef53edf0875cbe612980747e8e842513",
       "themeChoices": []
     },
     {
@@ -2524,7 +2524,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/dot-hide.wh.cpp",
-      "sha256": "0bb69ae92249113fbc0ca7a1d501731ec318f85cc97dc6fa3789884ab04e0a97",
+      "sha256": "1c24696c7c4f3627f24fcc0b311e2e11ac57ade3d0d32eb23bb7634e565f4bb7",
       "themeChoices": []
     },
     {
@@ -2714,7 +2714,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/edge-window-tab-manager-block.wh.cpp",
-      "sha256": "1bd1b788086cff5fd62b6cdd1e4805c03c56b6430b799bbcfd60b167329a31eb",
+      "sha256": "ae24d286eeb177384883aa76976c179303a84248205857ad13527026019c1f18",
       "themeChoices": []
     },
     {
@@ -2887,7 +2887,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/explorer-ctrln-newfile.wh.cpp",
-      "sha256": "c9c10548739a37d96b0df2e68d92bc3c45014450ac37feeb2854a5137e5f0d9a",
+      "sha256": "0b49add0b1386dc4eb0e46dceeb5406443aa00ca03c9afee588a5cebd1b47e96",
       "themeChoices": []
     },
     {
@@ -3045,7 +3045,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/explorer-glyphs-colorizer.wh.cpp",
-      "sha256": "158344e788d16f260eb2afcd2da93c5496146d73b1dfff5c3d301ff3f9926254",
+      "sha256": "09af1a16a5d61b43d961cf2900a53e008b55c0adf3638e0b5269d051711e9908",
       "themeChoices": []
     },
     {
@@ -3126,7 +3126,7 @@
       ],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/explorer-navigation-pane-tweaks.wh.cpp",
-      "sha256": "c9efc7408a4ddbb2d9ac1791fded90a320d00b686cd3144713706a8d092aee42",
+      "sha256": "dae5a95f2b83e63118fd72f89f8a58889fbb6b57f02c35b6a27d77494cdafa1e",
       "themeChoices": []
     },
     {
@@ -3190,7 +3190,7 @@
       ],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/explorer-open-folder-icon.wh.cpp",
-      "sha256": "1386ae74417e2d6c8fa9d236737f99187672ae1bbb9416fbf446e6a27aef6e05",
+      "sha256": "2ae5ae624eef6ed8c34c4ee85e02ca32ebb91ce77088a4e488d33ea0471af320",
       "themeChoices": []
     },
     {
@@ -3361,7 +3361,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/explorer-tree-click-expand.wh.cpp",
-      "sha256": "19ae437b825b7e936904f61bc5a345ff851e2a7c5cc8eb898237fc1f0d5bdd25",
+      "sha256": "e81662b916ac220f7109efac1d77e0dadde30cdde1e2e6d50ed4fac7ac99fa20",
       "themeChoices": []
     },
     {
@@ -3427,7 +3427,7 @@
       "architecture": [],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/explorer-up-new-window.wh.cpp",
-      "sha256": "6dabf8b4c7705fd7eba7d5184093a896221669a5749ffcdee8584c377f8838d8",
+      "sha256": "44060303476af5a1f259e22a1e05b73966ac598321155949f69dbcd676440664",
       "themeChoices": []
     },
     {
@@ -3607,7 +3607,7 @@
       "architecture": [],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/file-explorer-details-autofit-columns.wh.cpp",
-      "sha256": "e5d4c7b741683c9663318e1d1604854b5ff25e7f23f900ded31947504bb8ac32",
+      "sha256": "2ccf41f57a756a53a090c85570dcd6730a29312fde2d313152d1762cc1b56057",
       "themeChoices": []
     },
     {
@@ -3637,7 +3637,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/file-explorer-reopen-closed-tab.wh.cpp",
-      "sha256": "73c75c3c58dda3832229bcd3a8352c88a132907d05d1ccc1f998e574b3985e0a",
+      "sha256": "ae7fc2ff6ba678ef181b41ec4ba1579459131a50aa010e491aacc2354d546a7c",
       "themeChoices": []
     },
     {
@@ -3869,7 +3869,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/fix-strips.wh.cpp",
-      "sha256": "85a8d46a8364f3ed9e0b5b090d713116e6f69a02df3035cc673f7534c59180ae",
+      "sha256": "7fd9100c5260a7ba98bdda1357239156bc976c6fedd09285c6c067631395786e",
       "themeChoices": []
     },
     {
@@ -4021,7 +4021,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/genie-minimize-animation.wh.cpp",
-      "sha256": "e1623814bc56e581a188cc05688b982c109f953b9e3ac78474b8032157f21fc2",
+      "sha256": "cf3111ff9ea77781c114c6f54ac431ba7efa8a1e08f229e972eebecdd916c7a5",
       "themeChoices": []
     },
     {
@@ -4036,7 +4036,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/gnome-dynamic-desktops.wh.cpp",
-      "sha256": "8c717316a03d0b6fd7d2a6f04ad176eeae3c5df67a229d19a2a8d898e97fb73a",
+      "sha256": "7c567ffebd7a9adc82cad3e4b0a8eeb10fe33c6ce32433a780f848780b303d04",
       "themeChoices": []
     },
     {
@@ -4211,7 +4211,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/hold-teams-meeting-thumbnail-in-place.wh.cpp",
-      "sha256": "1049bccbe4be358f75ca80fc21bfe647913188b90006036743492aa0f1756c9d",
+      "sha256": "15cb73bb363d5dd2ce55aa20179caeacbddc1deab206ff4fa5247dcfbbd210cc",
       "themeChoices": []
     },
     {
@@ -4347,7 +4347,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/ignore-focus-loss.wh.cpp",
-      "sha256": "e249950a60e6d6fcaf18a19939c1d48dfde6eb7f20592fc48f31561126247b43",
+      "sha256": "36613807625b610fe6ae01cf99cf3ef0ea9fa9435555ed968a455863d2a69e99",
       "themeChoices": []
     },
     {
@@ -4548,7 +4548,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/legacy-file-copy.wh.cpp",
-      "sha256": "edf81ad7285f0582cb4127e3ae66e9035294492258e79e61f37050047c9fb6e4",
+      "sha256": "2f7a43121e1cf1a38b73eed6560b92a0064a79329d42d99f4d99cee58b5e7a4a",
       "themeChoices": []
     },
     {
@@ -4789,7 +4789,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/mac-magnifying-cursor.wh.cpp",
-      "sha256": "aab69db4044cc399c2b88043374a26b9d1282aca50c5b8e547c355f0619ef46b",
+      "sha256": "d8395b814ee98ad1020298928f6a55fc3d83bc416bdccf1dca6b2116979fb7bc",
       "themeChoices": []
     },
     {
@@ -4864,7 +4864,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/maintain-flux-colour-temperature.wh.cpp",
-      "sha256": "87031a80edf513cebafc9ad7590064e59dc8cc8c045dbd33bfadf8965549aaad",
+      "sha256": "95f9330baad70e39a4b8c7a399751fe6621ed9d5d44bb92609ec851360f8ab02",
       "themeChoices": []
     },
     {
@@ -4969,7 +4969,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/mix-files-and-folders-sorting.wh.cpp",
-      "sha256": "01e929ee716c2a054670ee2c477579a6a9cdb3f0de195a5238ae3a20a9241050",
+      "sha256": "7dadfbff58355d3afb8c6ed618044edba7e5c2e28da6c878446c29a5a25ab576",
       "themeChoices": []
     },
     {
@@ -5204,7 +5204,7 @@
       "architecture": [],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/native-brightness.wh.cpp",
-      "sha256": "d0423499a553852c9bffc7d76cdecbc1aaf737fa370440147a26307ddc0c3e95",
+      "sha256": "c8d1127db5b98ec9733dcb076fc8e7b1008b692b87a6f3fec1b4f553ca87a92a",
       "themeChoices": []
     },
     {
@@ -5348,7 +5348,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/nilesoft-shell-animator.wh.cpp",
-      "sha256": "9d123c71674bdd8fb6d81c0c6f0676ffa556a767c542d84a2ed3e515fdb2be15",
+      "sha256": "1a055a03464b1547f9367fd65479b22d13682406eaa80cd139798860189b5695",
       "themeChoices": []
     },
     {
@@ -5363,7 +5363,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/nilesoft-text-shrinker.wh.cpp",
-      "sha256": "bdac63acddacba25889b2351f79a5e21cdba7f0aa9980a785eba45ed282154a5",
+      "sha256": "d6baf9a787e7a83e1eadde223436e0b2155c562b7a72dc53d542143d2a3bd63d",
       "themeChoices": []
     },
     {
@@ -5421,7 +5421,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/no-icon-messagebox-sound.wh.cpp",
-      "sha256": "249ed2f59c4ebf062e1eae7c7aad8b517bf5285be6fc2a7c480f32276673603e",
+      "sha256": "296d4509d033552e4ad085a09ad6cefa95809f3468c53c65be6bba3cad617f5a",
       "themeChoices": []
     },
     {
@@ -5593,7 +5593,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/numbered-taskbar.wh.cpp",
-      "sha256": "d7d7eb10db3aeaabd06b11613e38f6d2a882830b0252018ab8c748b13d43c022",
+      "sha256": "77b6b13140eb6e8359cbbf0d6e765b317715229d59d12b24cf17b981f0747cd6",
       "themeChoices": []
     },
     {
@@ -5647,7 +5647,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/office-fix-account-disp-name.wh.cpp",
-      "sha256": "e6ec89767e15dfc90b4e5a78c22a8c8098c51304381f10c37785c068c15fe24e",
+      "sha256": "6e27d77032b3c4f2ccbb56025de9d4b45407ffb18350d0f4a4e79d7a2f1e4bce",
       "themeChoices": []
     },
     {
@@ -5670,7 +5670,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/office-ui-reverter-universal.wh.cpp",
-      "sha256": "a1c83639fa758b2bec0066313faf345612a03130c73bc52280276c27611713c7",
+      "sha256": "7d0dffeefee2096a3e6e4afecea0f890e819eacd4048a05432bc54948d309fa5",
       "themeChoices": []
     },
     {
@@ -5821,7 +5821,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/onenote-cursor-teleport-fix.wh.cpp",
-      "sha256": "2c35193cfa3ddfaaa01850be20f64436fc9755fa350436cd7be47d02a17f6d6b",
+      "sha256": "b18e501be6880965d5b504d7cf676041a045f9e2fa5d5211a02cf9cc05158f4b",
       "themeChoices": []
     },
     {
@@ -5851,7 +5851,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/osu-tray-profile.wh.cpp",
-      "sha256": "2dced887058622b1429a615134b9d49f7730eb91f2d6b7483f66e31e6e702640",
+      "sha256": "820403779e851047f2353d7f0d7a4cac31bf7d6e3242f52c6445efd7447d4b90",
       "themeChoices": []
     },
     {
@@ -6042,7 +6042,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/photoshop-dark-menus.wh.cpp",
-      "sha256": "14960fe3b6296ad4ba54287eb76de47f93385b52de4cd54c02bfa531408bd649",
+      "sha256": "f47bff47d242b35466fbfa93fc74edb244c8edeba96190bc7ca06f5e4917436e",
       "themeChoices": []
     },
     {
@@ -6142,7 +6142,7 @@
       ],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/premiere-pro-theme.wh.cpp",
-      "sha256": "65682418f8c6a011006f8b84081d2ddf3ef0f13b01fea632833dd9dd9936a414",
+      "sha256": "3c0cc0d300e85d39d50082802fcc827ee2ccc9161667c5d2815bf5239a8c1e23",
       "themeChoices": []
     },
     {
@@ -6206,7 +6206,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/prevista-file-copy.wh.cpp",
-      "sha256": "ba535151384834029978f5f39d18ee6131b1ad1e57245597f0b821e0df768b1c",
+      "sha256": "5ee50e5f5a6604eac3bbdc9d930211c56490b7163cf1b4b5783c353776c8d54b",
       "themeChoices": []
     },
     {
@@ -6442,7 +6442,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/remove-fullscreen-popup-chrome.wh.cpp",
-      "sha256": "64ee0c576ba013fc087acbc32f01992629c9e314ac0f86990c2bb4f1911d3045",
+      "sha256": "b80cd3195405edfd097cc8fd1149db4c91673d57a7a7d53eca83171d34471c35",
       "themeChoices": []
     },
     {
@@ -6534,7 +6534,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/replace-winver-with-exe.wh.cpp",
-      "sha256": "f28c2a0c75f62a84df2c7edeb8f094ab70b10211048b28bd562db54d29387d14",
+      "sha256": "d181618c589f5a94c30129a2bd4c9ffbf29d1e2c646394481ecc7ace3b43d269",
       "themeChoices": []
     },
     {
@@ -6857,7 +6857,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/shell-animation-disabler.wh.cpp",
-      "sha256": "92f96a3a955e82533695885d5feccd61f32a0cb48f6931e428b8734a511f4c8e",
+      "sha256": "332b21368f52c945af9ea59cc6c6abede64e65d7e9d05db79ac184bd5d4049fd",
       "themeChoices": []
     },
     {
@@ -7422,7 +7422,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-autohide-instant-show.wh.cpp",
-      "sha256": "f1a8449be5c4e5bb87ceb57b2993f7a4791900dddf8f7344d7d4e30f103e7a0c",
+      "sha256": "b8d483276d9c8d768819a2ae145c29c2a60afaffba8853407bac536a605530c7",
       "themeChoices": []
     },
     {
@@ -7456,7 +7456,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-blob-shape.wh.cpp",
-      "sha256": "57fbcdec09054e49f58588f3dab3ce6b9435f0d8384d578e396beeadc37f904a",
+      "sha256": "b7988c1b042d70b49a3c968bde688e642569503b8284a298e49c6ee8973da6cc",
       "themeChoices": []
     },
     {
@@ -7592,7 +7592,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-content-presenter-injector.wh.cpp",
-      "sha256": "574642d59a6200cede7f27845629f927d1e63cfb9bc6a3c645d987ac5f63491d",
+      "sha256": "232de76fa31f32f7f8ac1e9adbc7d237bc3937fa71bb2fa5d7763f1e65732825",
       "themeChoices": []
     },
     {
@@ -7626,7 +7626,7 @@
       ],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-countdown-timer.wh.cpp",
-      "sha256": "9b9058e526becce1558b5eb21df83f2857db92a35b5bbc7ec8e829943b0f56b1",
+      "sha256": "38eedccabdbb7545d14805be42c0b1fc31fa035d9ca448593610ba715cc12cda",
       "themeChoices": []
     },
     {
@@ -7677,7 +7677,7 @@
       ],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-disappearing-tray-icons-fix.wh.cpp",
-      "sha256": "98e2ffeb60c4c59e15a5f15b4449e269aa2f92afef9eebb364120eb765cf2cd2",
+      "sha256": "76fcb544cec15e31b35c729314b159eea11f5d50e4dca3ffbbe4f0183ba3a709",
       "themeChoices": []
     },
     {
@@ -7694,7 +7694,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-dock-animation-plus.wh.cpp",
-      "sha256": "44b7ae5887b64d1f20ed09b3c4471317dd5caaffcf6e6ae0152c6a32070c0e8b",
+      "sha256": "816b9daff11e99e82e4780f7ef8314c530bf12e24bf7c033c013e578452bca0a",
       "themeChoices": []
     },
     {
@@ -7711,7 +7711,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-dock-animation.wh.cpp",
-      "sha256": "238e5578468edb577f59952b864663aa61337ee91abd12d9c408a83d93235b19",
+      "sha256": "256e51f5be253a7cdcee3414ad64dbbd90d7f9c2e58892347e2958eb22e6d2df",
       "themeChoices": []
     },
     {
@@ -7728,7 +7728,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-elastic-pill.wh.cpp",
-      "sha256": "2258cceac6db6293d868521c9c4a5f395001f77113e57f82197b80cd2aa35bfb",
+      "sha256": "e0b9af2711d2d452b7bdb3b7eeefb0b8c675cc2494ff6f79bef36bc60aa11d1b",
       "themeChoices": []
     },
     {
@@ -7773,7 +7773,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-fluent-media-player.wh.cpp",
-      "sha256": "5baf1c9926a3a5c66da0a82595a7f33148811bd2d32164bd0ed350d85a9c30cb",
+      "sha256": "d0dce563a8c5ec8e2638f73576a3fe04cde5b17cad67aca93568f98a92911994",
       "themeChoices": []
     },
     {
@@ -7939,7 +7939,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-language-indicator-layout-control.wh.cpp",
-      "sha256": "1b3c7b460a9d2646c61c402164e9a82cbb6afa31f5666fd4d82c64b27b4799d3",
+      "sha256": "7a0b05248631b089590dad5eb744b4b22ed3aca5c757f0c759ceea552bbe5fa7",
       "themeChoices": []
     },
     {
@@ -8006,7 +8006,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-music-lounge.wh.cpp",
-      "sha256": "7d0b5d0b0f03d215a51cae97055ab898d2d267ed39b1188148987edd6673446c",
+      "sha256": "f1d2ff6d6733ec077255aa32f9a98716a00e080357873941fd81a9022360f326",
       "themeChoices": []
     },
     {
@@ -8194,7 +8194,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-shadow-border.wh.cpp",
-      "sha256": "6c3cd3807efe14cb67221624288c88de805f9e26f636409dae6811775c16e8d5",
+      "sha256": "c6ebabb1ad7d2ef4644176f823a406175ff205179495b5da38f8a80b09113df1",
       "themeChoices": []
     },
     {
@@ -8314,7 +8314,7 @@
       ],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskbar-thumbnail-hover-fix.wh.cpp",
-      "sha256": "1d27643588275f86a3e8c6e2c762e80c8e54db12c07dbf66a6003a62474336e2",
+      "sha256": "9d0c44f6d3f91afe97aeafc3cb3a4d35695a60d430b5b4482141fc44aed29039",
       "themeChoices": []
     },
     {
@@ -8554,7 +8554,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/taskmgr-link-speed.wh.cpp",
-      "sha256": "01db0961ef0ee0b672931d304f6ccf8c3e795fc7e83e9a8accb73e6f8ce6dba5",
+      "sha256": "8512d96815928a089dd003d606496eab224c1e22eaa388c0cfd275f82b8d98eb",
       "themeChoices": []
     },
     {
@@ -8757,7 +8757,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/tortoisegit-progress-animation-background-fix.wh.cpp",
-      "sha256": "dcd41b9ec1a05346f58976297cea693b2d17d7df0d282bbd248dcf4c97fe5ef7",
+      "sha256": "d2892236ba0c794182e4ccfc0ed4a3f5ee58226d96a19f773f5a640fccc5ba7f",
       "themeChoices": []
     },
     {
@@ -8831,7 +8831,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/translucent-windows.wh.cpp",
-      "sha256": "0f88018db7c22fd37484c763182bc5587bdb21ad4e869c5d7099f6faaef3fcd1",
+      "sha256": "8ae773062bf93fbd94f46bf7b32f13eef804badea619202a9b1f0d6071a0167b",
       "themeChoices": []
     },
     {
@@ -9042,7 +9042,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/uwp-clean.wh.cpp",
-      "sha256": "2095544e04a5a14d6183f02760c730614315cdf487dd0391809ed2a26aad2969",
+      "sha256": "c6b37e5ec168f414d95c44146fbd1e58e0462655a6b87680b0862a87e2cd1d93",
       "themeChoices": []
     },
     {
@@ -9061,7 +9061,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/uxtheme-hook.wh.cpp",
-      "sha256": "0dfc5df44fd3a95d5f54a433ef65097bff5a2a638e904bc94fb56c048fae7ce7",
+      "sha256": "ef55e4c3b870c2a4ce6cfbee61cd0039c609de1b6a63ca7e3e66e13fa557d299",
       "themeChoices": []
     },
     {
@@ -9397,7 +9397,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/win-xp-sorted-columns.wh.cpp",
-      "sha256": "0689fe88ab53bede8a55f14f096ba36d7d24d29e38f8b73d3819175b31a4e1b8",
+      "sha256": "0902877e62dc40ac39d87555da7dbd5c28011268a1815accc689f7355431c85c",
       "themeChoices": []
     },
     {
@@ -9656,7 +9656,7 @@
       ],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/win7-alttab-loader.wh.cpp",
-      "sha256": "fb27f3782bea71b82df1872f2fea00268a854bc39e5afa4061fade0b826aabe2",
+      "sha256": "4d2aab3f82bb3d93fd5b8d29311b3f693e376fd4a1da457156810f5017ea3edf",
       "themeChoices": []
     },
     {
@@ -10009,7 +10009,7 @@
       "architecture": [],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/win9x-nt4-open-save-dialog.wh.cpp",
-      "sha256": "a483e398392c03f21dd0854d4401e682371a010d466a88ad931d7a007f362a9c",
+      "sha256": "1f5698b58c24e80de5f0a3fc7a0be65f646c27b1d94ddafee9e0e11f4ae8881a",
       "themeChoices": []
     },
     {
@@ -10091,7 +10091,7 @@
       "architecture": [],
       "license": "MIT",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/window-center-resize.wh.cpp",
-      "sha256": "f27598e90f3db90af675e45edbf86b9d7befd047a4e3d130812bc5a8879a53ad",
+      "sha256": "956f9a7e8bc857f360bc060da1e051cbfe505c0b8f69dfb64c69dc3619253bfd",
       "themeChoices": []
     },
     {
@@ -10958,7 +10958,7 @@
       "architecture": [],
       "license": "MIT (repository default)",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/word-omath-shade-fix.wh.cpp",
-      "sha256": "46a995337dc02268bda0e01d3e16c490d7f90f35c61496873ee29032b9929559",
+      "sha256": "51febe19874a71d892c6dee1d2fd839da47b5c78de1bbabeabb2ea2bc3bf7550",
       "themeChoices": []
     },
     {
@@ -10990,7 +10990,7 @@
       ],
       "license": "GPL-3.0",
       "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/xp-timedate-cpl-fix.wh.cpp",
-      "sha256": "8f06afa741bc89cc72d2c6fd8e216d852db7f9e3100fa5c91c340944347af571",
+      "sha256": "9945142975670ee714bd7d0c58d7a0b115fe42aecfec18cd0625eb1b7009d085",
       "themeChoices": []
     },
     {

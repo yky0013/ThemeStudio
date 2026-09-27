@@ -1,20 +1,20 @@
 ; Theme Studio offline installer. User data is owned by the application,
 ; outside {app}, and is intentionally retained on uninstall.
 #define AppName "桌面主题工作室"
-#define AppVersion "0.1.1"
+#define AppVersion "0.2.0"
 
 [Setup]
 AppId={{34717904-40BD-47C3-9AE5-4CA3B55820B5}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppPublisher=Theme Studio
-DefaultDirName={localappdata}\Programs\ThemeStudio
+DefaultDirName={autopf}\ThemeStudio
 DefaultGroupName={#AppName}
 DisableDirPage=no
 DisableProgramGroupPage=yes
 DisableWelcomePage=no
 DisableReadyPage=no
-PrivilegesRequired=lowest
+PrivilegesRequired=admin
 ArchitecturesAllowed=x64compatible and not arm64
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0.19041
@@ -32,7 +32,7 @@ SetupLogging=yes
 InfoBeforeFile=安装说明.txt
 VersionInfoDescription=桌面主题工作室离线安装程序
 VersionInfoProductName={#AppName}
-VersionInfoVersion=0.1.1.0
+VersionInfoVersion=0.2.0.0
 
 [Languages]
 Name: "chinesesimp"; MessagesFile: "ChineseSimplified.isl"
@@ -44,7 +44,7 @@ ConfirmUninstall=确定要卸载 %1 吗？%n%n卸载只删除程序文件，素�
 Name: "desktopicon"; Description: "创建桌面快捷方式"; GroupDescription: "快捷方式："; Flags: unchecked
 
 [Files]
-Source: "..\release\ThemeStudio\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\release\ThemeStudio\*"; DestDir: "{app}"; Excludes: "ThemeStudio.Diagnostic.exe"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\.cache\runtime\MicrosoftEdgeWebView2RuntimeInstallerX64.exe"; Flags: dontcopy nocompression
 
 [Icons]
@@ -56,6 +56,9 @@ Name: "{userdesktop}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir:
 [Run]
 Filename: "{app}\ThemeStudio.exe"; Description: "启动桌面主题工作室"; Flags: nowait postinstall skipifsilent runasoriginaluser
 Filename: "{app}\wwwroot\help\index.html"; Description: "打开图文使用教程"; Flags: shellexec nowait postinstall skipifsilent unchecked runasoriginaluser
+
+[UninstallRun]
+Filename: "{app}\ThemeStudio.exe"; Parameters: "--stop-runtimes"; Flags: runhidden waituntilterminated; RunOnceId: "ThemeStudioStopOwnedRuntimes"
 
 [Code]
 const

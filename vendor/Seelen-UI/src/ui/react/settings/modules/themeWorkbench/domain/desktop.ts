@@ -5,6 +5,8 @@ export interface CursorScheme { id: string; name: string; kind: "current" | "def
 export interface DesktopState {
   shortcuts: Shortcut[];
   icons: Artwork[];
+  mappings?: Record<string, string>;
+  administrator?: boolean;
   history: { id: string; created: string; count: number }[];
   cursors: { schemes: CursorScheme[]; resources: Record<string, { name: string; preview: string }>; roles: string[]; version: string; canRestore: boolean };
   errors: string[];

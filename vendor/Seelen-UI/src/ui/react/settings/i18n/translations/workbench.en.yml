@@ -20,7 +20,7 @@ theme_workbench:
   selection_counts: '{{themes}} themes · {{icons}} icon packs · {{mods}} modules'
   current_selection: Current selection
   seelen_scope: Themes style Seelen components. Icon packs apply to Seelen application icons.
-  windhawk_notice: Adding a module saves its configuration. Install and enable it in Windhawk to change native Windows components.
+  windhawk_notice: Choose modules and presets, then activate them below. The original Windhawk engine compiles and enables the selected source.
   seelen_description: Choose installed resources. Apply Seelen appearance when ready.
   themes: Themes
   icon_packs: Icon packs
@@ -36,7 +36,7 @@ theme_workbench:
   selected_count: '{{count}} Windhawk modules selected'
   restore_draft: Revert draft changes
   save_draft: Save draft
-  apply_seelen: Apply Seelen appearance
+  apply_seelen: Activate composition
   draft_saved: Configuration saved. System appearance was not changed.
   exported: Configuration exported. Resources remain in their original libraries.
   export_started: Download requested. Resources remain in their original libraries.
@@ -46,7 +46,34 @@ theme_workbench:
   dependencies_missing: Some resources are missing or their source versions changed.
   invalid_recipe: Invalid theme configuration. The current draft has been preserved.
   recipe_too_large: Configuration exceeds the 1 MB size limit.
-  seelen_applied: Seelen appearance applied. Windhawk modules remain configuration selections.
+  seelen_applied: Selected engine operations completed. Check the runtime status below.
+  runtime:
+    title: Components and runtime status
+    refresh: Refresh status
+    native_required: Use the desktop app to activate system components.
+    seelen_chosen: Seelen is the chosen taskbar provider. Enable Dock and toolbar while keeping the window manager off.
+    seelen_active: Dock and toolbar are enabled.
+    seelen_off: Runtime files are ready. Components are currently off.
+    seelen_enable: Enable Seelen Dock and toolbar
+    seelen_disable: Disable Dock and toolbar
+    unavailable: Runtime files are not ready.
+    mod_selection: '{{count}} modules selected.'
+    windhawk_active: Windhawk engine is running.
+    windhawk_off: Windhawk is ready but not running.
+    mods_enable: Compile and enable selected modules
+    mods_disable: Disable modules enabled by Studio
+    mod_disabled: Disabled
+    mod_enabled: Enabled
+    mod_loaded: Enabled and loaded in a target process
+    mod_waiting: Enabled, waiting for a matching process
+    seelen_owned: Taskbar is managed by Seelen
+    working: Processing runtime components…
+    notice: Activation changes desktop or target application appearance. A module needs its target program to run before its effect appears. Disable it here when needed.
+    progress:
+      seelen_start: Starting Seelen components…
+      compile: 'Compiling {{name}} through Windhawk…'
+      enable: 'Enabling {{name}}…'
+      windhawk_start: Starting the Windhawk engine…
   widget_settings: Component settings
   widget_description: Configure the existing Seelen components below; use the Seelen header to save these settings.
   parallax:
@@ -72,13 +99,35 @@ theme_workbench:
     silk: Silk · slow
     depth: Depth · pronounced
     cinema: Cinema · wide
-    media_notice: Local media is used only in this preview. Drafts and exported configurations store the parallax parameters.
+    media_notice: Choose media and settings, then apply them to the desktop. Playback uses the same image, video and motion components and continues when settings close.
+    apply_desktop: Apply to the desktop background
+    applying: Connecting desktop playback…
+    pause_desktop: Pause desktop background
+    resume_desktop: Resume desktop background
+    restore_desktop: Stop and restore original background
+    desktop_active: Desktop playback is active. Enabled parallax follows the global pointer.
+    desktop_paused: Desktop playback is paused.
+    desktop_inactive: Desktop playback is off. Choose media and apply it.
+    native_required: Use the desktop app to apply a real desktop background.
     unsupported: Choose an image or video supported by your browser.
     load_failed: Media could not be decoded. Choose a valid image or a video format supported by the browser.
 
   desktop_settings:
     icons_title: Desktop icons
-    icons_description: Select desktop shortcuts and replace their icons with your own pictures, individually or in batches.
+    icons_description: Assign a picture to each shortcut, check the two ends of each arrow, then apply.
+    administrator_ready: Administrator access ready
+    choose_target_first: Choose a shortcut on the left first
+    current_target: 'Current shortcut: {{name}}'
+    assign_picture: 'Choose a picture for {{name}}'
+    picture_for: 'Picture assigned to {{name}}'
+    not_assigned: No picture assigned
+    import_for_target: Import picture for this shortcut
+    import_to_library: Import picture to library
+    image_assigned: Picture assigned. Review the pairing before applying.
+    save_mappings: Save pairings
+    mappings_saved: Picture and shortcut pairings saved.
+    mappings_missing: '{{count}} selected shortcuts still need a picture.'
+    pairing_help: Select a shortcut and click a picture, drag a library picture onto a shortcut, or choose a picture in each row.
     windows_live: Applies to this PC
     loading: Reading Windows desktop and cursor settings…
     desktop_unavailable: Desktop component unavailable. Reopen using the source workbench launcher.
@@ -96,7 +145,7 @@ theme_workbench:
     image_formats: PNG / JPG / WebP / BMP / GIF / TIFF / ICO. Animated images use the first frame.
     choose_image: Choose picture
     replace_icons: 'Replace {{count}} selected icons'
-    image_ready: Picture ready. Click Replace to apply it.
+    image_ready: Picture added to the library. Assign it to a shortcut.
     icon_backup_notice: Shortcuts are backed up before applying. Pictures are saved in the local library.
     icons_applied: 'Replaced {{count}} desktop icons and backed up the original shortcuts.'
     icons_restored: 'Restored {{count}} desktop icons.'

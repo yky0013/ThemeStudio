@@ -1,0 +1,304 @@
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, LazyLock};
+use std::time::Duration;
+
+use notify_debouncer_full::{
+    DebounceEventResult, DebouncedEvent, Debouncer, FileIdMap, new_debouncer,
+    notify::{ReadDirectoryChangesWatcher, RecursiveMode},
+};
+use seelen_core::system_state::StartMenuItem;
+use windows::Win32::UI::Shell::{FOLDERID_CommonStartMenu, FOLDERID_StartMenu};
+use windows::{
+    ApplicationModel::{Core::AppListEntry, PackageCatalog},
+    Foundation::TypedEventHandler,
+    Management::Deployment::PackageManager,
+    UI::StartScreen::StartScreenManager,
+};
+
+use crate::{
+    error::{Result, ResultLogExt},
+    event_manager,
+    utils::{constants::SEELEN_COMMON, lock_free::SyncVec},
+    windows_api::WindowsApi,
+};
+
+pub struct StartMenuManager {
+    pub list: SyncVec<Arc<StartMenuItem>>,
+    cache_path: PathBuf,
+    _file_watcher: Option<Arc<Debouncer<ReadDirectoryChangesWatcher, FileIdMap>>>,
+    _package_catalog: Option<PackageCatalog>,
+}
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub enum StartMenuEvent {
+    ItemsRefreshed,
+}
+
+event_manager!(StartMenuManager, StartMenuEvent);
+
+unsafe impl Send for StartMenuManager {}
+unsafe impl Sync for StartMenuManager {}
+
+impl StartMenuManager {
+    /// programs shared by all users
+    pub fn common_items_path() -> PathBuf {
+        WindowsApi::known_folder(FOLDERID_CommonStartMenu)
+            .expect("Failed to get FOLDERID_CommonStartMenu folder path")
+    }
+
+    /// programs specific to the current user
+    pub fn user_items_path() -> PathBuf {
+        WindowsApi::known_folder(FOLDERID_StartMenu)
+            .expect("Failed to get FOLDERID_StartMenu folder path")
+    }
+
+    fn new() -> StartMenuManager {
+        StartMenuManager {
+            list: SyncVec::new(),
+            cache_path: SEELEN_COMMON.app_cache_dir().join("start_menu_v2.json"),
+            _file_watcher: None,
+            _package_catalog: None,
+        }
+    }
+
+    pub fn instance() -> &'static Self {
+        static START_MENU_MANAGER: LazyLock<StartMenuManager> = LazyLock::new(|| {
+            let mut manager = StartMenuManager::new();
+            manager.init().log_error();
+            manager
+        });
+        &START_MENU_MANAGER
+    }
+
+    fn init(&mut self) -> Result<()> {
+        if self.cache_path.exists() {
+            match self.load_cache() {
+                Ok(_) => {
+                    // refresh without blocking
+                    std::thread::spawn(|| {
+                        Self::reload().log_error();
+                    });
+                    // Setup listeners after loading cache
+                    self.setup_listeners().log_error();
+                    return Ok(());
+                }
+                Err(e) => {
+                    log::error!("Failed to load start menu cache: {e}");
+                }
+            }
+        }
+
+        self.list.replace(Self::load_start_menu_items()?);
+        self.store_cache()?;
+        // Setup listeners after initial load
+        self.setup_listeners().log_error();
+        Ok(())
+    }
+
+    pub fn get_by_target(&self, target: &Path) -> Option<Arc<StartMenuItem>> {
+        self.list
+            .find_and_clone(|item| item.target.as_ref().is_some_and(|t| t == target))
+    }
+
+    /// https://learn.microsoft.com/en-us/windows/win32/properties/props-system-appusermodel-relaunchiconresource
+    pub fn get_by_file_umid(&self, umid: &str) -> Option<Arc<StartMenuItem>> {
+        self.list.find_and_clone(|item| {
+            if let Some(item_umid) = &item.umid {
+                return item_umid == umid;
+            }
+            if let Some(target) = &item.target {
+                // some apps registered as media player as example use the process name as umid
+                return target.ends_with(umid);
+            }
+            false
+        })
+    }
+
+    pub fn store_cache(&self) -> Result<()> {
+        let file = std::fs::File::create(&self.cache_path)?;
+        let writer = std::io::BufWriter::new(file);
+        serde_json::to_writer_pretty(writer, &self.list.to_vec())?;
+        Ok(())
+    }
+
+    pub fn load_cache(&mut self) -> Result<()> {
+        let file = std::fs::File::open(&self.cache_path)?;
+        let reader = std::io::BufReader::new(file);
+        let items: Vec<StartMenuItem> = serde_json::from_reader(reader)?;
+        self.list.replace(items.into_iter().map(Arc::new).collect());
+        Ok(())
+    }
+
+    fn _get_items(dir: &Path) -> Result<Vec<Arc<StartMenuItem>>> {
+        let mut items = Vec::new();
+        for entry in std::fs::read_dir(dir)?.flatten() {
+            let path = entry.path();
+            let file_type = entry.file_type()?;
+
+            if file_type.is_dir() {
+                items.extend(Self::_get_items(&path)?);
+                continue;
+            }
+
+            if file_type.is_file() {
+                let target = WindowsApi::resolve_lnk_target(&path).ok().map(|(t, ..)| t);
+                // Get display name from filename without extension
+                let display_name = path
+                    .file_stem()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("Unknown")
+                    .to_string();
+
+                items.push(Arc::new(StartMenuItem {
+                    umid: WindowsApi::get_file_umid(&path).ok(),
+                    toast_activator: WindowsApi::get_file_toast_activator(&path).ok(),
+                    path,
+                    target,
+                    display_name,
+                }))
+            }
+        }
+        Ok(items)
+    }
+
+    pub fn load_start_menu_items() -> Result<Vec<Arc<StartMenuItem>>> {
+        log::trace!("Loading start menu items");
+        let mut items = Vec::new();
+
+        // win32 unpackaged
+        items.extend(Self::_get_items(&Self::common_items_path())?);
+        items.extend(Self::_get_items(&Self::user_items_path())?);
+
+        // win32/uwp packaged
+        let pkg_manager = PackageManager::new()?;
+        let start_screen = StartScreenManager::GetDefault()?;
+
+        let packages = pkg_manager.FindPackagesByUserSecurityId(&"".into())?;
+        for package in packages {
+            let apps = match package.GetAppListEntries() {
+                Ok(apps) => apps,
+                Err(e) => {
+                    log::error!("Failed to get app list entries for a package: {e:?}");
+                    continue;
+                }
+            };
+
+            for app in apps {
+                match Self::_process_app_list_entry(&start_screen, &app) {
+                    Ok(Some(item)) => items.push(item),
+                    Ok(None) => {}
+                    Err(e) => log::error!("Failed to process start menu app entry: {e:?}"),
+                }
+            }
+        }
+
+        log::trace!("Loaded {} start menu items", items.len());
+        Ok(items)
+    }
+
+    /// https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-uap-visualelements
+    fn _process_app_list_entry(
+        start_screen: &StartScreenManager,
+        app: &AppListEntry,
+    ) -> Result<Option<Arc<StartMenuItem>>> {
+        if !start_screen.SupportsAppListEntry(app)? {
+            return Ok(None);
+        }
+
+        let umid = app.AppUserModelId()?.to_string_lossy();
+        let display_name = app
+            .DisplayInfo()?
+            .DisplayName()?
+            .to_string_lossy()
+            .to_string();
+
+        Ok(Some(Arc::new(StartMenuItem {
+            umid: Some(umid),
+            toast_activator: None,
+            path: PathBuf::new(),
+            target: None,
+            display_name,
+        })))
+    }
+
+    fn create_file_watcher(
+        &self,
+    ) -> Result<Arc<Debouncer<ReadDirectoryChangesWatcher, FileIdMap>>> {
+        let mut debouncer = new_debouncer(
+            Duration::from_millis(500),
+            None,
+            |result: DebounceEventResult| match result {
+                Ok(events) => {
+                    log::debug!(
+                        "Start menu file watcher detected changes: {} events",
+                        events.len()
+                    );
+                    Self::on_files_changed(events).log_error();
+                }
+                Err(errors) => {
+                    log::error!("Start menu file watcher error: {errors:?}");
+                }
+            },
+        )?;
+
+        debouncer.watch(Self::common_items_path(), RecursiveMode::Recursive)?;
+        debouncer.watch(Self::user_items_path(), RecursiveMode::Recursive)?;
+
+        Ok(Arc::new(debouncer))
+    }
+
+    fn reload() -> Result<()> {
+        let manager = Self::instance();
+        let new_items = Self::load_start_menu_items()?;
+        manager.list.replace(new_items);
+        manager.store_cache().log_error();
+        Self::send(StartMenuEvent::ItemsRefreshed);
+        Ok(())
+    }
+
+    fn on_files_changed(_events: Vec<DebouncedEvent>) -> Result<()> {
+        Self::reload()
+    }
+
+    fn setup_package_catalog_listener(&mut self) -> Result<()> {
+        let catalog = PackageCatalog::OpenForCurrentUser()?;
+
+        let handler_installing = TypedEventHandler::new(|_catalog, _args| {
+            log::debug!("Package installing event detected");
+            std::thread::spawn(|| {
+                std::thread::sleep(Duration::from_millis(1000));
+                Self::reload().log_error();
+            });
+            Ok(())
+        });
+
+        catalog.PackageInstalling(&handler_installing)?;
+
+        let handler_uninstalling = TypedEventHandler::new(|_catalog, _args| {
+            log::debug!("Package uninstalling event detected");
+            std::thread::spawn(|| {
+                std::thread::sleep(Duration::from_millis(1000));
+                Self::reload().log_error();
+            });
+            Ok(())
+        });
+
+        catalog.PackageUninstalling(&handler_uninstalling)?;
+
+        self._package_catalog = Some(catalog);
+
+        Ok(())
+    }
+
+    pub fn setup_listeners(&mut self) -> Result<()> {
+        // Setup file system watcher
+        let watcher = self.create_file_watcher()?;
+        self._file_watcher = Some(watcher);
+
+        // Setup package catalog listener
+        self.setup_package_catalog_listener().log_error();
+
+        Ok(())
+    }
+}

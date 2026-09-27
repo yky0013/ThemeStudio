@@ -20,7 +20,7 @@ theme_workbench:
   selection_counts: '{{themes}} 套主题 · {{icons}} 个图标包 · {{mods}} 个模组'
   current_selection: 当前组合
   seelen_scope: 主题控制 Seelen 组件外观，图标包用于 Seelen 中的应用图标。
-  windhawk_notice: 加入模组只保存配置。在 Windhawk 中安装并启用后，才会修改 Windows 原生组件。
+  windhawk_notice: 选择模组和预设后，在运行组件区域点击启用。程序会使用原 Windhawk 引擎编译并启用所选源码。
   seelen_description: 选择已有资源，准备好后应用 Seelen 外观。
   themes: 桌面主题
   icon_packs: 图标包
@@ -36,7 +36,7 @@ theme_workbench:
   selected_count: '已选 {{count}} 个 Windhawk 模组'
   restore_draft: 撤销草稿修改
   save_draft: 保存草稿
-  apply_seelen: 应用 Seelen 外观
+  apply_seelen: 启用当前组合
   draft_saved: 配置已保存，系统外观未改变。
   exported: 配置已导出，素材仍保留在原资源库中。
   export_started: 已请求下载配置，素材仍保留在原资源库中。
@@ -46,7 +46,34 @@ theme_workbench:
   dependencies_missing: 部分资源缺失，或模组源码版本已变化。
   invalid_recipe: 主题配置无效，已保留当前草稿。
   recipe_too_large: 配置文件超过 1 MB 限制。
-  seelen_applied: Seelen 外观已应用，Windhawk 模组仍为配置选择。
+  seelen_applied: 已完成所选组件的运行操作，请在运行状态中核对。
+  runtime:
+    title: 运行组件与启用状态
+    refresh: 刷新运行状态
+    native_required: 请使用桌面应用来启用系统组件。
+    seelen_chosen: 已选择 Seelen 作为任务栏提供者，启用 Dock 与工具栏；窗口管理器保持关闭。
+    seelen_active: Dock 与工具栏已启用。
+    seelen_off: 运行文件已就绪，组件当前未启用。
+    seelen_enable: 启用 Seelen Dock 与工具栏
+    seelen_disable: 停用 Dock 与工具栏
+    unavailable: 运行文件尚未准备好。
+    mod_selection: '已选择 {{count}} 个模组。'
+    windhawk_active: Windhawk 运行引擎已启动。
+    windhawk_off: 运行引擎已就绪，当前未启动。
+    mods_enable: 编译并启用已选模组
+    mods_disable: 停用工作室启用的模组
+    mod_disabled: 已停用
+    mod_enabled: 已启用
+    mod_loaded: 已启用并载入目标程序
+    mod_waiting: 已启用，等待匹配程序载入
+    seelen_owned: 任务栏由 Seelen 负责
+    working: 正在处理运行组件…
+    notice: 启用会改变桌面或匹配程序的外观。模组需要目标程序运行才能显示效果，可在这里停用。
+    progress:
+      seelen_start: 正在启动 Seelen 桌面组件…
+      compile: '正在用 Windhawk 编译 {{name}}…'
+      enable: '正在启用 {{name}}…'
+      windhawk_start: 正在启动 Windhawk 运行引擎…
   widget_settings: 组件设置
   widget_description: 在下方配置已有 Seelen 组件，使用 Seelen 顶部保存按钮应用这些设置。
   parallax:
@@ -72,13 +99,35 @@ theme_workbench:
     silk: Silk · 舒缓
     depth: Depth · 明显
     cinema: Cinema · 宽幅
-    media_notice: 本地素材仅用于本页预览；保存草稿和导出配置会记录视差参数。
+    media_notice: 选择素材和参数后点击“应用到桌面”。桌面播放使用同一套图片、视频和视差效果，关闭设置窗口后继续播放。
+    apply_desktop: 应用到真实桌面背景
+    applying: 正在接入桌面播放层…
+    pause_desktop: 暂停桌面背景
+    resume_desktop: 继续桌面背景
+    restore_desktop: 停止并恢复原桌面背景
+    desktop_active: 桌面背景已启用，鼠标移动会驱动已开启的视差效果。
+    desktop_paused: 桌面背景已暂停。
+    desktop_inactive: 当前没有启用桌面播放，可选择素材后应用。
+    native_required: 请使用桌面应用来应用真实桌面背景。
     unsupported: 请选择浏览器支持的图片或视频文件。
     load_failed: 素材无法播放或读取，请换用有效的图片或浏览器支持的视频格式。
 
   desktop_settings:
     icons_title: 桌面图标
-    icons_description: 选择桌面快捷方式，再用喜欢的图片替换图标。支持单个和批量替换。
+    icons_description: 每个项目单独对应一张图片，核对箭头两端的对应关系后应用。
+    administrator_ready: 管理员权限已就绪
+    choose_target_first: 先点击左侧要修改的项目
+    current_target: '当前对应项目：{{name}}'
+    assign_picture: '为 {{name}} 选择图片'
+    picture_for: '{{name}} 对应的图片'
+    not_assigned: 尚未选择对应图片
+    import_for_target: 为当前项目导入图片
+    import_to_library: 导入图片到资源库
+    image_assigned: 图片已对应到当前项目，请核对后应用。
+    save_mappings: 保存对应关系
+    mappings_saved: 图片与项目的对应关系已保存。
+    mappings_missing: '还有 {{count}} 个勾选的项目尚未对应图片。'
+    pairing_help: 点击项目后选图片，或把右侧图片拖到项目卡片；也可在每个项目下方单独选择。
     windows_live: 可应用到本机
     loading: 正在读取 Windows 桌面和鼠标设置…
     desktop_unavailable: 桌面组件未连接，请用「启动源码开发版」重新打开。
@@ -96,7 +145,7 @@ theme_workbench:
     image_formats: PNG / JPG / WebP / BMP / GIF / TIFF / ICO；动图使用第一帧。
     choose_image: 选择图片
     replace_icons: '替换已选 {{count}} 个图标'
-    image_ready: 图片已准备好，点击替换即可应用。
+    image_ready: 图片已加入资源库，请为它选择对应的项目。
     icon_backup_notice: 应用前自动备份，可在下方恢复。素材会保存在本机资源库。
     icons_applied: '已替换 {{count}} 个桌面图标，原快捷方式已备份。'
     icons_restored: '已恢复 {{count}} 个桌面图标。'

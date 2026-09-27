@@ -1,0 +1,104 @@
+[
+  {
+    "File": "is7z.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\is7z.dll: OK"
+  },
+  {
+    "File": "is7zxa.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\is7zxa.dll: OK"
+  },
+  {
+    "File": "is7zxr.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\is7zxr.dll: OK"
+  },
+  {
+    "File": "isbunzip.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\isbunzip.dll: OK"
+  },
+  {
+    "File": "isbzip.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\isbzip.dll: OK"
+  },
+  {
+    "File": "ISCmplr.dll",
+    "Key": "def02.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\ISCmplr.dll: OK"
+  },
+  {
+    "File": "islzma.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\islzma.dll: OK"
+  },
+  {
+    "File": "islzma32.exe",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\islzma32.exe: OK"
+  },
+  {
+    "File": "islzma64.exe",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\islzma64.exe: OK"
+  },
+  {
+    "File": "ISPP.dll",
+    "Key": "def02.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\ISPP.dll: OK"
+  },
+  {
+    "File": "isscint.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\isscint.dll: OK"
+  },
+  {
+    "File": "isunzlib.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\isunzlib.dll: OK"
+  },
+  {
+    "File": "iszlib.dll",
+    "Key": "def01.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\iszlib.dll: OK"
+  },
+  {
+    "File": "Setup.e32",
+    "Key": "def02.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\Setup.e32: OK"
+  },
+  {
+    "File": "SetupCustomStyle.e32",
+    "Key": "def02.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\SetupCustomStyle.e32: OK"
+  },
+  {
+    "File": "SetupLdr.e32",
+    "Key": "def02.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\SetupLdr.e32: OK"
+  },
+  {
+    "File": "SetupLdr.e64",
+    "Key": "def02.ispublickey",
+    "ExitCode": 0,
+    "Output": "E:\\desktop\\windows\\ThemeStudio-dev\\docs\\research\\20260927\\inno_sdk\\inno-6.7.3\\SetupLdr.e64: OK"
+  }
+]

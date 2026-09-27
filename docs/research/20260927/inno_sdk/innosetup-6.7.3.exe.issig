@@ -1,0 +1,8 @@
+format issig-v2
+file-name "innosetup-6.7.3.exe"
+file-size 10592232
+file-hash 9c73c3bae7ed48d44112a0f48e66742c00090bdb5bef71d9d3c056c66e97b732
+file-tag ""
+key-id def020edee3c4835fd54d85eff8b66d4d899b22a777353ca4a114b652e5e7a28
+sig-r 6ad28589ec3989a125332a6fe74ace146f0c14d3de8e3d885ff85a2d015bbe55
+sig-s d95134b6ac26df68f34c6e14b8cbeff09119ac4864859fa7dc4141a5096adff0

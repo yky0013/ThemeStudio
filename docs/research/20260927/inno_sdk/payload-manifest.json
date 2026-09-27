@@ -1,0 +1,716 @@
+[
+  {
+    "RelativePath": "Compil32.exe",
+    "Length": 5636240,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "F59E6ADF0C2484E3C191A79D2AD02C7C5E4EB6A0E73763FC295F0C997A23AE73"
+  },
+  {
+    "RelativePath": "Default.isl",
+    "Length": 21993,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "42A5F6F7DBBDDF26CC278F67DB5D894235CE1D126A6856702E31BD02023A1316"
+  },
+  {
+    "RelativePath": "is7z.dll",
+    "Length": 994960,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "F97CDA058BFE97A7E9CED5CDE7018BBC26E35155C3C7405C6146808F8D06806D"
+  },
+  {
+    "RelativePath": "is7z.dll.issig",
+    "Length": 363,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "42AC47DFCCAE85596984B121F5FAD33FAEE6B56D6C50BFC89F31EA96BFF7C1B4"
+  },
+  {
+    "RelativePath": "is7zxa.dll",
+    "Length": 260240,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "E3CEF67858843C554100126F04932BE327097777865E4EB82951DD97CDB28942"
+  },
+  {
+    "RelativePath": "is7zxa.dll.issig",
+    "Length": 365,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "8A94C3247CF5E99143377C37ADBE1D58798C44ADA89871707AAB7902A3287838"
+  },
+  {
+    "RelativePath": "is7zxr.dll",
+    "Length": 212112,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "728B368DC4F2831CC4D13291F46EEAF9F89B7E3A91356CF793C330E953B8E17B"
+  },
+  {
+    "RelativePath": "is7zxr.dll.issig",
+    "Length": 365,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "209264D479698EA7E9AA375FA1F692CAE01D79A6B023B75716C625A5B821C413"
+  },
+  {
+    "RelativePath": "isbunzip.dll",
+    "Length": 35616,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "31D04C1E4BFDFA34704C142FA98F80C0A3076E4B312D6ADA57C4BE9D9C7DCF26"
+  },
+  {
+    "RelativePath": "isbunzip.dll.issig",
+    "Length": 366,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "D446DB9995621893741D721434297311576269F1622F0BB103BA48B94B2FA744"
+  },
+  {
+    "RelativePath": "isbzip.dll",
+    "Length": 39200,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "8072E83385AFC4A84006271A87A11FC0A22B149CBD77322669CA56C470D28CED"
+  },
+  {
+    "RelativePath": "isbzip.dll.issig",
+    "Length": 364,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "145612AF36209F29EC96669550E5EEBCA3D2B0240F2E888C35BD599559BE9A4A"
+  },
+  {
+    "RelativePath": "ISCC.exe",
+    "Length": 1456272,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "0A8757031B33777E4C9CBFFEE40F11A5062B36D25CBE144C1DB73B6102B80AD7"
+  },
+  {
+    "RelativePath": "ISCmplr.dll",
+    "Length": 1524880,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "85A1E3090D3A5B85319F001B7C8F9ECFAD45F37EFF030A67BBE29EF58B7AA2C3"
+  },
+  {
+    "RelativePath": "ISCmplr.dll.issig",
+    "Length": 367,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5C4B4B0FC6958934918C611EB509ECF63827A2BB36CE61FCB538FC5897B3A7EA"
+  },
+  {
+    "RelativePath": "ISetup-dark.chm",
+    "Length": 698036,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "9728D2EAD794A7A8F9D264A72442506FD0A8DAFC0212CA640F5BAF19EB7E36F2"
+  },
+  {
+    "RelativePath": "ISetup.chm",
+    "Length": 698060,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "7ABEABBD058A8AB445DAD8341FFFA11F319FDC16AE038F20B22B947A79AFFD2C"
+  },
+  {
+    "RelativePath": "isfaq.url",
+    "Length": 58,
+    "LastWriteTime": "2026-09-27T18:51:17.4998807+08:00",
+    "SHA256": "F699CE64C194310524CA1DCA5BFC996151619CC5C6731FBC5FA150B59C9D3C72"
+  },
+  {
+    "RelativePath": "islzma.dll",
+    "Length": 139408,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "8AF307CE3738AB1D37CC7E76B2F76615E2045597D4367C3E40D52B5F2FBD353D"
+  },
+  {
+    "RelativePath": "islzma.dll.issig",
+    "Length": 365,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "C49D4B2CC6499846118DC376C9C66081744531EDC932FFA979698D68EC0662B2"
+  },
+  {
+    "RelativePath": "islzma32.exe",
+    "Length": 203408,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "FD977C3AC44C56997D2B4FD6647E97E2457C43991A6AE26A4B2252C0EABDFEBB"
+  },
+  {
+    "RelativePath": "islzma32.exe.issig",
+    "Length": 367,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "81039BD05963F8B02E1396A6FB5F3F7DF7FD1CE1655F7A960F6C0B549489C562"
+  },
+  {
+    "RelativePath": "islzma64.exe",
+    "Length": 226448,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "87A50495AFF580B78CAD57906A765D3CF28CA508CFA95C24C1247C286DDF71B2"
+  },
+  {
+    "RelativePath": "islzma64.exe.issig",
+    "Length": 367,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "E74EA022AFB90BBFF710D9952A1069767C970484B1BE596771AE7D109932F716"
+  },
+  {
+    "RelativePath": "ISPP.dll",
+    "Length": 1006736,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "BDE04BE7F4A55CA56AFB6B06600D7CBE8326FAC468AC3F2885B80EEFB3ED2A7A"
+  },
+  {
+    "RelativePath": "ISPP.dll.issig",
+    "Length": 364,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5F66C7D86AF3BE12522F044541B747F293C8131268E16D27C622BFC14F7250C9"
+  },
+  {
+    "RelativePath": "ISPPBuiltins.iss",
+    "Length": 11302,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "BC765E1121A95DC602CA1248B484418CECC6DB9D4B6F4DAE58E9A2C35262527C"
+  },
+  {
+    "RelativePath": "isscint.dll",
+    "Length": 809616,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "DDD2748BC79122A67EED77F6039F6508245E0AA7F0FDBBFCA99D1E922A1E8CE4"
+  },
+  {
+    "RelativePath": "isscint.dll.issig",
+    "Length": 366,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "C54C30C27C503E86C70116CA9DB840B0B799A0610FD8644DD53194A96AFE7207"
+  },
+  {
+    "RelativePath": "ISSigTool.exe",
+    "Length": 919184,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "AEA490D45665A88C0C832D25647D21C1B87962EFEDB25668CAEC05678E0FD7C6"
+  },
+  {
+    "RelativePath": "isunzlib.dll",
+    "Length": 29472,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "8287D0E287A66EE78537C8D1D98E426562B95C50F569B92CEA9CE36A9FA57E64"
+  },
+  {
+    "RelativePath": "isunzlib.dll.issig",
+    "Length": 366,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "0A26DFFAA4B47EDC9CF6C730BB0CB38DC12A3DE94742256AA1C22603E1BE9309"
+  },
+  {
+    "RelativePath": "iszlib.dll",
+    "Length": 34592,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "14C0D4A2A41572384F8309CDF03DE5C6E7ED46BEF64CCE70D989B2665EFF1A47"
+  },
+  {
+    "RelativePath": "iszlib.dll.issig",
+    "Length": 364,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "F41EA7CC5F9604BFEBBA8D101BEF7C3F28B9D7E8F4C5C99E71030A28682113F9"
+  },
+  {
+    "RelativePath": "license.txt",
+    "Length": 1521,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "2E5346868C2A18434489824E11D65C3031620F792FEFC415D05F19CD441ABF5C"
+  },
+  {
+    "RelativePath": "Setup.e32",
+    "Length": 4427264,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "A80D75BA8D8C336050C37F7707DE8BB017CC93597329E0EA18D474156B3E0DA5"
+  },
+  {
+    "RelativePath": "Setup.e32.issig",
+    "Length": 365,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "09DBD2458C48A249EEDA5AE2705A4315192CC96ECD1B233136F11799D5DFF175"
+  },
+  {
+    "RelativePath": "SetupClassicIcon.ico",
+    "Length": 4710,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "FA07ED17DFF186A5B46C16861158BF3A36B67D84FF7A7BF9A58EAAD28143D827"
+  },
+  {
+    "RelativePath": "SetupCustomStyle.e32",
+    "Length": 5810688,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "9675A2A5C78C66B691CC80270031DA42BEBAD5725FBF60853CB4E5F90251BD5E"
+  },
+  {
+    "RelativePath": "SetupCustomStyle.e32.issig",
+    "Length": 376,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "CB513FF3E47A9C52341620EBD787E968F9C71FD012C6836E78FB039013E8256F"
+  },
+  {
+    "RelativePath": "SetupLdr.e32",
+    "Length": 950272,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5475964893ADBB33CCC420AD4D88BBDFF27DFAACA7580CD6058EA2798893490D"
+  },
+  {
+    "RelativePath": "SetupLdr.e32.issig",
+    "Length": 367,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "12441B9477B0363993F06E325767F8B925A20E895E364FA8460754EE39CA6C08"
+  },
+  {
+    "RelativePath": "SetupLdr.e64",
+    "Length": 1422336,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "E38F2140E6BFD86C6DDC69C98F46475080C75FD5EE4BE701CEFF9C842C6C5019"
+  },
+  {
+    "RelativePath": "SetupLdr.e64.issig",
+    "Length": 368,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "C1BF1B83271EDBCB28117FD012EDEF89BE710BFD8AD32C1EDEE057D664B989BE"
+  },
+  {
+    "RelativePath": "whatsnew.htm",
+    "Length": 102622,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "4E98F32F91BFAAE8C2934152734FE58F4FEB5DD6CC1C2B419DC51EAD1A3BBBF5"
+  },
+  {
+    "RelativePath": "WizClassicImage-IS.bmp",
+    "Length": 52574,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "1B73DF0B89A2943F34582CF81C2D8ED7B1CE4CFB54D86CE58EBD6DD0E1E05F5D"
+  },
+  {
+    "RelativePath": "WizClassicImage.bmp",
+    "Length": 26494,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "D148DC2569E9ABC4B4DA650B1920EF1FFDC10BBD6BC2E20A97CE44B1F9F78AEA"
+  },
+  {
+    "RelativePath": "WizClassicSmallImage-IS.bmp",
+    "Length": 4158,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "AE94CD61179BC1869D0082B1FA8C189F8487D106712B48A2A6C6A035D370BFB4"
+  },
+  {
+    "RelativePath": "WizClassicSmallImage.bmp",
+    "Length": 1658,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "A7E560D419E85DAF80CCE980BAA124EF7C73197D0F51A59A19F1866EE8EDFE8C"
+  },
+  {
+    "RelativePath": "Examples\\64Bit.iss",
+    "Length": 1271,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "EE721095623C1CE70D7B9FF820FBEB73C655720D4DC470E8E87DEE271304A223"
+  },
+  {
+    "RelativePath": "Examples\\64BitThreeArch.iss",
+    "Length": 2321,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "34F690601F5E18AFAB6244919BE5900460D4210108CB7D9CB70555FB728750B9"
+  },
+  {
+    "RelativePath": "Examples\\64BitTwoArch.iss",
+    "Length": 1768,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "6601A330B6E8F3724D5F879976FA193552A55F1BF1768B4AC68C0EACF3472326"
+  },
+  {
+    "RelativePath": "Examples\\AllPagesExample.iss",
+    "Length": 4395,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "98A8328E8429F5557C7147690102F857123AD4CB1CE3C678E7B5C036CF739149"
+  },
+  {
+    "RelativePath": "Examples\\CodeAutomation.iss",
+    "Length": 11328,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "7FC3FF7640856A2B94419497B9B4CAEBC21A02C2EA823A652EE086C00A26CF23"
+  },
+  {
+    "RelativePath": "Examples\\CodeAutomation2.iss",
+    "Length": 10832,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "DEEE99155BF702DCE802270FAE5FB4438433B2942C8A33231ED1DF06C8CBAD7F"
+  },
+  {
+    "RelativePath": "Examples\\CodeClasses.iss",
+    "Length": 23512,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "20B3F0380E4243227D3BE2CDC0818BEB9B8966A894122724E9DD48DB88FB4BF7"
+  },
+  {
+    "RelativePath": "Examples\\CodeDlg.iss",
+    "Length": 7690,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "F55523EDB1B6F2E424AD956227D5E6B47C869A246476BC87DE1EDBB8133BC959"
+  },
+  {
+    "RelativePath": "Examples\\CodeDll.iss",
+    "Length": 3747,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "D285D3061BA51167233F117959BFA931F6774C0FA46AF36D9297B7C3F1E688DA"
+  },
+  {
+    "RelativePath": "Examples\\CodeDownloadFiles.iss",
+    "Length": 3414,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "E46BA618196CB21FA8E6729E309A0CF9B60EBEF5F3D13128A55F2A7CB3EA429A"
+  },
+  {
+    "RelativePath": "Examples\\CodeExample1.iss",
+    "Length": 6386,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "EBEBC06373608091074F169536E88B57AC22476AD49DDBA57EE16BD71B89205F"
+  },
+  {
+    "RelativePath": "Examples\\CodePrepareToInstall.iss",
+    "Length": 4086,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5E643CFF4C60C745509FA1517C8CCFCAF30BBBDF5067EF11CF3DF94BE47EA611"
+  },
+  {
+    "RelativePath": "Examples\\Components.iss",
+    "Length": 1279,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "0F6B9D46EBA37F1DA7D7E209912DFD72B86353CD27BE9D301193F835FB3D6889"
+  },
+  {
+    "RelativePath": "Examples\\DownloadFiles.iss",
+    "Length": 3073,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "70C0019A3FE44454727F998B151B8C3FABC0E367F211F3C76A821273B51768EF"
+  },
+  {
+    "RelativePath": "Examples\\Example1.iss",
+    "Length": 630,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "7EB38361505D351344FF29FADCE47CB015DAF0D9A1D3354400AEA0125E00A4C6"
+  },
+  {
+    "RelativePath": "Examples\\Example2.iss",
+    "Length": 910,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "2FE62DC685C3FB9DF2AAD7580332C43E638EC0386B92BD30CCA83396C510A2AA"
+  },
+  {
+    "RelativePath": "Examples\\Example3.iss",
+    "Length": 3445,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "9362F6FE26879D5664A0A5047C1C71BDBBC52F113B1F0A953247D2F78F6978A5"
+  },
+  {
+    "RelativePath": "Examples\\ISPPExample1.iss",
+    "Length": 1086,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5288863755A3B8D9C801D251C1C73BBEB635C0485685323C05DA8B089E7B0702"
+  },
+  {
+    "RelativePath": "Examples\\ISPPExample1License.txt",
+    "Length": 75,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "AD9C38E411D3FAF71C3E2A6C34F8547FF7F215D41D888C04D8C6DC812B838E83"
+  },
+  {
+    "RelativePath": "Examples\\Languages.iss",
+    "Length": 1970,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5CA0C175A4F8AC7F177E2E0D800CA3D07A9DA81C4E86866DE767BE039526BB5E"
+  },
+  {
+    "RelativePath": "Examples\\License.txt",
+    "Length": 42,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "603CAC0AA33F63B50D12FA7A071A3376499498B9929C1DAB2F2D5DAFF4903313"
+  },
+  {
+    "RelativePath": "Examples\\MyDll.dll",
+    "Length": 21280,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "F4E549EF947C33A61520A38C855583E48CFD1702303815123662F7E2E4E73E09"
+  },
+  {
+    "RelativePath": "Examples\\MyProg-Arm64.exe",
+    "Length": 77960,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "CA7812155FF5935264177277B7C351EF35DEACFDA114FE8418D65CBCF105883A"
+  },
+  {
+    "RelativePath": "Examples\\MyProg-x64.exe",
+    "Length": 77960,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "B50952F9AF310BE586746356508B9FD430DCBBAA155A04E6F9563632DE0A023B"
+  },
+  {
+    "RelativePath": "Examples\\MyProg.chm",
+    "Length": 12503,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "FC47E3F35CE2F2DB1AD85DC320200424C406A3C7CB9C17FB5FD91AF865644021"
+  },
+  {
+    "RelativePath": "Examples\\MyProg.exe",
+    "Length": 78984,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "BE272491050410C39DB97101F05E80ED5D30A10CACA6BC9F02228AA9499E19C9"
+  },
+  {
+    "RelativePath": "Examples\\PowerShell.iss",
+    "Length": 2997,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "B14803D1EBA1858ACF6417849F1691EF4A162B42C5FF35D91B4A74C9400C8DD5"
+  },
+  {
+    "RelativePath": "Examples\\Readme-Dutch.txt",
+    "Length": 43,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "C1A3C3C9FE7251F290C173EE35E7A76AF68133328D5A3309136D937A60170619"
+  },
+  {
+    "RelativePath": "Examples\\Readme-German.txt",
+    "Length": 45,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "85B0678B9F6879A3FDD0DAFA6A2556EB5DEED3D4C467F10273B5FDEF6ADB9A41"
+  },
+  {
+    "RelativePath": "Examples\\Readme.txt",
+    "Length": 41,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "95B1274839C0CF1653A31D54610D7E16183DC154FE4B42901FDD262AEC2268C6"
+  },
+  {
+    "RelativePath": "Examples\\UnicodeExample1.iss",
+    "Length": 1010,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "DCD47B4F39E5E3E23F4131243E0CD0D5DCC758B78DAE9EB6AB8B8FC7A6BED4AE"
+  },
+  {
+    "RelativePath": "Examples\\UninstallCodeExample1.iss",
+    "Length": 1505,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5D5BEEBB6E2213F11F5F6CE31BC443A92AC4964E8F0AD1CAA1BCADFEAC0EE050"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C\\MyDll.c",
+    "Length": 155,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "46B8532187053872F0E10822BD1D3692B6C33CA06B14463036901FBC3C0D9B8B"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C\\MyDll.def",
+    "Length": 20,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "0E885B880199A19C38FE3EAE6F17443BB568C1596BD5FE05951C73A09589E90E"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C\\MyDll.dsp",
+    "Length": 2622,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "3235009B304C2F08DDB056E08E15F51E321A367DF4D8EC02688400C23093393A"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C#\\MyDll.cs",
+    "Length": 843,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "9E28BEAD7C5361312E8428401B04FCCB738BCDB9B7FACD73A3B2B9596808CD76"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C#\\MyDll.csproj",
+    "Length": 3015,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "1291FF5B355118A033A3F4ECE18DC24091BB7BF94628261035A36D625AAE6CE0"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C#\\MyDll.sln",
+    "Length": 978,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "DB53EEAEEDE0FFB05627EFCDB29B247B34281D88683E55C11FAC25AFCE6986D4"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C#\\packages.config",
+    "Length": 143,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "DDCA8ECB97D5F2F30B779EBE6CC28485D4B0002911BA59F9ACD85E6DEE8C4954"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\C#\\Properties\\AssemblyInfo.cs",
+    "Length": 1422,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "298FD8C4FEED0B5AA00D38BB67BAA547CAB1DC2F58710C5FF9E180A8530A1222"
+  },
+  {
+    "RelativePath": "Examples\\MyDll\\Delphi\\MyDll.dpr",
+    "Length": 229,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "93E27469D273642D584C9A5696BD8F677DF4626FD7CC2A76A07D7F9FA75B02BF"
+  },
+  {
+    "RelativePath": "Languages\\Arabic.isl",
+    "Length": 29275,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "D621121EBA68640CC9CB3E1E63593D9B5905C15AB6D1DCFA168DF603F52E0CAD"
+  },
+  {
+    "RelativePath": "Languages\\Armenian.isl",
+    "Length": 29874,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "7B7EB4EE3E6494FDFEDC2B2487FB6EEC217DAB734C077AE8A25FFC4A8430DF3A"
+  },
+  {
+    "RelativePath": "Languages\\BrazilianPortuguese.isl",
+    "Length": 23900,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "E7E5E3DBD0DDEE4C5A1F502F3035E431A21F87E68CEF9A0295680B63ED61200B"
+  },
+  {
+    "RelativePath": "Languages\\Bulgarian.isl",
+    "Length": 35836,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "B224F7E1B32BC35D413024E68B4FDC100D38F37B1AC9730FDF00CB70195B21F7"
+  },
+  {
+    "RelativePath": "Languages\\Catalan.isl",
+    "Length": 23302,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "086A53EE6272B194D8AA87AEDDAC17B7C3BAD26929777760E1B00B32E1F9A16B"
+  },
+  {
+    "RelativePath": "Languages\\Corsican.isl",
+    "Length": 26979,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "7F03FBCD9433F8C7ED95234D8093C3BADE32C7FCCD6506DF793C12329F8B626A"
+  },
+  {
+    "RelativePath": "Languages\\Czech.isl",
+    "Length": 25141,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "C3054BCE85FEB47AD22E42AAE1715D2CEBFDB34564F60427F92865DBBCF520D0"
+  },
+  {
+    "RelativePath": "Languages\\Danish.isl",
+    "Length": 22541,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "B2A062C2E20B842D13D27D9484EA1B37E251B3E7CF8AD9B0DEF3DCDA9AFBD12D"
+  },
+  {
+    "RelativePath": "Languages\\Dutch.isl",
+    "Length": 22311,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "5013549651ED72B109D912719B8486CE4A516FA7EE00BC77BDFB63358D745A4F"
+  },
+  {
+    "RelativePath": "Languages\\Finnish.isl",
+    "Length": 21576,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "B30091443CC649DCE095470765490FB5791FEDF015D96A190E53236B874F9DFD"
+  },
+  {
+    "RelativePath": "Languages\\French.isl",
+    "Length": 27041,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "145BF4EA34EAA79C52E4FCB77CE3EEE9720B0D424C69458CB99592BC52121FBA"
+  },
+  {
+    "RelativePath": "Languages\\German.isl",
+    "Length": 25795,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "F016F4A957DE8C59E8DB2DA788357B4C923CECADCA6F0C6EAB404FB28015CAC9"
+  },
+  {
+    "RelativePath": "Languages\\Hebrew.isl",
+    "Length": 26116,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "D0E340AFAEEDB50567CB71F4D793D78AED869CA63CE9FC4ABF7631C4A3EFF459"
+  },
+  {
+    "RelativePath": "Languages\\Hungarian.isl",
+    "Length": 24310,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "FC7D177354586D834AA2039E4896181B32CA7085C40AAEEDBEE3C456A2CDC6A9"
+  },
+  {
+    "RelativePath": "Languages\\Italian.isl",
+    "Length": 24021,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "18034C57F1133682B1B2E95AFA327F232CDCF41BF1A44BC2B5AAB1F8D3332A77"
+  },
+  {
+    "RelativePath": "Languages\\Japanese.isl",
+    "Length": 28186,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "D5450537BB128112347BF86A4BDC3A4BE0605414DF0BC4FC90F55AAEF1BA369B"
+  },
+  {
+    "RelativePath": "Languages\\Korean.isl",
+    "Length": 25204,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "CB56D6EA5C082BCF6B4ACC1AE4C303BA91F662B1D0BFE05E4D3902C38C41E02A"
+  },
+  {
+    "RelativePath": "Languages\\Norwegian.isl",
+    "Length": 22259,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "19119D601D4C40C0B42A2A99C932D5FC65521C67A01D3803780AF2620CDFD5FF"
+  },
+  {
+    "RelativePath": "Languages\\Polish.isl",
+    "Length": 24461,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "593F14B249AFB49D38976816A4A3C73E13E354D1698F9F98D584C1C6C6A18E48"
+  },
+  {
+    "RelativePath": "Languages\\Portuguese.isl",
+    "Length": 23704,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "AC71FBBF66CD9DB15BF675F4A7DEF2B918B8B2EC783CA485F6C87683FC81D644"
+  },
+  {
+    "RelativePath": "Languages\\Russian.isl",
+    "Length": 33590,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "81981FE6CFEF7F3B2F744BEAC1494F4D2B29CEA69C96A08D1C0A6B79DC0ED8F2"
+  },
+  {
+    "RelativePath": "Languages\\Slovak.isl",
+    "Length": 25829,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "268B523811052D151A5A50DF400DF4FDD20EACF87F41500E3639693D6E429BD0"
+  },
+  {
+    "RelativePath": "Languages\\Slovenian.isl",
+    "Length": 21793,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "C50817284822262070F79006659E5BD6991417477B193CE3F2F44D9A32E131BE"
+  },
+  {
+    "RelativePath": "Languages\\Spanish.isl",
+    "Length": 24329,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "C61EE6287D6A10DB186CCE43B556422E0A8BC631784132468A9CEBCA4F2DF0D5"
+  },
+  {
+    "RelativePath": "Languages\\Swedish.isl",
+    "Length": 23123,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "A4FD431E2956C2D76C45FBDC97A55380AE00956854D8233934DA03505B390531"
+  },
+  {
+    "RelativePath": "Languages\\Tamil.isl",
+    "Length": 47639,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "3A45F281E9676DEC66C1FEF7678778F9C9528065C06CFAC7FFA469D131F5A91A"
+  },
+  {
+    "RelativePath": "Languages\\Thai.isl",
+    "Length": 41315,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "CDC0A1AF65AC503EE1F0B5EF9D14D81B8C173BA80A3CE78BA86E15E285A149B3"
+  },
+  {
+    "RelativePath": "Languages\\Turkish.isl",
+    "Length": 24203,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "21F69297A1D3D9A3407ACD2AC43908CF20786FFF8EF1C1D98CB9EA544A7A4C2C"
+  },
+  {
+    "RelativePath": "Languages\\Ukrainian.isl",
+    "Length": 33314,
+    "LastWriteTime": "2026-05-22T08:00:00.0000000+08:00",
+    "SHA256": "FA3E7841017229D14B3B59417FA9AA860A71CE1F683F3FDAFDD5BF266A47C668"
+  }
+]

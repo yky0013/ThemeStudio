@@ -1,0 +1,20 @@
+node_modules
+
+.vscode
+.env
+
+dist
+target
+gen
+src/runtime
+
+# Submission Files
+/scripts/SBTemp
+
+# rust-analyzer
+rustc-ice-*.txt
+
+.codegraph
+CLAUDE.md
+GEMINI.md
+.claude

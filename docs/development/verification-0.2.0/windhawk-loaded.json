@@ -1,0 +1,37 @@
+{
+  "available": true,
+  "running": true,
+  "version": "2.0.0-alpha.6",
+  "compiler": true,
+  "mods": [
+    {
+      "id": "local@mouse-trail",
+      "version": "3.4.2.2",
+      "name": "Mouse Trail",
+      "author": "MCheng404",
+      "description": "Customizable cursor trail: D3D11 + DirectComposition, 23 color modes, 10 trail styles, low idle CPU.",
+      "enabled": true,
+      "updateAvailable": false,
+      "userRating": 0,
+      "config": {
+        "libraryFileName": "local@mouse-trail_3.4.2.2_181499.dll",
+        "disabled": false,
+        "loggingEnabled": true,
+        "debugLoggingEnabled": true,
+        "include": [
+          "windhawk.exe"
+        ],
+        "exclude": [],
+        "includeCustom": [],
+        "excludeCustom": [],
+        "includeExcludeCustomOnly": false,
+        "patternsMatchCriticalSystemProcesses": false,
+        "architecture": [],
+        "version": "3.4.2.2",
+        "updatesDisabledForVersion": ""
+      },
+      "loaded": true
+    }
+  ],
+  "error": ""
+}

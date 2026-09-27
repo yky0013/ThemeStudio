@@ -1,0 +1,181 @@
+{
+  "version": "0.2.0",
+  "task": "Administrator authorization, per-shortcut image pairing, actual desktop media/parallax, and real component activation",
+  "userDecision": {
+    "components": [
+      "dock",
+      "toolbar"
+    ],
+    "taskbar": "seelen",
+    "confirmed": "2026-09-27 user selected Seelen Dock and toolbar"
+  },
+  "sourceRoot": "E:\\desktop\\windows\\ThemeStudio-dev",
+  "branch": "fix/native-desktop-activation",
+  "baseCommit": "78c1077187c58207d4ce1bd409d07f8afeac602f",
+  "implemented": [
+    "admin installer and requireAdministrator application manifest",
+    "individual icon mappings and persistent pairing; import/click/drop/select UI",
+    "Seelen media and Windhawk motion on real WorkerW desktop child windows",
+    "image/video pause/resume/stop and original desktop revealed",
+    "signed Seelen 2.8.6 engine/source lock and activation bridge",
+    "matched Windhawk 2.0 alpha6 CLI/offline compiler, actual source compile/enable/disable and live module state"
+  ],
+  "verified": {
+    "frontendTests": 20,
+    "typescript": true,
+    "wallpaperNative": {
+      "checks": [
+        {
+          "ui": "桌面主题工作室",
+          "roles": 17,
+          "pairRows": 0
+        },
+        {
+          "kind": "image",
+          "mediaId": "4e54908033ac93a06dba910b5dfcd2daf1c9660d74a5ce5f1fa3a039302d0851.svg",
+          "applied": {
+            "active": true,
+            "media": {
+              "id": "4e54908033ac93a06dba910b5dfcd2daf1c9660d74a5ce5f1fa3a039302d0851.svg",
+              "kind": "image",
+              "name": "parallax-landscape.svg",
+              "url": "https://media.theme-studio.invalid/4e54908033ac93a06dba910b5dfcd2daf1c9660d74a5ce5f1fa3a039302d0851.svg"
+            },
+            "paused": false,
+            "pid": 21760,
+            "requestId": "14898178c73a4088a3f8eee9d588f05b",
+            "settings": {
+              "enabled": true,
+              "opposite": true,
+              "perspective": true,
+              "preset": "elegance",
+              "strength": 1,
+              "tilt": 2
+            },
+            "time": "2026-09-27T18:58:16.3976315+08:00",
+            "windows": [
+              {
+                "attached": true,
+                "parent": 1511338,
+                "playing": false,
+                "screen": {
+                  "height": 1600,
+                  "left": 0,
+                  "top": 0,
+                  "width": 2560
+                },
+                "window": 1379892
+              }
+            ]
+          }
+        },
+        {
+          "kind": "image",
+          "paused": true,
+          "resumed": true,
+          "restored": true
+        },
+        {
+          "kind": "video",
+          "mediaId": "9cf9656c9a7b34ca6f99fd6da88a430bfea1295f7a766712f2eeb489f471e907.mp4",
+          "applied": {
+            "active": true,
+            "media": {
+              "id": "9cf9656c9a7b34ca6f99fd6da88a430bfea1295f7a766712f2eeb489f471e907.mp4",
+              "kind": "video",
+              "name": "parallax-motion.mp4",
+              "url": "https://media.theme-studio.invalid/9cf9656c9a7b34ca6f99fd6da88a430bfea1295f7a766712f2eeb489f471e907.mp4"
+            },
+            "paused": false,
+            "pid": 30980,
+            "requestId": "122c44606df642a7bc65284b26f7468c",
+            "settings": {
+              "enabled": true,
+              "opposite": true,
+              "perspective": true,
+              "preset": "elegance",
+              "strength": 1,
+              "tilt": 2
+            },
+            "time": "2026-09-27T18:58:18.430988+08:00",
+            "windows": [
+              {
+                "attached": true,
+                "parent": 1511338,
+                "playing": true,
+                "screen": {
+                  "height": 1600,
+                  "left": 0,
+                  "top": 0,
+                  "width": 2560
+                },
+                "window": 4590618
+              }
+            ]
+          }
+        },
+        {
+          "kind": "video",
+          "paused": true,
+          "resumed": true,
+          "restored": true
+        }
+      ],
+      "errors": [],
+      "passed": true
+    },
+    "backendTests": 31,
+    "windhawkLoaded": {
+      "available": true,
+      "running": true,
+      "version": "2.0.0-alpha.6",
+      "compiler": true,
+      "mods": [
+        {
+          "id": "local@mouse-trail",
+          "version": "3.4.2.2",
+          "name": "Mouse Trail",
+          "author": "MCheng404",
+          "description": "Customizable cursor trail: D3D11 + DirectComposition, 23 color modes, 10 trail styles, low idle CPU.",
+          "enabled": true,
+          "updateAvailable": false,
+          "userRating": 0,
+          "config": {
+            "libraryFileName": "local@mouse-trail_3.4.2.2_181499.dll",
+            "disabled": false,
+            "loggingEnabled": true,
+            "debugLoggingEnabled": true,
+            "include": [
+              "windhawk.exe"
+            ],
+            "exclude": [],
+            "includeCustom": [],
+            "excludeCustom": [],
+            "includeExcludeCustomOnly": false,
+            "patternsMatchCriticalSystemProcesses": false,
+            "architecture": [],
+            "version": "3.4.2.2",
+            "updatesDisabledForVersion": ""
+          },
+          "loaded": true
+        }
+      ],
+      "error": ""
+    }
+  },
+  "pending": [
+    "final installer rebuild with latest lifecycle changes and guide",
+    "installer install/uninstall regression",
+    "GitHub source and release publication"
+  ],
+  "ownedTestHostsCleaned": 0,
+  "notes": [
+    "Missing original LLVM .whl dependencies caused tool-mod load failures; copying upstream AppData/Engine/Mods dependencies fixed actual DLL load.",
+    "Do not bundle AppxManifest.xml with extracted Seelen runtime: original engine uses its presence to choose package mode.",
+    "Production requires administrator; diagnostic exe is asInvoker for isolated wallpaper/UI tests and is excluded from installer.",
+    "Existing user ThemeStudio icons and restore records remain untouched.",
+    "Git clone at theme-studio stalled; primary repo recovered with filtered metadata plus verified source archive blobs. Old theme-studio folder now holds research worker outputs; copy markdown/checkpoints only into primary repo before finalizing."
+  ],
+  "administratorSeelenVerified": true,
+  "ownedTestEnvironmentRestored": true
+}

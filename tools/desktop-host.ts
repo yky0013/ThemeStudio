@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { randomBytes } from "node:crypto";
 import type { IncomingMessage } from "node:http";
 
-export const operations = new Set(["state", "icons.import", "icons.apply", "icons.restore", "cursors.import", "cursors.apply", "cursors.save", "cursors.restore", "recipe.export"]);
+export const operations = new Set(["state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.apply", "cursors.save", "cursors.restore", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop"]);
 export const sessionToken = randomBytes(32).toString("hex");
 export function authorizedDesktopRequest(request: Pick<IncomingMessage, "headers" | "method">): boolean {
   return request.method === "POST" && request.headers["x-workbench-token"] === sessionToken &&
@@ -39,6 +39,7 @@ export class DesktopHost {
     createInterface({ input: child.stdout }).on("line", (line) => {
       try {
         const result = JSON.parse(line);
+        if (result.event) return;
         if (result.id !== this.pending?.id) return;
         const pending = this.pending!;
         this.pending = undefined;

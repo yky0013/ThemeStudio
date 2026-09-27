@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import ctypes
 import hashlib
 import io
 import json
@@ -21,6 +22,7 @@ from backend import (Assignment, IconStore, IMAGE_EXTENSIONS, MAX_ICO_BYTES,
                      canonical, friendly_error, scan_shortcuts)
 from cursor_adapter import CursorAdapter, ROLE_KEYS, ROLES, snapshot, read_json
 from native_icons import ico_image, shortcut_image, cursor_image
+from runtime_adapter import RuntimeAdapter
 
 
 def identity(value):
@@ -41,6 +43,7 @@ class DesktopBridge:
         self.resources = {}
         self.cursor_versions = {}
         self.previews = {}
+        self.runtime = RuntimeAdapter(self.store.directory)
 
     def rows(self):
         extras = self.store.read_settings().get('extra_paths', [])
@@ -96,7 +99,16 @@ class DesktopBridge:
                                  for e in item['entries'])}
                    for item in self.store.history()]
         cursor_restore = any(read_json(p, {}).get('status') == 'applied' for p in self.cursors.history.glob('*.json'))
-        return {'shortcuts': shortcuts, 'icons': icons, 'history': [h for h in history if h['count']][:30],
+        known_shortcuts = {item['id'] for item in shortcuts}
+        known_icons = {item['id'] for item in icons}
+        mappings = self.store.read_settings().get('iconAssignments', {})
+        if not isinstance(mappings, dict):
+            mappings = {}
+        mappings = {key: value for key, value in mappings.items()
+                    if key in known_shortcuts and value in known_icons}
+        return {'shortcuts': shortcuts, 'icons': icons, 'mappings': mappings,
+                'administrator': bool(ctypes.windll.shell32.IsUserAnAdmin()),
+                'history': [h for h in history if h['count']][:30],
                 'cursors': {'schemes': cursor_schemes, 'resources': resources,
                             'roles': [r[0] for r in ROLES], 'version': version, 'canRestore': cursor_restore},
                 'errors': errors + cursor_errors}
@@ -129,6 +141,8 @@ class DesktopBridge:
         return values
 
     def dispatch(self, operation, payload):
+        if operation.startswith('runtime.'):
+            return self.runtime.dispatch(operation, payload)
         if operation == 'state':
             return self.state()
         if operation == 'recipe.export':
@@ -156,21 +170,44 @@ class DesktopBridge:
                     from backend import atomic_json
                     atomic_json(self.store.directory / 'settings.json', settings)
                 return self.icon_view(item)
+        if operation == 'icons.assign':
+            mappings = payload.get('mappings')
+            if not isinstance(mappings, dict) or len(mappings) > 500:
+                raise ValueError('图标对应关系无效。')
+            rows, _ = self.rows()
+            known = {identity(canonical(row['path'])) for row in rows}
+            icons = {item.get('sha256') for item in self.store.read_settings().get('icons', [])}
+            if any(key not in known or value not in icons for key, value in mappings.items()):
+                raise ValueError('快捷方式或图片已失效，请刷新后重新选择对应关系。')
+            with self.store.lock():
+                from backend import atomic_json
+                settings = self.store.read_settings()
+                settings['iconAssignments'] = mappings
+                atomic_json(self.store.directory / 'settings.json', settings)
+            return {'mappings': mappings}
         if operation == 'icons.apply':
             items = payload.get('items')
             if not isinstance(items, list) or not 1 <= len(items) <= 500:
                 raise ValueError('请选择 1–500 个桌面快捷方式。')
-            icon_id = payload.get('icon')
+            # Keep the old payload readable, while every new UI row supplies its own icon.
+            default_icon = payload.get('icon')
             icons = {i.get('sha256'): i for i in self.store.read_settings().get('icons', [])}
-            if icon_id not in icons:
-                raise ValueError('请先选择图片。')
             rows, _ = self.rows()
             known = {identity(canonical(row['path'])): row for row in rows}
             assignments = []
+            seen = set()
             for item in items:
+                if not isinstance(item, dict):
+                    raise ValueError('图标对应关系无效。')
                 row = known.get(item.get('id'))
                 if not row:
                     raise ValueError('桌面快捷方式已不存在，请刷新列表。')
+                if item['id'] in seen:
+                    raise ValueError('同一个项目只能指定一张图片。')
+                seen.add(item['id'])
+                icon_id = item.get('icon', default_icon)
+                if not isinstance(icon_id, str) or icon_id not in icons:
+                    raise ValueError(f"请为“{row['name']}”选择对应的图片。")
                 assignments.append(Assignment(row['path'], icons[icon_id]['path'], item.get('sha256', '')))
             result = self.store.apply(assignments)
             return {'entries': [{k: e[k] for k in ('name', 'status', 'error')} for e in result['entries']],
@@ -219,8 +256,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', type=Path)
     parser.add_argument('--scan-dir', type=Path)
+    parser.add_argument('--shutdown', action='store_true')
     args = parser.parse_args()
     bridge = DesktopBridge(args.data_dir, [(args.scan_dir, '测试桌面')] if args.scan_dir else None)
+    if args.shutdown:
+        print(json.dumps(bridge.runtime.shutdown(), ensure_ascii=False), flush=True)
+        return
+    bridge.runtime.progress = lambda stage, name='': print(json.dumps({'event': 'runtime.progress', 'stage': stage, 'name': name}, ensure_ascii=False), flush=True)
     sys.stdin.reconfigure(encoding='utf-8')
     sys.stdout.reconfigure(encoding='utf-8')
     while line := sys.stdin.readline(48 * 1024 * 1024 + 1):

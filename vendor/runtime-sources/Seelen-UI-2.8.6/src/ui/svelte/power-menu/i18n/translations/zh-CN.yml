@@ -1,0 +1,8 @@
+goodbye: 再见 {{0}}
+hibernate: 休眠
+lock: 锁定会话
+log_out: 注销
+reboot: 重启
+shutdown: 关机
+suspend: 挂起
+uptime: 运行时间

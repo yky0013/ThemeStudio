@@ -16,7 +16,10 @@ export function DesktopPanel({ client }: { client: DesktopClient }) {
   const [messageFor, setMessageFor] = useState<"icons" | "cursors">("icons");
   const [selected, setSelected] = useState<string[]>([]);
   const [search, setSearch] = useState("");
-  const [artwork, setArtwork] = useState<Artwork | null>(null);
+  const [mappings, setMappings] = useState<Record<string, string>>({});
+  const [focused, setFocused] = useState("");
+  const mappingsLoaded = useRef(false);
+  const imageTarget = useRef("");
   const [scheme, setScheme] = useState("");
   const [roles, setRoles] = useState<Record<string, string>>({});
   const [size, setSize] = useState(32);
@@ -30,6 +33,14 @@ export function DesktopPanel({ client }: { client: DesktopClient }) {
   const refresh = async (resetCursors = false) => {
     const next = await client.call<DesktopState>("state");
     setState(next);
+    if (!mappingsLoaded.current) {
+      mappingsLoaded.current = true;
+      setMappings(next.mappings || {});
+      setSelected(Object.keys(next.mappings || {}));
+    } else {
+      setMappings((old) => Object.fromEntries(Object.entries(old).filter(([id, icon]) =>
+        next.shortcuts.some((row) => row.id === id) && next.icons.some((item) => item.id === icon))));
+    }
     if (resetCursors && next.cursors.schemes[0]) { chooseScheme(next.cursors.schemes[0]); setCursorVersion(next.cursors.version); }
     setSelected((ids) => ids.filter((id) => next.shortcuts.some((item) => item.id === id)));
   };
@@ -49,13 +60,20 @@ export function DesktopPanel({ client }: { client: DesktopClient }) {
     setMessage({ text: tt(restored ? "icons_restored" : "icons_applied", { count: success }) +
       (failures.length ? "\n" + failures.map((e) => `${e.name}：${e.error || e.status}`).join("\n") : ""), error: !!failures.length });
   };
-  const importImage = (file?: File) => {
+  const assignImage = (target: string, icon: string) => {
+    if (!target) { setMessage({ text: tt("choose_target_first"), error: true }); setMessageFor("icons"); return; }
+    setMappings((old) => ({ ...old, [target]: icon }));
+    setSelected((old) => Array.from(new Set([...old, target])));
+    setFocused(target);
+    setMessage(null);
+  };
+  const importImage = (file?: File, target = imageTarget.current) => {
     if (!file) return;
     void run(async () => {
       const item = await client.call<Artwork>("icons.import", await uploadFile(file));
-      setArtwork(item);
       setState((old) => old ? { ...old, icons: [...old.icons.filter((i) => i.id !== item.id), item] } : old);
-      setMessage({ text: tt("image_ready"), error: false });
+      if (target) assignImage(target, item.id);
+      setMessage({ text: tt(target ? "image_assigned" : "image_ready"), error: false });
     });
   };
   const importCursors = (files: FileList | null, forRole?: string) => {
@@ -71,12 +89,15 @@ export function DesktopPanel({ client }: { client: DesktopClient }) {
     }, "cursors");
   };
   const visible = state?.shortcuts.filter((item) => item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())) || [];
+  const focusedShortcut = state?.shortcuts.find((item) => item.id === focused);
+  const artwork = state?.icons.find((item) => item.id === mappings[focused]);
+  const missingMappings = selected.filter((id) => !mappings[id]).length;
   const cursorResource = state?.cursors.resources[roles[role] || ""];
   const schemeLabel = (item: CursorScheme) => item.kind === "current" ? tt("current_cursors") : item.kind === "default" ? tt("default_cursors") : item.name;
 
   return <>
     <section id="workbench-desktop" className={`${groupStyles.group} ${cs.section}`}>
-      <div className={cs.heading}><div><h2>{tt("icons_title")}</h2><p>{tt("icons_description")}</p></div><span className={cs.live}>{tt("windows_live")}</span></div>
+      <div className={cs.heading}><div><h2>{tt("icons_title")}</h2><p>{tt("icons_description")}</p></div><span className={cs.live}>{tt(state?.administrator ? "administrator_ready" : "windows_live")}</span></div>
       {message && messageFor === "icons" && <div role={message.error ? "alert" : "status"} className={`${cs.message} ${message.error ? cs.error : ""}`}>{message.text}</div>}
       {!state && <p>{busy ? tt("loading") : tt("desktop_unavailable")}</p>}
       <fieldset disabled={busy} className={cs.fieldset}>
@@ -88,27 +109,63 @@ export function DesktopPanel({ client }: { client: DesktopClient }) {
         </div>
         <div className={cs.iconLayout}>
           <div className={cs.shortcuts} aria-label={tt("desktop_shortcuts")}>
-            {visible.map((item) => <label key={item.id} className={selected.includes(item.id) ? cs.selected : ""}>
-              <input type="checkbox" aria-label={tt("select_shortcut", { name: item.name })} checked={selected.includes(item.id)} onChange={(e) => setSelected(e.currentTarget.checked ? [...selected, item.id] : selected.filter((id) => id !== item.id))} />
-              <img src={item.preview} alt="" width="36" height="36" />
-              <span><strong>{item.name}</strong><small>{item.origin} · {item.kind}</small></span>
-            </label>)}
+            {visible.map((item) => {
+              const assigned = state?.icons.find((icon) => icon.id === mappings[item.id]);
+              return <div key={item.id} className={`${cs.pair} ${focused === item.id ? cs.selected : ""}`}
+                onDragOver={(event) => { event.preventDefault(); if (event.dataTransfer) event.dataTransfer.dropEffect = "copy"; }}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  const transfer = event.dataTransfer;
+                  if (!transfer) return;
+                  const icon = transfer.getData("application/x-theme-studio-icon");
+                  if (icon && state?.icons.some((entry) => entry.id === icon)) assignImage(item.id, icon);
+                  else if (transfer.files[0]) importImage(transfer.files[0], item.id);
+                }}>
+                <div className={cs.pairSource}>
+                  <input type="checkbox" aria-label={tt("select_shortcut", { name: item.name })} checked={selected.includes(item.id)} onChange={(e) => setSelected(e.currentTarget.checked ? Array.from(new Set([...selected, item.id])) : selected.filter((id) => id !== item.id))} />
+                  <button type="button" className={cs.targetButton} onClick={() => setFocused(item.id)} aria-pressed={focused === item.id}>
+                    <img src={item.preview} alt="" width="36" height="36" />
+                    <span><strong>{item.name}</strong><small>{item.origin} · {item.kind}</small></span>
+                  </button>
+                </div>
+                <span className={cs.pairArrow} aria-hidden="true">→</span>
+                <button type="button" className={cs.assignedPicture} aria-label={tt("assign_picture", { name: item.name })}
+                  onClick={() => { setFocused(item.id); imageTarget.current = item.id; imageInput.current?.click(); }}>
+                  {assigned ? <img src={assigned.preview} alt={assigned.name} /> : <span>＋</span>}
+                </button>
+                <select className={cs.pairSelect} aria-label={tt("picture_for", { name: item.name })} value={mappings[item.id] || ""} onChange={(e) => {
+                  if (e.currentTarget.value) assignImage(item.id, e.currentTarget.value);
+                  else setMappings((old) => { const next = { ...old }; delete next[item.id]; return next; });
+                }}>
+                  <option value="">{tt("not_assigned")}</option>{state?.icons.map((icon) => <option key={icon.id} value={icon.id}>{icon.name}</option>)}
+                </select>
+              </div>;
+            })}
             {state && !visible.length && <p>{tt("no_shortcuts")}</p>}
           </div>
           <div className={cs.artwork}>
             <div className={cs.artworkPreview}>{artwork ? <img src={artwork.preview} alt={artwork.name} /> : <span>✦</span>}</div>
-            <strong>{artwork?.name || tt("choose_artwork")}</strong>
+            <strong>{focusedShortcut ? tt("current_target", { name: focusedShortcut.name }) : tt("choose_target_first")}</strong>
+            <small>{artwork?.name || tt("not_assigned")}</small>
             <p>{tt("image_formats")}</p>
-            <button disabled={!state} onClick={() => imageInput.current?.click()}>{tt("choose_image")}</button>
+            <button disabled={!state} onClick={() => { imageTarget.current = focused; imageInput.current?.click(); }}>{tt(focused ? "import_for_target" : "import_to_library")}</button>
             <input ref={imageInput} hidden type="file" accept=".png,.jpg,.jpeg,.webp,.bmp,.gif,.tif,.tiff,.ico" onChange={(e) => { importImage(e.currentTarget.files?.[0]); e.currentTarget.value = ""; }} />
-            <button className={cs.primary} disabled={!selected.length || !artwork} onClick={() => void run(async () => {
-              const result = await client.call<ChangeResult>("icons.apply", { icon: artwork!.id, items: state!.shortcuts.filter((s) => selected.includes(s.id)).map(({ id, sha256 }) => ({ id, sha256 })) });
+            <button onClick={() => void run(async () => { await client.call("icons.assign", { mappings }); setMessage({ text: tt("mappings_saved"), error: false }); })}>{tt("save_mappings")}</button>
+            <button className={cs.primary} disabled={!selected.length || !!missingMappings} onClick={() => void run(async () => {
+              await client.call("icons.assign", { mappings });
+              const result = await client.call<ChangeResult>("icons.apply", { items: state!.shortcuts.filter((s) => selected.includes(s.id)).map(({ id, sha256 }) => ({ id, sha256, icon: mappings[id] })) });
               await refresh(); setSelected([]); reportChanges(result);
             })}>{tt("replace_icons", { count: selected.length })}</button>
+            {!!missingMappings && <small>{tt("mappings_missing", { count: missingMappings })}</small>}
             <small>{tt("icon_backup_notice")}</small>
+            <small>{tt("pairing_help")}</small>
+            <div className={cs.library}>{state?.icons.map((item) => <button type="button" key={item.id} draggable
+              onDragStart={(event) => { if (event.dataTransfer) { event.dataTransfer.setData("application/x-theme-studio-icon", item.id); event.dataTransfer.effectAllowed = "copy"; } }}
+              aria-label={tt("use_image", { name: item.name })} className={artwork?.id === item.id ? cs.selected : ""} onClick={() => assignImage(focused, item.id)}>
+              <img src={item.preview} alt="" /><span>{item.name}</span>
+            </button>)}</div>
           </div>
         </div>
-        {!!state?.icons.length && <details><summary>{tt("saved_images", { count: state.icons.length })}</summary><div className={cs.library}>{state.icons.map((item) => <button key={item.id} aria-label={tt("use_image", { name: item.name })} className={artwork?.id === item.id ? cs.selected : ""} onClick={() => setArtwork(item)}><img src={item.preview} alt="" /><span>{item.name}</span></button>)}</div></details>}
         {!!state?.history.length && <details><summary>{tt("icon_history")}</summary><div className={cs.history}>{state.history.map((item) => <div key={item.id}><span>{item.created} · {tt("item_count", { count: item.count })}</span><button onClick={() => void run(async () => {
           const result = await client.call<ChangeResult>("icons.restore", { id: item.id }); await refresh(); reportChanges(result, true);
         })}>{tt("restore_batch")}</button></div>)}</div></details>}

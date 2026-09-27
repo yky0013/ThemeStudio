@@ -1,18 +1,34 @@
-param([ValidateSet('Install','Check','Uninstall')][string]$Stage = 'Check')
+param([ValidateSet('Install','Check','Uninstall','All')][string]$Stage = 'Check')
 $ErrorActionPreference = 'Stop'
+$principal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
+if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run the installer regression with Windows administrator authorization.' }
 $studioRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
-$qaRoot = Join-Path $studioRoot 'qa\runtime\installer'
+$qaRoot = Join-Path $studioRoot 'qa\runtime\installer-0.2.0'
 $installDirectory = [IO.Path]::GetFullPath((Join-Path $qaRoot '安装 位置\ThemeStudio'))
 if (-not $installDirectory.StartsWith($studioRoot + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'QA install path escaped the project.' }
-$registryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{34717904-40BD-47C3-9AE5-4CA3B55820B5}_is1'
+$registryPath = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{34717904-40BD-47C3-9AE5-4CA3B55820B5}_is1'
+$legacyRegistry = $registryPath.Replace('HKLM:', 'HKCU:')
 $groupName = '桌面主题工作室'
-$groupDirectory = Join-Path ([Environment]::GetFolderPath('Programs')) $groupName
-$installer = Join-Path $studioRoot 'installers\ThemeStudio-0.1.1-Windows-x64-Setup.exe'
+$groupDirectory = Join-Path ([Environment]::GetFolderPath('CommonPrograms')) $groupName
+$version = (Get-Content -LiteralPath (Join-Path $studioRoot 'package.json') -Raw | ConvertFrom-Json).version
+$installer = Join-Path $studioRoot ('installers\ThemeStudio-' + $version + '-Windows-x64-Setup.exe')
 $sentinel = Join-Path $env:LOCALAPPDATA 'ThemeStudio\installer-qa-retention.txt'
 New-Item -ItemType Directory -Path $qaRoot -Force | Out-Null
 
+if ($Stage -eq 'All') {
+    try {
+        & $PSCommandPath -Stage Install
+        & $PSCommandPath -Stage Uninstall
+        @{passed=$true;version=$version;time=(Get-Date -Format o)} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $qaRoot 'result.json') -Encoding utf8
+    } catch {
+        @{passed=$false;error=$_.Exception.Message;time=(Get-Date -Format o)} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $qaRoot 'result.json') -Encoding utf8
+        throw
+    }
+    return
+}
+
 if ($Stage -eq 'Install') {
-    if (Test-Path -LiteralPath $registryPath) { throw 'Theme Studio is already registered. Do not overwrite an existing user installation for QA.' }
+    if ((Test-Path -LiteralPath $registryPath) -or (Test-Path -LiteralPath $legacyRegistry)) { throw 'Theme Studio is already registered. Do not overwrite an existing user installation for QA.' }
     if (Test-Path -LiteralPath $installDirectory) { throw 'QA target already exists; inspect it before reuse.' }
     if (Test-Path -LiteralPath $groupDirectory) { throw 'QA Start Menu group already exists; inspect it before reuse.' }
     if (Test-Path -LiteralPath $sentinel) { throw 'QA retention marker already exists; inspect it before reuse.' }
@@ -33,6 +49,8 @@ if ($Stage -eq 'Check') {
     $checks = [ordered]@{
         customPath = $installDirectory
         registeredDisplayName = $registration.DisplayName
+        registeredVersion = $registration.DisplayVersion
+        machineWideInstall = $true
         uninstallRegistered = [bool]$registration.UninstallString
         uninstallerExists = Test-Path -LiteralPath (Join-Path $installDirectory 'unins000.exe')
         guideInstalled = Test-Path -LiteralPath (Join-Path $installDirectory 'wwwroot\help\index.html')
@@ -42,12 +60,22 @@ if ($Stage -eq 'Check') {
         userDataRetained = Test-Path -LiteralPath $sentinel
     }
     foreach ($file in Get-ChildItem -LiteralPath (Join-Path $studioRoot 'release\ThemeStudio') -File -Recurse) {
+        if ($file.Name -eq 'ThemeStudio.Diagnostic.exe') { continue }
         $relative = $file.FullName.Substring((Join-Path $studioRoot 'release\ThemeStudio').Length + 1)
         $installed = Join-Path $installDirectory $relative
         if (-not (Test-Path -LiteralPath $installed) -or (Get-FileHash -LiteralPath $installed).Hash -ne (Get-FileHash -LiteralPath $file.FullName).Hash) { throw "Installed payload mismatch: $relative" }
     }
     $checks.payloadHashesMatch = $true
+    if (Test-Path -LiteralPath (Join-Path $installDirectory 'ThemeStudio.Diagnostic.exe')) { throw 'Diagnostic executable must not be installed.' }
+    if ($registration.DisplayVersion -ne $version) { throw 'The installed version does not match the release.' }
     foreach ($key in @('uninstallRegistered','uninstallerExists','guideInstalled','applicationShortcut','guideShortcut','uninstallShortcut','userDataRetained')) { if (-not $checks[$key]) { throw "Installation check failed: $key" } }
+    $nativeRoot = Join-Path $qaRoot 'native-smoke'
+    New-Item -ItemType Directory -Path (Join-Path $nativeRoot 'desktop') -Force | Out-Null
+    $application = Start-Process -FilePath (Join-Path $installDirectory 'ThemeStudio.exe') -ArgumentList @('--smoke-dir', ('"' + $nativeRoot + '"')) -WindowStyle Hidden -PassThru
+    if (-not $application.WaitForExit(60000) -or $application.ExitCode -ne 0) { throw 'Installed native application did not finish its readiness check.' }
+    $nativeReport = Get-Content -LiteralPath (Join-Path $nativeRoot 'native-runtime.json') -Raw | ConvertFrom-Json
+    if (-not $nativeReport.ready -or $nativeReport.version -ne $version -or $nativeReport.error) { throw 'Installed native application readiness failed.' }
+    $checks.nativeWebViewReady = $true
     $checks | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $qaRoot 'installed.json') -Encoding utf8
     $checks | ConvertTo-Json
     return

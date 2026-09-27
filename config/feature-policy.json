@@ -20,12 +20,17 @@
         "stockRenderers": "upstream_warns_against_combining_animated_wallpaper_apps",
         "combinedEffects": "implemented_shared_media_layer",
         "browserVerified": true,
-        "nativeDesktopVerified": false
+        "nativeDesktopVerified": true
       }
     },
     "taskbar": {
-      "status": "awaiting_user",
-      "provider": null,
+      "status": "chosen_by_user",
+      "provider": "seelen",
+      "selectedAt": "2026-09-27",
+      "components": [
+        "dock",
+        "toolbar"
+      ],
       "candidates": [
         "seelen",
         "windhawk",
@@ -52,7 +57,8 @@
       "status": "preferred_by_user_rule",
       "provider": "windhawk",
       "evidence": "mods/mouse-trail.wh.cpp; no Seelen equivalent found in current scan",
-      "runtimeEnabled": false
+      "runtimeEnabled": false,
+      "nativeApplyStopVerified": true
     },
     "desktopShortcutIcons": {
       "status": "chosen_by_user",
@@ -89,7 +95,7 @@
   "desktopShell": {
     "compiled": true,
     "runtimeVerified": true,
-    "version": "0.1.1",
-    "evidence": "docs/installer-verification.json"
+    "version": "0.2.0",
+    "evidence": "docs/development/verification-0.2.0"
   }
 }

@@ -23,12 +23,13 @@ export interface WorkbenchProps {
   onApply?: (recipe: ThemeRecipe) => Promise<void>;
   onExport?: (recipe: ThemeRecipe) => Promise<string>;
   renderSettings?: ComponentChildren;
+  renderRuntime?: (recipe: ThemeRecipe) => ComponentChildren;
   desktopClient?: DesktopClient;
   embedded?: boolean;
   renderMod?: (mod: ModResource, selected: ModDraft | undefined, onSelect: (selected: boolean) => void, onTheme: (theme: string) => void) => ComponentChildren;
 }
 
-export function WorkbenchView({ mods, themes, icons, initial, native, onApply, onExport, renderSettings, desktopClient, embedded, renderMod }: WorkbenchProps) {
+export function WorkbenchView({ mods, themes, icons, initial, native, onApply, onExport, renderSettings, renderRuntime, desktopClient, embedded, renderMod }: WorkbenchProps) {
   const { t } = useTranslation();
   const tt = (key: string, options?: Record<string, unknown>) => t(`theme_workbench.${key}`, options);
   const [recipe, setRecipe] = useState(initial);
@@ -147,7 +148,7 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
         </div>
       </section>}
       {desktopClient && <DesktopPanel client={desktopClient} />}
-      <ParallaxPanel settings={parallax} onChange={changeParallax} />
+      <ParallaxPanel settings={parallax} onChange={changeParallax} desktopClient={desktopClient} desktopNative={native} />
       <section id="workbench-seelen" className={groupStyles.group}>
         <div className={cs.sectionTitle}><h2>{tt("seelen")}</h2><span>{tt("seelen_description")}</span></div>
         <h3>{tt("themes")}</h3>
@@ -161,6 +162,7 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
           <div><strong>{item.name}</strong><p>{item.description || item.id}</p></div>
         </label>)}</div>
         {renderSettings}
+        {renderRuntime?.(recipe)}
       </section>
       <section id="workbench-windhawk" className={groupStyles.group}>
         <div className={cs.sectionTitle}><h2>{tt("windhawk")}</h2><span>{tt("catalog_count", { count: mods.length })}</span></div>

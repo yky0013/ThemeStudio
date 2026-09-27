@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "errors": [],
+  "checks": [
+    {
+      "administrator": true,
+      "publicDesktopApplied": {
+        "entries": [
+          {
+            "error": "",
+            "name": "ThemeStudio 权限验证 601294c9",
+            "status": "applied"
+          }
+        ],
+        "id": "20260927T194032_670066_1c96e6c3"
+      },
+      "publicDesktopRestored": {
+        "entries": [
+          {
+            "error": "",
+            "name": "ThemeStudio 权限验证 601294c9",
+            "status": "restored"
+          }
+        ],
+        "id": "20260927T194032_670066_1c96e6c3"
+      }
+    },
+    {
+      "seelen": {
+        "available": true,
+        "dock": true,
+        "running": true,
+        "themes": [
+          "@default/theme",
+          "@eythaann/bubbles"
+        ],
+        "toolbar": true,
+        "version": "2.8.6"
+      }
+    },
+    {
+      "seelenStopped": {
+        "available": true,
+        "dock": false,
+        "running": false,
+        "themes": [
+          "@default/theme"
+        ],
+        "toolbar": false,
+        "version": "2.8.6"
+      }
+    }
+  ],
+  "publicShortcutExactRestore": true
+}

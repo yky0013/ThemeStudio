@@ -5,13 +5,17 @@ import MediaSurface from "../../../../../../../libs/ui/svelte/components/Wallpap
 import { PRESETS } from "../../../../../../../libs/ui/shared/wallpaper-parallax/motion.ts";
 import type { ParallaxSettings } from "../../../../../../../libs/ui/shared/wallpaper-parallax/motion.ts";
 import styles from "./parallax.module.css";
+import type { DesktopClient } from "../domain/desktop.ts";
 
 interface SurfaceApi {
   setOptions(settings: ParallaxSettings): void;
   setMedia(kind: "image" | "video", source: string): Promise<void>;
   setPaused(paused: boolean): void;
 }
-export function ParallaxPanel({ settings, onChange }: { settings: ParallaxSettings; onChange: (s: ParallaxSettings) => void }) {
+interface WallpaperMedia { id: string; name: string; kind: "image" | "video"; url: string }
+interface WallpaperState { active: boolean; paused?: boolean; media?: WallpaperMedia; settings?: ParallaxSettings }
+export function ParallaxPanel({ settings, onChange, desktopClient, desktopNative = false }:
+  { settings: ParallaxSettings; onChange: (s: ParallaxSettings) => void; desktopClient?: DesktopClient; desktopNative?: boolean }) {
   const { t } = useTranslation();
   const p = (key: string) => t(`theme_workbench.parallax.${key}`);
   const host = useRef<HTMLDivElement>(null);
@@ -24,6 +28,10 @@ export function ParallaxPanel({ settings, onChange }: { settings: ParallaxSettin
   const [filename, setFilename] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
   const [error, setError] = useState("");
+  const [media, setMedia] = useState<WallpaperMedia | null>(null);
+  const [desktop, setDesktop] = useState<WallpaperState>({ active: false });
+  const [desktopBusy, setDesktopBusy] = useState(false);
+  const desktopRunning = useRef(false);
 
   useEffect(() => {
     alive.current = true;
@@ -36,6 +44,15 @@ export function ParallaxPanel({ settings, onChange }: { settings: ParallaxSettin
     };
   }, []);
   useEffect(() => surface.current?.setOptions(settings), [settings]);
+  useEffect(() => {
+    if (!desktopNative || !desktopClient) return;
+    void desktopClient.call<WallpaperState>("wallpaper.status").then(async (state) => {
+      if (!alive.current) return;
+      setDesktop(state);
+      if (state.media) { setMedia(state.media); await changeMedia(state.media.kind, state.media.url, state.media.name); }
+      if (state.active && state.settings) onChange(state.settings);
+    }).catch((failure) => { if (alive.current) setError(String(failure)); });
+  }, [desktopClient, desktopNative]);
 
   const changeMedia = async (type: "image" | "video", source: string, name: string | null, owned = false) => {
     const revision = ++selection.current;
@@ -55,6 +72,20 @@ export function ParallaxPanel({ settings, onChange }: { settings: ParallaxSettin
     if (fileInput.current) fileInput.current.value = "";
   };
   const update = (patch: Partial<ParallaxSettings>) => onChange({ ...settings, ...patch });
+  const runDesktop = async (action: () => Promise<void>) => {
+    if (desktopRunning.current) return;
+    desktopRunning.current = true; setDesktopBusy(true); setError("");
+    try { await action(); } catch (failure) { if (alive.current) setError(failure instanceof Error ? failure.message : String(failure)); }
+    finally { desktopRunning.current = false; if (alive.current) setDesktopBusy(false); }
+  };
+  const chooseExample = (type: "image" | "video") => {
+    if (!desktopNative || !desktopClient) { void changeMedia(type, type === "video" ? "./fixtures/parallax-motion.mp4" : "./fixtures/parallax-landscape.svg", null); return; }
+    void runDesktop(async () => { const resource = await desktopClient.call<WallpaperMedia>("wallpaper.example", { kind: type }); setMedia(resource); await changeMedia(type, resource.url, resource.name); });
+  };
+  const chooseLocal = () => {
+    if (!desktopNative || !desktopClient) { fileInput.current?.click(); return; }
+    void runDesktop(async () => { const resource = await desktopClient.call<WallpaperMedia | null>("wallpaper.pick"); if (!resource) return; setMedia(resource); await changeMedia(resource.kind, resource.url, resource.name); });
+  };
 
   return <section id="workbench-parallax" className={styles.panel}>
     <div className={styles.heading}><div><h2>{p("title")}</h2><p>{p("description")}</p></div>
@@ -65,13 +96,24 @@ export function ParallaxPanel({ settings, onChange }: { settings: ParallaxSettin
         <div ref={host} className={styles.surface} aria-label={p("surface")} />
         <p className={styles.caption}>{p(settings.enabled ? "move_pointer" : "effect_off")}</p>
         <div className={styles.mediaButtons}>
-          <button type="button" onClick={() => void changeMedia("image", "./fixtures/parallax-landscape.svg", null)}>{p("example_image")}</button>
-          <button type="button" onClick={() => void changeMedia("video", "./fixtures/parallax-motion.mp4", null)}>{p("example_video")}</button>
-          <button type="button" onClick={() => fileInput.current?.click()}>{p("choose_file")}</button>
+          <button type="button" disabled={desktopBusy} onClick={() => chooseExample("image")}>{p("example_image")}</button>
+          <button type="button" disabled={desktopBusy} onClick={() => chooseExample("video")}>{p("example_video")}</button>
+          <button type="button" disabled={desktopBusy} onClick={chooseLocal}>{p("choose_file")}</button>
           <button type="button" disabled={kind !== "video"} onClick={() => { surface.current?.setPaused(!paused); setPaused(!paused); }}>{p(paused ? "resume" : "pause")}</button>
           <input type="file" accept="image/*,video/*" ref={fileInput} hidden onChange={(e) => selectFile(e.currentTarget.files?.[0])} />
         </div>
         <p className={styles.caption}>{filename || p(kind === "video" ? "sample_video" : "sample_image")}</p>
+        <div className={styles.mediaButtons}>
+          <button type="button" disabled={!desktopNative || desktopBusy} onClick={() => void runDesktop(async () => {
+            const resource = media || await desktopClient!.call<WallpaperMedia>("wallpaper.example", { kind });
+            setMedia(resource);
+            const result = await desktopClient!.call<WallpaperState>("wallpaper.apply", { mediaId: resource.id, settings, paused: false });
+            setDesktop(result);
+          })}>{p(desktopBusy ? "applying" : "apply_desktop")}</button>
+          <button type="button" disabled={!desktop.active || desktopBusy} onClick={() => void runDesktop(async () => { setDesktop(await desktopClient!.call<WallpaperState>("wallpaper.pause", { paused: !desktop.paused })); })}>{p(desktop.paused ? "resume_desktop" : "pause_desktop")}</button>
+          <button type="button" disabled={!desktop.active || desktopBusy} onClick={() => void runDesktop(async () => { setDesktop(await desktopClient!.call<WallpaperState>("wallpaper.stop")); })}>{p("restore_desktop")}</button>
+        </div>
+        <p role="status" className={styles.caption}>{p(!desktopNative ? "native_required" : desktop.active ? desktop.paused ? "desktop_paused" : "desktop_active" : "desktop_inactive")}</p>
         {error && <p role="alert">{error}</p>}
       </div>
       <div className={styles.controls}>
