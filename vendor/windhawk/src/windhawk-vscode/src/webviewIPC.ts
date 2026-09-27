@@ -1,0 +1,875 @@
+import * as vscode from 'vscode';
+import {
+  CancelCaptureHotkeyReplyData,
+  CancelCompileModReplyData,
+  CancelImportUserDataReplyData,
+  CancelInstallModReplyData,
+  CancelUpdateReplyData,
+  CaptureHotkeyReplyData,
+  CompileEditedModReplyData,
+  CompileModReplyData,
+  DeleteEditedModReplyData,
+  DeleteModReplyData,
+  DevActionReplyData,
+  EnableEditedModLoggingReplyData,
+  EnableEditedModReplyData,
+  EnableModReplyData,
+  ExitEditorModeReplyData,
+  ExportUserDataReplyData,
+  GetAppSettingsReplyData,
+  GetFeaturedModsReplyData,
+  GetInitialAppSettingsReplyData,
+  GetInstalledModsReplyData,
+  GetModReviewVotesReplyData,
+  GetModConfigReplyData,
+  GetModDynamicSelectOptionsReplyData,
+  GetModSettingsReplyData,
+  GetModSourceDataReplyData,
+  GetModVersionsReplyData,
+  GetRepositoryModSourceDataReplyData,
+  GetRepositoryModsReplyData,
+  HotkeyCaptureProgressEventData,
+  ImportUserDataProgressEventData,
+  ImportUserDataReplyData,
+  InspectUserDataReplyData,
+  InstallModReplyData,
+  ListFontFamiliesReplyData,
+  PickFilePathReplyData,
+  RetractModReviewVoteReplyData,
+  SetEditedModDetailsData,
+  SetEditedModIdData,
+  SetModSettingsReplyData,
+  SetNewAppSettingsData,
+  SetNewModConfigData,
+  StartUpdateReplyData,
+  UpdateAppSettingsReplyData,
+  UpdateDownloadProgressEventData,
+  UpdateInstalledModsDetailsData,
+  UpdateInstallingEventData,
+  UpdateModConfigReplyData,
+  UpdateModRatingReplyData,
+  VoteModReviewReplyData
+} from './webviewIPCMessages';
+
+// Message types:
+// * 'message' is a message from the webview to the extension.
+// * 'messageWithReply' is a message from the webview to the extension that expects a reply.
+// * 'reply' is a reply to a 'messageWithReply' message.
+// * 'event' is a message from the extension to the webview.
+type MessageType = 'message' | 'messageWithReply' | 'reply' | 'event';
+
+type CommonMessageBase = {
+  type: MessageType;
+  command: string;
+  data: Record<string, unknown>;
+};
+
+// type MessageRegular = CommonMessageBase & {
+//   type: 'message';
+//   command: string;
+//   data: Record<string, unknown>;
+// };
+
+// type MessageWithReply = CommonMessageBase & {
+//   type: 'messageWithReply';
+//   command: string;
+//   data: Record<string, unknown>;
+//   messageId: number;
+// };
+
+type Reply = CommonMessageBase & {
+  type: 'reply';
+  command: string;
+  data: Record<string, unknown>;
+  messageId: number;
+};
+
+type Event = CommonMessageBase & {
+  type: 'event';
+  command: string;
+  data: Record<string, unknown>;
+};
+
+////////////////////////////////////////////////////////////
+// Events.
+
+export function setNewAppSettings(webview: vscode.Webview | undefined, data: SetNewAppSettingsData) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'setNewAppSettings',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function updateInstalledModsDetails(webview: vscode.Webview | undefined, data: UpdateInstalledModsDetailsData) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'updateInstalledModsDetails',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function reloadInstalledMods(webview: vscode.Webview | undefined) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'reloadInstalledMods',
+    data: {},
+  };
+  webview.postMessage(msg);
+}
+
+export function setNewModConfig(webview: vscode.Webview | undefined, data: SetNewModConfigData) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'setNewModConfig',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function editedModWasModified(webview: vscode.Webview | undefined) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'editedModWasModified',
+    data: {},
+  };
+  webview.postMessage(msg);
+}
+
+export function compileEditedModStart(webview: vscode.Webview | undefined) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'compileEditedModStart',
+    data: {},
+  };
+  webview.postMessage(msg);
+}
+
+export function setEditedModDetails(webview: vscode.Webview | undefined, data: SetEditedModDetailsData) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'setEditedModDetails',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function setEditedModId(webview: vscode.Webview | undefined, data: SetEditedModIdData) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'setEditedModId',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function updateDownloadProgress(webview: vscode.Webview | undefined, data: UpdateDownloadProgressEventData) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'updateDownloadProgress',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function updateInstalling(webview: vscode.Webview | undefined, data: UpdateInstallingEventData) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'updateInstalling',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+////////////////////////////////////////////////////////////
+// Replies.
+
+export function getInitialAppSettingsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetInitialAppSettingsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getInitialAppSettings',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getInstalledModsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetInstalledModsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getInstalledMods',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getFeaturedModsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetFeaturedModsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getFeaturedMods',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getRepositoryModsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetRepositoryModsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getRepositoryMods',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getModSourceDataReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetModSourceDataReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getModSourceData',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getRepositoryModSourceDataReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetRepositoryModSourceDataReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getRepositoryModSourceData',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getModVersionsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetModVersionsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getModVersions',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getModSettingsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetModSettingsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getModSettings',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function setModSettingsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: SetModSettingsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'setModSettings',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getModDynamicSelectOptionsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetModDynamicSelectOptionsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getModDynamicSelectOptions',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function pickFilePathReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: PickFilePathReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'pickFilePath',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function listFontFamiliesReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: ListFontFamiliesReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'listFontFamilies',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function captureHotkeyReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CaptureHotkeyReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'captureHotkey',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function cancelCaptureHotkeyReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CancelCaptureHotkeyReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'cancelCaptureHotkey',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function hotkeyCaptureProgress(
+  webview: vscode.Webview | undefined,
+  data: HotkeyCaptureProgressEventData
+) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'hotkeyCaptureProgress',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getModConfigReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetModConfigReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getModConfig',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function updateModConfigReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: UpdateModConfigReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'updateModConfig',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function installModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: InstallModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'installMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function cancelInstallModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CancelInstallModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'cancelInstallMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function compileModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CompileModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'compileMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function cancelCompileModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CancelCompileModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'cancelCompileMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function enableModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: EnableModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'enableMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function deleteModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: DeleteModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'deleteMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function updateModRatingReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: UpdateModRatingReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'updateModRating',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function voteModReviewReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: VoteModReviewReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'voteModReview',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function retractModReviewVoteReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: RetractModReviewVoteReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'retractModReviewVote',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getModReviewVotesReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetModReviewVotesReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getModReviewVotes',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function getAppSettingsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: GetAppSettingsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'getAppSettings',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function updateAppSettingsReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: UpdateAppSettingsReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'updateAppSettings',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function enableEditedModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: EnableEditedModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'enableEditedMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function enableEditedModLoggingReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: EnableEditedModLoggingReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'enableEditedModLogging',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function compileEditedModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CompileEditedModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'compileEditedMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function deleteEditedModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: DeleteEditedModReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'deleteEditedMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function exitEditorModeReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: ExitEditorModeReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'exitEditorMode',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function createNewModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: DevActionReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'createNewMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function editModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: DevActionReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'editMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function forkModReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: DevActionReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'forkMod',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function startUpdateReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: StartUpdateReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'startUpdate',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function cancelUpdateReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CancelUpdateReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'cancelUpdate',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function importUserDataProgress(
+  webview: vscode.Webview | undefined,
+  data: ImportUserDataProgressEventData
+) {
+  if (!webview) return;
+  const msg: Event = {
+    type: 'event',
+    command: 'importUserDataProgress',
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function exportUserDataReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: ExportUserDataReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'exportUserData',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function inspectUserDataReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: InspectUserDataReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'inspectUserData',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function importUserDataReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: ImportUserDataReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'importUserData',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+export function cancelImportUserDataReply(
+  webview: vscode.Webview | undefined,
+  messageId: number,
+  data: CancelImportUserDataReplyData
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command: 'cancelImportUserData',
+    messageId,
+    data,
+  };
+  webview.postMessage(msg);
+}
+
+// The answer to a request this host cannot serve: a command it does not implement,
+// or a handler that failed outside its own error shaping. It carries the bare
+// `succeeded: false` that every command's reply handler reads as a failure, because
+// there is no command-specific shape to fill in here. The standard error object
+// deliberately stays off it: `error` is a plain string on the installer-shaped
+// commands (startUpdate, startInstallDevTools), so an object there would reach the
+// front-end where it renders a message.
+export function commandFailedReply(
+  webview: vscode.Webview | undefined,
+  command: string,
+  messageId: number
+) {
+  if (!webview) return;
+  const msg: Reply = {
+    type: 'reply',
+    command,
+    messageId,
+    data: { succeeded: false },
+  };
+  webview.postMessage(msg);
+}

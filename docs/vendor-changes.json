@@ -1,0 +1,35 @@
+[
+  {
+    "directory": "vendor/Seelen-UI",
+    "filesImported": 2487,
+    "changed": [
+      {
+        "path": "src/ui/react/settings/modules/themeWorkbench/infra/View.tsx",
+        "before": "578522d6692610cd7a371932589edd24bc0bd3d07999af0682f22e66812ee10b",
+        "after": "93f8903d34b419b9a847d58923545a1d950df5666143d0cd9b199b60645c6ded"
+      },
+      {
+        "path": "src/ui/react/settings/modules/themeWorkbench/infra/index.tsx",
+        "before": "bd59df73465ffbc516f97a35e1d6a00350730524f437d131937237b0dfa4222a",
+        "after": "bb5e14a16a4ecf0d7b46e32752ab26ac805c8835d35bae690dedd5d18ac8ac22"
+      }
+    ],
+    "added": [
+      "src/ui/react/settings/components/navigation/NavigationFrame.tsx"
+    ]
+  },
+  {
+    "directory": "vendor/windhawk",
+    "filesImported": 976,
+    "changed": [],
+    "added": [
+      "src/windhawk-frontend/apps/windhawk-frontend/src/app/panel/shared/ModCardFrame.tsx"
+    ]
+  },
+  {
+    "directory": "vendor/windhawk-mods",
+    "filesImported": 691,
+    "changed": [],
+    "added": []
+  }
+]

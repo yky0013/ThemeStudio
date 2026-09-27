@@ -1,0 +1,37 @@
+id: "@workbench/wallpaper-parallax"
+metadata:
+  displayName: !extend i18n/display_name.yml
+  description: !extend i18n/description.yml
+  tags: [wallpaper, parallax]
+styles:
+  "@seelen/wallpaper-manager": !include styles/wallpaper.css
+settings:
+  - syntax: <string>
+    name: --parallax-preset
+    label: { en: Motion preset, zh-CN: 运动预设 }
+    initialValue: elegance
+    options: [elegance, silk, depth, cinema]
+  - syntax: <number>
+    name: --parallax-strength
+    label: { en: Motion strength, zh-CN: 位移强度 }
+    initialValue: 1
+    min: 0
+    max: 2
+    step: 0.1
+  - syntax: <number>
+    name: --parallax-perspective
+    label: { en: Perspective tilt, zh-CN: 透视倾斜 }
+    initialValue: 1
+    options: [0, 1]
+  - syntax: <number>
+    name: --parallax-tilt
+    label: { en: Maximum tilt in degrees, zh-CN: 最大倾角 }
+    initialValue: 2
+    min: 0
+    max: 8
+    step: 0.5
+  - syntax: <number>
+    name: --parallax-opposite
+    label: { en: Move opposite to pointer, zh-CN: 与鼠标反向移动 }
+    initialValue: 1
+    options: [0, 1]

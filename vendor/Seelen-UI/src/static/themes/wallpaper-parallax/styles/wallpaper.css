@@ -1,0 +1,3 @@
+/* The existing wallpaper layer owns rendering; the source adapter reads this
+   theme's variables through Seelen's typed settings state. */
+.parallax-viewport { overflow: hidden; }

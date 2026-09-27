@@ -1,0 +1,67 @@
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by rsrc.rc
+//
+#define IDR_MAINFRAME                   0x80
+#define IDI_NOTIFICATION                0x81
+#define IDI_NOTIFICATION2               0x82
+#define IDD_TASK_MANAGER                0x83
+#define IDD_TOOLKIT                     0x84
+#define IDS_TRAY_OPEN                   0x90
+#define IDS_TRAY_LOADED_MODS            0x91
+#define IDS_TRAY_TOOLKIT                0xA0
+#define IDS_TRAY_EXIT                   0xB0
+#define IDS_EXITDLG_TITLE               0xB1
+#define IDS_EXITDLG_CONTENT             0xB2
+#define IDS_EXITDLG_CHECKBOX_AUTOSTART  0xB3
+#define IDS_EXITDLG_BUTTON_EXIT         0xB4
+#define IDS_EXITDLG_BUTTON_CANCEL       0xB5
+#define IDS_NOTIFICATION_UPDATE_APP     0xB6
+#define IDS_NOTIFICATION_UPDATE_APP_MOD 0xB7
+#define IDS_NOTIFICATION_UPDATE_APP_MODS 0xB8
+#define IDS_NOTIFICATION_UPDATE_MOD     0xB9
+#define IDS_NOTIFICATION_UPDATE_MODS    0xBA
+#define IDS_TASKDLG_TITLE_LOADED_MODS   0xBB
+#define IDS_TASKDLG_TITLE_TASKS_IN_PROGRESS 0xBC
+#define IDS_TASKDLG_BUTTON_OPEN_APP     0xBD
+#define IDS_TASKDLG_COLUMN_MOD          0xBE
+#define IDS_TASKDLG_COLUMN_PROCESS      0xC0
+#define IDS_TASKDLG_COLUMN_PID          0xC1
+#define IDS_TASKDLG_COLUMN_STATUS       0xC2
+#define IDS_TASKDLG_STATUS_PENDING      0xC3
+#define IDS_TASKDLG_STATUS_LOADING      0xC4
+#define IDS_TASKDLG_STATUS_LOADED       0xC5
+#define IDS_TASKDLG_STATUS_UNLOADED     0xC6
+#define IDS_TASKDLG_TASK_INITIALIZING   0xC7
+#define IDS_TASKDLG_TASK_LOADING_SYMBOLS 0xC8
+#define IDS_TASKDLG_TASK_WAITING_FOR_SYMBOLS 0xD0
+#define IDS_TASKDLG_TASK_UNINITIALIZING 0xE0
+#define IDS_TASKDLG_PROCESS_SUSPENDED   0xF0
+#define IDS_TOOLKITDLG_TITLE            0x100
+#define IDS_TOOLKITDLG_EXPLANATION_CRASH 0x110
+#define IDS_TOOLKITDLG_BUTTON_OPEN      0x120
+#define IDS_TOOLKITDLG_BUTTON_LOADED_MODS 0x121
+#define IDS_TOOLKITDLG_BUTTON_EXIT      0x122
+#define IDS_TOOLKITDLG_BUTTON_SAFE_MODE 0x123
+#define IDS_TOOLKITDLG_BUTTON_CLOSE     0x124
+#define IDS_SAFE_MODE_TITLE             0x125
+#define IDS_SAFE_MODE_TEXT              0x126
+#define IDS_SAFE_MODE_DETECTED_TITLE    0x130
+#define IDS_SAFE_MODE_DETECTED_TEXT     0x131
+#define IDC_TASK_LIST                   1001
+#define IDC_TOOLKIT_EXPLANATION         1002
+#define IDC_TOOLKIT_LOADED_MODS         1003
+#define IDC_TOOLKIT_EXIT                1004
+#define IDC_TOOLKIT_SAFE_MODE           1005
+#define IDC_TOOLKIT_CLOSE               1006
+
+// Next default values for new objects
+// 
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NEXT_RESOURCE_VALUE        0x132
+#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_CONTROL_VALUE         1007
+#define _APS_NEXT_SYMED_VALUE           101
+#endif
+#endif

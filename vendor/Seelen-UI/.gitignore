@@ -1,0 +1,28 @@
+node_modules
+
+.vscode
+.env
+
+dist
+target
+gen
+src/runtime
+
+# Submission Files
+/scripts/SBTemp
+
+# rust-analyzer
+rustc-ice-*.txt
+
+.codegraph
+CLAUDE.md
+GEMINI.md
+.claude
+
+# Local source-development preview artifacts
+tools/theme-workbench/exports/
+tools/theme-workbench/preview-process.json
+tools/theme-workbench/preview-stdout.log
+tools/theme-workbench/preview-stderr.log
+tools/theme-workbench/qa-desktop-*.log
+tools/theme-workbench/qa-desktop-process.json

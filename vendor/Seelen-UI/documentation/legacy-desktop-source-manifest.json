@@ -1,0 +1,104 @@
+{
+  "date": "2026-09-27",
+  "source": "Existing local icon-workbench and image-to-ico implementation; Cursor Palette attribution retained",
+  "archive": "docs/adoption/seelen-windhawk/source-snapshots/desktop-backend-3a65531650d7.zip",
+  "archiveSha256": "c7254b2deb4ace69d113acece68cd7fe98eeb0434ff316ec6f0d399e34f14cf6",
+  "files": [
+    {
+      "path": "icon-workbench/app.py",
+      "sha256": "21848edc19299f8d8d149e6b2c162e54b17129c2d110a18535cd564f6bd71496"
+    },
+    {
+      "path": "icon-workbench/backend.py",
+      "sha256": "436c9b1bd7dba9fd2bdeee823edf82f8ceb3bd752b14ec1ee56ca3fce7b84a32"
+    },
+    {
+      "path": "icon-workbench/build-installer.ps1",
+      "sha256": "7862e3f1cc87ff09fa9b8ec213ff7a4dfbd5b1ea9d3752839455e85e384b47bc"
+    },
+    {
+      "path": "icon-workbench/build-requirements.txt",
+      "sha256": "62d2297563d627ecc05af21002ca3659ca1714957a089e0d5a7e40ebdd2e5ed1"
+    },
+    {
+      "path": "icon-workbench/build-single-page.ps1",
+      "sha256": "8810eb95cc74142b4cf7dc3a5a269ca258a71a29e21a6c89cc00eb5ea63b51df"
+    },
+    {
+      "path": "icon-workbench/build-with-cursors.ps1",
+      "sha256": "63474040fb9d6b4bef23861ee90a5a7d63cafc63b473570ca8987f8ed4b8bb14"
+    },
+    {
+      "path": "icon-workbench/build-with-wallpapers.ps1",
+      "sha256": "ea64de14bb967ee0015b04b90bed718f7f35393402c2da1be23b00a91bfe0828"
+    },
+    {
+      "path": "icon-workbench/build.ps1",
+      "sha256": "1ca0f7261fc6322adc7cbd89e12092cc3b2152ef63fbfb68a758d6c8d2f9f2cd"
+    },
+    {
+      "path": "icon-workbench/cursor_adapter.py",
+      "sha256": "58c021c260971f4d28e6d751b99f5871d3aa9aa35db6ae074ec299c88dbdc3b6"
+    },
+    {
+      "path": "icon-workbench/desktop_bridge.py",
+      "sha256": "5f279522fc33881ca4be0c0a28a8f15cea6b30d9d2631576e535050a8203dec3"
+    },
+    {
+      "path": "icon-workbench/IconWorkbench.spec",
+      "sha256": "f8c90c3cd742fffae427e3902498dfc007cf27e42af4784a6fa581d2be93da96"
+    },
+    {
+      "path": "icon-workbench/licenses/Cursor-Palette.txt",
+      "sha256": "be1618272c98742086f5a6080c3a7ded9d65609faa6cbb8681ac07f2ea5f7d9c"
+    },
+    {
+      "path": "icon-workbench/native_icons.py",
+      "sha256": "6a1f1fcae46bfa90a1e5d3ff23b28ed5401b3140648230ed3ae5ecedfe9b8699"
+    },
+    {
+      "path": "icon-workbench/requirements.txt",
+      "sha256": "df6e4877d3708a0b5e4ad7f8c87d5dcd98d424c0480497828f961b70ae78a1e5"
+    },
+    {
+      "path": "icon-workbench/tests/smoke_single_page.py",
+      "sha256": "4fa06b994eb2c77d352583222b2517513797eed33781a7887ec16e3bf406278f"
+    },
+    {
+      "path": "icon-workbench/tests/test_backend.py",
+      "sha256": "592a769b63a4b59f199629eefd45c2032797545fa8b01a40dc46c27d17d0793b"
+    },
+    {
+      "path": "icon-workbench/tests/test_desktop_bridge.py",
+      "sha256": "4d1ce768b59fd396d84e8f19919d61e4a9a8e3d0bcdcaf1f2b0740043f853011"
+    },
+    {
+      "path": "icon-workbench/tests/test_single_page.py",
+      "sha256": "66039c6f0dc4697f975dc9ffc71e3cd181a8bec76fefa55fe097b7ff0f3befae"
+    },
+    {
+      "path": "icon-workbench/tests/verify_embedded_images.py",
+      "sha256": "08accb48fa2b695ac56f6ab1e8b082eb81dfc5b48b414972589bb2550480e5ae"
+    },
+    {
+      "path": "icon-workbench/theme_app.py",
+      "sha256": "965fa896c15137368220beac0ed12763a537bc835a1489ebf3979e6ee6d3971b"
+    },
+    {
+      "path": "icon-workbench/THIRD_PARTY.md",
+      "sha256": "057580847b5f22bfd29ba06da2fd1e2eed320b18076f24e5284544568f0636d9"
+    },
+    {
+      "path": "icon-workbench/wallpaper_adapter.py",
+      "sha256": "c4bd8ce983b37bfaef440800d5a05ff4bd92accee4875c7725d44a788d23d870"
+    },
+    {
+      "path": "icon-workbench/单页版说明.md",
+      "sha256": "a0ea667e8f043dfa3dbd4d38005f69ba11c24cb3b69021607ecdc9e6ecc1a394"
+    },
+    {
+      "path": "image-to-ico/converter.py",
+      "sha256": "bab836748a8057756c28dc987141fc7698c63e7a88204d44262856d3a2f2783b"
+    }
+  ]
+}

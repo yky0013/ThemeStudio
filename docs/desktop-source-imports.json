@@ -1,0 +1,46 @@
+[
+  {
+    "path": "components/icon-workbench/backend.py",
+    "sha256": "436c9b1bd7dba9fd2bdeee823edf82f8ceb3bd752b14ec1ee56ca3fce7b84a32"
+  },
+  {
+    "path": "components/icon-workbench/build-requirements.txt",
+    "sha256": "62d2297563d627ecc05af21002ca3659ca1714957a089e0d5a7e40ebdd2e5ed1"
+  },
+  {
+    "path": "components/icon-workbench/cursor_adapter.py",
+    "sha256": "58c021c260971f4d28e6d751b99f5871d3aa9aa35db6ae074ec299c88dbdc3b6"
+  },
+  {
+    "path": "components/icon-workbench/desktop_bridge.py",
+    "sha256": "5f279522fc33881ca4be0c0a28a8f15cea6b30d9d2631576e535050a8203dec3"
+  },
+  {
+    "path": "components/icon-workbench/native_icons.py",
+    "sha256": "6a1f1fcae46bfa90a1e5d3ff23b28ed5401b3140648230ed3ae5ecedfe9b8699"
+  },
+  {
+    "path": "components/icon-workbench/requirements.txt",
+    "sha256": "df6e4877d3708a0b5e4ad7f8c87d5dcd98d424c0480497828f961b70ae78a1e5"
+  },
+  {
+    "path": "components/icon-workbench/THIRD_PARTY.md",
+    "sha256": "057580847b5f22bfd29ba06da2fd1e2eed320b18076f24e5284544568f0636d9"
+  },
+  {
+    "path": "components/image-to-ico/converter.py",
+    "sha256": "bab836748a8057756c28dc987141fc7698c63e7a88204d44262856d3a2f2783b"
+  },
+  {
+    "path": "components/icon-workbench/licenses/Cursor-Palette.txt",
+    "sha256": "be1618272c98742086f5a6080c3a7ded9d65609faa6cbb8681ac07f2ea5f7d9c"
+  },
+  {
+    "path": "components/icon-workbench/tests/test_backend.py",
+    "sha256": "592a769b63a4b59f199629eefd45c2032797545fa8b01a40dc46c27d17d0793b"
+  },
+  {
+    "path": "components/icon-workbench/tests/test_desktop_bridge.py",
+    "sha256": "4d1ce768b59fd396d84e8f19919d61e4a9a8e3d0bcdcaf1f2b0740043f853011"
+  }
+]

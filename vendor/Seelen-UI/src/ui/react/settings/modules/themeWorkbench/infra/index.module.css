@@ -1,0 +1,46 @@
+.workbench { display: flex; flex-direction: column; gap: 14px; max-width: 1420px; margin: 0 auto; --spacing-s: 14px; --config-border-radius: 14px; }
+.workbench section { scroll-margin-top: 16px; }
+.workbench h1, .workbench h2, .workbench h3, .workbench p { margin: 0; }
+.workbench h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.6px; }
+.workbench h2 { font-size: 18px; }
+.workbench h3 { font-size: 14px; }
+.hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 16px 0 8px; }
+.hero p { color: light-dark(#657088, #abb7cd); margin-top: 8px; }
+.eyebrow { font-size: 11px; letter-spacing: 2px; font-weight: 600; color: #7b6cdc !important; }
+.topbar { display: flex; align-items: center; gap: 8px; }
+.topbar > :first-child { max-width: 380px; }
+.textInput { width: 100%; min-width: 100px; border: 1px solid light-dark(#d5d9e4, #ffffff25); border-radius: 9px; padding: 8px 11px; color: inherit; background: light-dark(#fff, #1b2030); outline: none; font: inherit; font-size: 13px; }
+.textInput:focus { border-color: #7562c7; box-shadow: 0 0 0 2px #7562c722; }
+.anchors { display: flex; flex-wrap: wrap; gap: 12px 22px; padding: 6px 2px; }
+.anchors a { text-decoration: none; font-weight: 600; color: light-dark(#6255bf, #c1b6ff); }
+.sectionTitle { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 16px; }
+.sectionTitle span, .muted { font-size: 12px; color: light-dark(#69758b, #afbad0); }
+.overview { display: grid; grid-template-columns: minmax(280px, 1.1fr) minmax(240px, 1fr); gap: 24px; align-items: center; }
+.desktop { position: relative; min-height: 240px; color: white; background: radial-gradient(ellipse at 10% 95%, #a092df 0, transparent 55%), radial-gradient(ellipse at 100% 10%, #6d9eba 0, transparent 60%), #252c53; border-radius: 14px; overflow: hidden; }
+.toolbar { display: flex; gap: 8px; justify-content: space-between; padding: 9px 16px; background: #ffffff12; font-size: 11px; }
+.previewCard { padding: 38px 26px 54px; }
+.previewCard > span { color: #e6c8ff; font-size: 24px; }
+.previewCard h3 { font-size: 22px; margin: 10px 0 7px; }
+.previewCard p { opacity: .75; font-size: 12px; }
+.dock { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; padding: 10px 18px; background: #ffffff20; border: 1px solid #ffffff25; border-radius: 15px; }
+.dock span { font-size: 18px; }
+.summary { display: flex; flex-direction: column; gap: 13px; }
+.summary > p { font-size: 12px; line-height: 1.7; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.resourceGrid, .modGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 12px; margin: 12px 0 18px; }
+.resourceCard, .modCard { background: light-dark(#fff, #ffffff09); border: 1px solid light-dark(#dce1ec, #ffffff20); border-radius: 10px; padding: 15px; }
+.resourceCard { display: flex; gap: 12px; cursor: pointer; }
+.resourceCard strong { font-size: 13px; }
+.resourceCard p { font-size: 11px; margin-top: 6px; line-height: 1.5; color: light-dark(#647089, #aab5cc); }
+.searchRow { display: flex; gap: 14px; align-items: center; margin: 16px 0 4px; }
+.searchRow > :first-child { flex: 1; }
+.searchRow > :nth-child(2) { white-space: nowrap; }
+.modTitle { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.modTitle h3 { line-height: 1.5; }
+.modCard { display: flex; flex-direction: column; gap: 11px; }
+.modCard > p { font-size: 12px; line-height: 1.6; color: light-dark(#657188, #a8b4ca); }
+.processes { font-family: monospace; font-size: 10px !important; overflow-wrap: anywhere; }
+.modCard > a { font-size: 11px; color: light-dark(#6756bf, #c1b6ff); margin-top: auto; }
+.footer { display: flex; align-items: center; gap: 10px; position: sticky; bottom: 0; padding: 15px; background: light-dark(#fffffff5, #1a1d29f5); border: 1px solid light-dark(#dce1ec, #ffffff20); border-radius: 12px; box-shadow: 0 -3px 20px #00000008; z-index: 1; }
+.footer > :first-child { margin-right: auto; color: light-dark(#657188, #a8b4ca); font-size: 12px; }
+@media (max-width: 800px) { .overview { grid-template-columns: 1fr; } .hero h1 { font-size: 24px; } .topbar { flex-wrap: wrap; } .footer { flex-wrap: wrap; } .searchRow { flex-wrap: wrap; } .workbench { --spacing-s: 10px; } }

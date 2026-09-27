@@ -1,0 +1,26 @@
+[package]
+name = "windhawk-core"
+description = "Application layer of windhawk-core: session, dispatch, services"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+windhawk-core-protocol = { workspace = true }
+windhawk-core-ports = { workspace = true }
+windhawk-core-domain = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+windhawk-core-testkit = { workspace = true }
+# The real Win32 backends, for the tests that drive full commands over the real
+# adapters (a dev-only edge: the production layering keeps core off
+# windhawk-core-windows, and those tests need both crates together).
+windhawk-core-windows = { workspace = true }
+tempfile = { workspace = true }
+
+[lints]
+workspace = true

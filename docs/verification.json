@@ -1,0 +1,42 @@
+{
+  "project": "Theme Studio",
+  "date": "2026-09-27T14:38:00.782628+08:00",
+  "projectRoot": "E:\\desktop\\windows\\theme-studio",
+  "sourceLayout": "independent repository; all bundle inputs are under project root",
+  "sourceReuseEvidence": "bundled-source-evidence.json",
+  "typescript": "passed",
+  "frontendTests": 20,
+  "pythonBackendTests": 27,
+  "frontendBuild": "passed",
+  "windowsHostCompilation": "passed",
+  "backendPackaging": "passed",
+  "nativeWindowRuntime": {
+    "status": "not_verified",
+    "reason": "automatic approval rejected starting the new EXE test with blocked by policy; did not retry via another route"
+  },
+  "browser": {
+    "url": "http://127.0.0.1:4327",
+    "desktopShortcuts": 28,
+    "cursorRoles": 17,
+    "windhawkCatalog": 644,
+    "windhawkCardSelection": "passed",
+    "recipeSave": "passed",
+    "recipeExport": "passed; saved under ThemeStudio/exports",
+    "navigationCollapse": "passed",
+    "themeLightDark": "passed",
+    "consoleErrors": 0,
+    "converterPanelVisible": false
+  },
+  "limits": [
+    "Full Seelen native engine not compiled into this release",
+    "Windhawk mod selection is configuration only; injection engine not active",
+    "Wallpaper parallax is a settings-page preview",
+    "Taskbar provider remains awaiting user"
+  ],
+  "release": {
+    "entry": "release/ThemeStudio/ThemeStudio.exe",
+    "files": 102,
+    "bytes": 42442249,
+    "manifest": "release-manifest.json"
+  }
+}

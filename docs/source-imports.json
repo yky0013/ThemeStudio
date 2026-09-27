@@ -1,0 +1,38 @@
+[
+  {
+    "directory": "vendor/Seelen-UI",
+    "localSnapshotCommit": "8b08e9589ab78a6684b4e02adcc2d4aa0c104856",
+    "archiveSha256": "d0eda1f1ad900ca7d7d222af4d7f7accfcb78b1dbf4baf1beca65051d3f79e8a",
+    "upstream": {
+      "Repository": "eythaann/Seelen-UI",
+      "Commit": "faaf24498e2040b613e6f68c405bc5047cd0df97",
+      "Archive": "E:\\desktop\\windows\\upstream-snapshots\\Seelen-UI-faaf24498e2040b613e6f68c405bc5047cd0df97.zip",
+      "SHA256": "1BA4C8133E73DC5CBDF2FB89025AEBCDAFAF0B61C760AE8F3F6716EEAB21BEDB"
+    },
+    "baselineRecovery": "Unmodified imported files are in vendor; changed originals are in docs/patch-bases; additions and before/after hashes are in docs/vendor-changes.json"
+  },
+  {
+    "directory": "vendor/windhawk",
+    "localSnapshotCommit": "59e458e56268236d2e528daf7d0d6bd5068e8c53",
+    "archiveSha256": "998bb7c122ab442ab7614b42777f56fe3ddf2f528f80d8b9102564efa7e81f85",
+    "upstream": {
+      "Repository": "ramensoftware/windhawk",
+      "Commit": "aef1a9f1e77f30c8fd96c5dd29373c38181486bf",
+      "Archive": "E:\\desktop\\windows\\upstream-snapshots\\windhawk-aef1a9f1e77f30c8fd96c5dd29373c38181486bf.zip",
+      "SHA256": "584AEA445B78A6C01CD05CF0F57349E1C7CBA4D3032A76B7CC596B8114A655DA"
+    },
+    "baselineRecovery": "Unmodified imported files are in vendor; changed originals are in docs/patch-bases; additions and before/after hashes are in docs/vendor-changes.json"
+  },
+  {
+    "directory": "vendor/windhawk-mods",
+    "localSnapshotCommit": "94650ac2adba971a179c482898255be2ccbdaac2",
+    "archiveSha256": "87880561e473e7471c94b7701800a088d2ed1bdde7b9e59bf323b8ecfceb710f",
+    "upstream": {
+      "Repository": "ramensoftware/windhawk-mods",
+      "Commit": "682a7f72694eb768724bea8ef72b079aedd9c57b",
+      "Archive": "E:\\desktop\\windows\\upstream-snapshots\\windhawk-mods-682a7f72694eb768724bea8ef72b079aedd9c57b.zip",
+      "SHA256": "CA32395FF3AC2A997E20CB3D8A19424BD108764CD48AC552C63D29DD0941BBA5"
+    },
+    "baselineRecovery": "Unmodified imported files are in vendor; changed originals are in docs/patch-bases; additions and before/after hashes are in docs/vendor-changes.json"
+  }
+]

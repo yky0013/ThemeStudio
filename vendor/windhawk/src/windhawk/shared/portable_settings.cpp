@@ -1,0 +1,889 @@
+#include "stdafx.h"
+
+#include "portable_settings.h"
+
+// Use WIL to throw exceptions if possible.
+#ifdef THROW_WIN32
+#define PORTABLE_SETTINGS_THROW_WIN32(error) THROW_WIN32(error)
+#else
+#define PORTABLE_SETTINGS_THROW_WIN32(error) \
+    throw PortableSettingsException(error)
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
+// EnumIteratorImpl
+
+template <typename Type>
+class EnumIteratorImpl {
+   public:
+    bool is_done() const { return done; }
+
+    const std::pair<std::wstring, Type>& get_item() const { return item; }
+
+    virtual void next() = 0;
+    virtual std::unique_ptr<EnumIteratorImpl> clone() const = 0;
+    virtual ~EnumIteratorImpl() = default;
+
+   protected:
+    EnumIteratorImpl() = default;
+    EnumIteratorImpl(const EnumIteratorImpl&) = default;
+    EnumIteratorImpl(EnumIteratorImpl&&) = default;
+    EnumIteratorImpl& operator=(const EnumIteratorImpl&) = default;
+    EnumIteratorImpl& operator=(EnumIteratorImpl&&) = default;
+
+    bool done = false;
+    std::pair<std::wstring, Type> item;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// EnumIterator
+
+template class PortableSettings::EnumIterator<int>;
+template class PortableSettings::EnumIterator<std::wstring>;
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>::EnumIterator(
+    std::unique_ptr<EnumIteratorImpl<Type>> impl)
+    : impl(std::move(impl)) {}
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>::EnumIterator(const EnumIterator& other)
+    : impl(std::move(other.impl->clone())) {}
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>::EnumIterator(EnumIterator&&) noexcept =
+    default;
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>&
+PortableSettings::EnumIterator<Type>::operator=(const EnumIterator& other) {
+    impl = other.impl->clone();
+    return *this;
+}
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>&
+PortableSettings::EnumIterator<Type>::operator=(EnumIterator&&) noexcept =
+    default;
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>::~EnumIterator() = default;
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>::operator bool() const {
+    return !impl->is_done();
+}
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>&
+PortableSettings::EnumIterator<Type>::operator++() {
+    impl->next();
+    return *this;
+}
+
+template <typename Type>
+PortableSettings::EnumIterator<Type>
+PortableSettings::EnumIterator<Type>::operator++(int) {
+    PortableSettings::EnumIterator copy(*this);
+    ++*this;
+    return copy;
+}
+
+template <typename Type>
+typename PortableSettings::EnumIterator<Type>::value_type
+PortableSettings::EnumIterator<Type>::operator*() const {
+    return impl->get_item();
+}
+
+template <typename Type>
+typename PortableSettings::EnumIterator<Type>::pointer
+PortableSettings::EnumIterator<Type>::operator->() const {
+    return &impl->get_item();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper functions
+
+namespace {
+
+// std::stol signals a non-numeric string and an out-of-range value by throwing
+// types of its own, which a caller looking for this module's type wouldn't
+// catch.
+int StringToInt(const std::wstring& string) {
+    // long is as wide as int here, so std::stol's range check is int's.
+    static_assert(sizeof(long) == sizeof(int));
+
+    try {
+        return static_cast<int>(std::stol(string, nullptr, 0));
+    } catch (const std::invalid_argument&) {
+        PORTABLE_SETTINGS_THROW_WIN32(ERROR_INVALID_DATA);
+    } catch (const std::out_of_range&) {
+        PORTABLE_SETTINGS_THROW_WIN32(ERROR_INVALID_DATA);
+    }
+}
+
+}  // namespace
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper functions - RegistrySettings
+
+namespace {
+namespace RegistrySettingsHelperFunctions {
+
+int RawItemToInt(std::wstring data, DWORD dwDataSize, DWORD dwType) {
+    int itemValue = 0;
+
+    if (dwType == REG_DWORD && dwDataSize == sizeof(DWORD)) {
+        static_assert(sizeof(int) == sizeof(DWORD));
+        memcpy(&itemValue, data.data(), sizeof(DWORD));
+    } else if (dwType == REG_SZ && dwDataSize >= sizeof(WCHAR) &&
+               (dwDataSize % sizeof(WCHAR)) == 0) {
+        // A well-formed REG_SZ has at least the null terminator.
+        DWORD nStringSize = dwDataSize / sizeof(WCHAR) - 1;
+
+        if (data[nStringSize] == L'\0' && wcslen(data.c_str()) == nStringSize) {
+            data.resize(nStringSize);
+            itemValue = StringToInt(data);
+        }
+    }
+
+    return itemValue;
+}
+
+std::wstring RawItemToString(std::wstring data,
+                             DWORD dwDataSize,
+                             DWORD dwType) {
+    std::wstring itemValue;
+
+    if (dwType == REG_DWORD && dwDataSize == sizeof(DWORD)) {
+        static_assert(sizeof(int) == sizeof(DWORD));
+        int intValue;
+        memcpy(&intValue, data.data(), sizeof(DWORD));
+        itemValue = std::to_wstring(intValue);
+    } else if (dwType == REG_SZ && dwDataSize >= sizeof(WCHAR) &&
+               (dwDataSize % sizeof(WCHAR)) == 0) {
+        // A well-formed REG_SZ has at least the null terminator.
+        DWORD nStringSize = dwDataSize / sizeof(WCHAR) - 1;
+
+        if (data[nStringSize] == L'\0' && wcslen(data.c_str()) == nStringSize) {
+            data.resize(nStringSize);
+            itemValue = std::move(data);
+        }
+    }
+
+    return itemValue;
+}
+
+std::vector<BYTE> RawItemToBuffer(std::wstring data,
+                                  DWORD dwDataSize,
+                                  DWORD dwType) {
+    std::vector<BYTE> itemValue;
+
+    if (dwType == REG_BINARY) {
+        auto dataBytes = reinterpret_cast<const BYTE*>(data.data());
+        itemValue.assign(dataBytes, dataBytes + dwDataSize);
+    }
+
+    return itemValue;
+}
+
+}  // namespace RegistrySettingsHelperFunctions
+}  // namespace
+
+////////////////////////////////////////////////////////////////////////////////
+// EnumIterator - RegistrySettings
+
+template <typename Type>
+class EnumIteratorRegistryBase : public EnumIteratorImpl<Type> {
+   public:
+    EnumIteratorRegistryBase(HKEY hKey) : hKey(hKey), dwIndex(0) {}
+
+   protected:
+    std::optional<std::tuple<std::wstring, std::wstring, DWORD, DWORD>>
+    get_next_item_raw() {
+        if (!hKey) {
+            return std::nullopt;
+        }
+
+        std::wstring valueName;
+        DWORD dwValueNameSize;
+        std::wstring data;
+        DWORD dwDataSize;
+        DWORD dwType;
+        LSTATUS error;
+
+        size_t valueNameBufferSize = 0;
+        size_t dataBufferSize = 0;
+
+        while (true) {
+            DWORD dwMaxValueNameLen;
+            DWORD dwMaxValueLen;
+            error = RegQueryInfoKey(
+                hKey, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                nullptr, &dwMaxValueNameLen, &dwMaxValueLen, nullptr, nullptr);
+            if (error != ERROR_SUCCESS) {
+                PORTABLE_SETTINGS_THROW_WIN32(error);
+            }
+
+            size_t newValueNameBufferSize =
+                wil::safe_cast<size_t>(dwMaxValueNameLen) + 1;
+            size_t newDataBufferSize =
+                (wil::safe_cast<size_t>(dwMaxValueLen) + sizeof(WCHAR) - 1) /
+                sizeof(WCHAR);
+
+            // A retry which grows neither buffer can't make progress, so give
+            // up instead of spinning against a concurrent writer.
+            if (newValueNameBufferSize <= valueNameBufferSize &&
+                newDataBufferSize <= dataBufferSize) {
+                PORTABLE_SETTINGS_THROW_WIN32(ERROR_MORE_DATA);
+            }
+
+            if (newValueNameBufferSize > valueNameBufferSize) {
+                valueNameBufferSize = newValueNameBufferSize;
+            }
+            if (newDataBufferSize > dataBufferSize) {
+                dataBufferSize = newDataBufferSize;
+            }
+
+            valueName.resize(valueNameBufferSize);
+            dwValueNameSize = wil::safe_cast<DWORD>(valueNameBufferSize);
+            data.resize(dataBufferSize);
+            dwDataSize = wil::safe_cast<DWORD>(dataBufferSize * sizeof(WCHAR));
+            error = RegEnumValue(
+                hKey, dwIndex, &valueName[0], &dwValueNameSize, nullptr,
+                &dwType, reinterpret_cast<BYTE*>(&data[0]), &dwDataSize);
+            if (error == ERROR_NO_MORE_ITEMS) {
+                return std::nullopt;
+            }
+
+            if (error == ERROR_MORE_DATA) {
+                // RegEnumValue doesn't say which buffer is too small, so
+                // re-query the maximums and retry the same index.
+                continue;
+            }
+
+            if (error != ERROR_SUCCESS) {
+                PORTABLE_SETTINGS_THROW_WIN32(error);
+            }
+
+            break;
+        }
+
+        dwIndex++;
+
+        valueName.resize(dwValueNameSize);
+
+        return std::make_tuple(std::move(valueName), std::move(data),
+                               dwDataSize, dwType);
+    }
+
+    HKEY hKey;
+    DWORD dwIndex;
+};
+
+class EnumIteratorRegistryInt : public EnumIteratorRegistryBase<int> {
+   public:
+    EnumIteratorRegistryInt(HKEY hKey) : EnumIteratorRegistryBase(hKey) {
+        next();
+    }
+
+    void next() override {
+        auto result = get_next_item_raw();
+        if (!result) {
+            done = true;
+            return;
+        }
+
+        auto& [valueName, data, dwDataSize, dwType] = *result;
+
+        int itemValue = RegistrySettingsHelperFunctions::RawItemToInt(
+            std::move(data), dwDataSize, dwType);
+
+        item = {std::move(valueName), itemValue};
+    }
+
+    std::unique_ptr<EnumIteratorImpl> clone() const override {
+        return std::make_unique<EnumIteratorRegistryInt>(*this);
+    }
+};
+
+class EnumIteratorRegistryString
+    : public EnumIteratorRegistryBase<std::wstring> {
+   public:
+    EnumIteratorRegistryString(HKEY hKey) : EnumIteratorRegistryBase(hKey) {
+        next();
+    }
+
+    void next() override {
+        auto result = get_next_item_raw();
+        if (!result) {
+            done = true;
+            return;
+        }
+
+        auto& [valueName, data, dwDataSize, dwType] = *result;
+
+        std::wstring itemValue =
+            RegistrySettingsHelperFunctions::RawItemToString(
+                std::move(data), dwDataSize, dwType);
+
+        item = {std::move(valueName), std::move(itemValue)};
+    }
+
+    std::unique_ptr<EnumIteratorImpl> clone() const override {
+        return std::make_unique<EnumIteratorRegistryString>(*this);
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// RegistrySettings
+
+RegistrySettings::RegistrySettings(HKEY hKey, PCWSTR subKey, bool write) {
+    REGSAM samDesired = KEY_READ | (write ? KEY_WRITE : 0) | KEY_WOW64_64KEY;
+
+    LSTATUS error;
+    if (write) {
+        error = RegCreateKeyEx(hKey, subKey, 0, nullptr, 0, samDesired, nullptr,
+                               &this->hKey, nullptr);
+    } else {
+        // A read leaves the store as it found it, so an absent key stays
+        // absent and reads as empty.
+        error = RegOpenKeyEx(hKey, subKey, 0, samDesired, &this->hKey);
+        if (error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND) {
+            return;
+        }
+    }
+
+    if (error != ERROR_SUCCESS) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+std::optional<std::wstring> RegistrySettings::GetString(
+    PCWSTR valueName) const {
+    auto rawData = GetRaw(valueName);
+    if (!rawData) {
+        return std::nullopt;
+    }
+
+    return RegistrySettingsHelperFunctions::RawItemToString(
+        std::move(rawData->data), rawData->dataSize, rawData->dataType);
+}
+
+void RegistrySettings::SetString(PCWSTR valueName, PCWSTR string) {
+    LSTATUS error = RegSetValueEx(
+        hKey.get(), valueName, 0, REG_SZ, reinterpret_cast<const BYTE*>(string),
+        wil::safe_cast<DWORD>((wcslen(string) + 1) * sizeof(WCHAR)));
+    if (error != ERROR_SUCCESS) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+std::optional<int> RegistrySettings::GetInt(PCWSTR valueName) const {
+    auto rawData = GetRaw(valueName);
+    if (!rawData) {
+        return std::nullopt;
+    }
+
+    return RegistrySettingsHelperFunctions::RawItemToInt(
+        std::move(rawData->data), rawData->dataSize, rawData->dataType);
+}
+
+void RegistrySettings::SetInt(PCWSTR valueName, int value) {
+    DWORD dwValue = static_cast<DWORD>(value);
+
+    LSTATUS error =
+        RegSetValueEx(hKey.get(), valueName, 0, REG_DWORD,
+                      reinterpret_cast<const BYTE*>(&dwValue), sizeof(DWORD));
+    if (error != ERROR_SUCCESS) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+std::optional<std::vector<BYTE>> RegistrySettings::GetBinary(
+    PCWSTR valueName) const {
+    auto rawData = GetRaw(valueName);
+    if (!rawData) {
+        return std::nullopt;
+    }
+
+    return RegistrySettingsHelperFunctions::RawItemToBuffer(
+        std::move(rawData->data), rawData->dataSize, rawData->dataType);
+}
+
+void RegistrySettings::SetBinary(PCWSTR valueName,
+                                 const BYTE* buffer,
+                                 size_t bufferSize) {
+    LSTATUS error = RegSetValueEx(hKey.get(), valueName, 0, REG_BINARY, buffer,
+                                  wil::safe_cast<DWORD>(bufferSize));
+    if (error != ERROR_SUCCESS) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+void RegistrySettings::Remove(PCWSTR valueName) {
+    LSTATUS error = RegDeleteValue(hKey.get(), valueName);
+    if (error != ERROR_SUCCESS && error != ERROR_FILE_NOT_FOUND &&
+        error != ERROR_PATH_NOT_FOUND) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+RegistrySettings::EnumIterator<int> RegistrySettings::EnumIntValues() const {
+    return PortableSettings::EnumIterator<int>(
+        std::make_unique<EnumIteratorRegistryInt>(hKey.get()));
+}
+
+RegistrySettings::EnumIterator<std::wstring>
+RegistrySettings::EnumStringValues() const {
+    return PortableSettings::EnumIterator<std::wstring>(
+        std::make_unique<EnumIteratorRegistryString>(hKey.get()));
+}
+
+// static
+void RegistrySettings::RemoveSection(HKEY hKey, PCWSTR subKey) {
+    /*
+    wil::unique_hkey hKeyToDelete;
+    LSTATUS error =
+        RegOpenKeyEx(hKey, subKey, 0,
+                     DELETE | KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE |
+                         KEY_SET_VALUE | KEY_WOW64_64KEY,
+                     &hKeyToDelete);
+    if (error != ERROR_FILE_NOT_FOUND && error != ERROR_PATH_NOT_FOUND) {
+        if (error != ERROR_SUCCESS) {
+            PORTABLE_SETTINGS_THROW_WIN32(error);
+        }
+
+        error = RegDeleteTree(hKeyToDelete.get(), nullptr);
+        if (error != ERROR_SUCCESS) {
+            PORTABLE_SETTINGS_THROW_WIN32(error);
+        }
+
+        hKeyToDelete.reset();
+    }
+    */
+
+    LSTATUS error = RegDeleteKeyEx(hKey, subKey, KEY_WOW64_64KEY, 0);
+    if (error != ERROR_SUCCESS && error != ERROR_FILE_NOT_FOUND &&
+        error != ERROR_PATH_NOT_FOUND) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+std::optional<RegistrySettings::RawData> RegistrySettings::GetRaw(
+    PCWSTR valueName) const {
+    if (!hKey) {
+        return std::nullopt;
+    }
+
+    std::wstring data;
+    DWORD dataSize;
+    DWORD dataType;
+    LSTATUS error;
+
+    std::optional<size_t> lastDataBufferSize;
+
+    while (true) {
+        error = RegQueryValueEx(hKey.get(), valueName, nullptr, &dataType,
+                                nullptr, &dataSize);
+        if (error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND) {
+            return std::nullopt;
+        } else if (error != ERROR_SUCCESS) {
+            PORTABLE_SETTINGS_THROW_WIN32(error);
+        }
+
+        size_t dataBufferSize =
+            (wil::safe_cast<size_t>(dataSize) + sizeof(WCHAR) - 1) /
+            sizeof(WCHAR);
+
+        // A retry which doesn't grow the buffer can't make progress, so give up
+        // instead of spinning against a concurrent writer.
+        if (lastDataBufferSize && dataBufferSize <= *lastDataBufferSize) {
+            PORTABLE_SETTINGS_THROW_WIN32(ERROR_MORE_DATA);
+        }
+
+        lastDataBufferSize = dataBufferSize;
+
+        data.resize(dataBufferSize);
+        dataSize = wil::safe_cast<DWORD>(dataBufferSize * sizeof(WCHAR));
+        error = RegQueryValueEx(hKey.get(), valueName, nullptr, &dataType,
+                                reinterpret_cast<BYTE*>(&data[0]), &dataSize);
+        if (error == ERROR_MORE_DATA) {
+            continue;  // the value grew between the queries, try again
+        } else if (error == ERROR_FILE_NOT_FOUND ||
+                   error == ERROR_PATH_NOT_FOUND) {
+            return std::nullopt;
+        } else if (error != ERROR_SUCCESS) {
+            PORTABLE_SETTINGS_THROW_WIN32(error);
+        }
+
+        break;
+    }
+
+    return RawData{std::move(data), dataSize, dataType};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper functions - IniFileSettings
+
+namespace {
+namespace IniFileSettingsHelperFunctions {
+
+int HexDigitValue(WCHAR hexDigit) {
+    if (hexDigit >= '0' && hexDigit <= '9') {
+        return hexDigit - '0';
+    }
+
+    if (hexDigit >= 'A' && hexDigit <= 'F') {
+        return hexDigit - 'A' + 10;
+    }
+
+    if (hexDigit >= 'a' && hexDigit <= 'f') {
+        return hexDigit - 'a' + 10;
+    }
+
+    throw std::invalid_argument("invalid hex digit");
+}
+
+// The name part of a line has no escape: the parser splits the line at its
+// first '=', ends the entry at the line break, takes a line opening with '['
+// as a section header or with ';' as a comment, and trims the name of
+// surrounding whitespace. A name carrying any of those is stored under a
+// different name or under none, and in a mod's file it can also inject a
+// section into the file that holds the mod's [Mod] config. Reject it on the way
+// in; a read needs no check, as such a name simply matches nothing.
+void ValidateValueName(PCWSTR valueName) {
+    if (!valueName) {
+        // The profile API reads a null name as "drop the whole section".
+        PORTABLE_SETTINGS_THROW_WIN32(ERROR_INVALID_DATA);
+    }
+
+    std::wstring_view valueNameView{valueName};
+
+    bool hasDelimiter =
+        valueNameView.find_first_of(L"=\r\n") != valueNameView.npos;
+
+    bool canBeTrimmed =
+        !valueNameView.empty() &&
+        ((valueNameView.front() >= L'\0' && valueNameView.front() <= L' ') ||
+         (valueNameView.back() >= L'\0' && valueNameView.back() <= L' '));
+
+    bool isSectionOrComment =
+        !valueNameView.empty() &&
+        (valueNameView.front() == L'[' || valueNameView.front() == L';');
+
+    if (hasDelimiter || canBeTrimmed || isSectionOrComment) {
+        PORTABLE_SETTINGS_THROW_WIN32(ERROR_INVALID_DATA);
+    }
+}
+
+}  // namespace IniFileSettingsHelperFunctions
+}  // namespace
+
+////////////////////////////////////////////////////////////////////////////////
+// EnumIterator - IniFileSettings
+
+template <typename Type>
+class EnumIteratorIniFileBase : public EnumIteratorImpl<Type> {
+   public:
+    EnumIteratorIniFileBase(const IniFileSettings* settings)
+        : settings(settings) {
+        for (DWORD size = 256;; size *= 2) {
+            SetLastError(0);
+
+            valueNames.resize(size);
+            UINT returnedSize = GetPrivateProfileString(
+                settings->sectionName.c_str(), nullptr, nullptr, &valueNames[0],
+                size, settings->filename.c_str());
+
+            DWORD error = GetLastError();
+            if (error == ERROR_MORE_DATA) {
+                continue;  // try with a larger buffer
+            } else if (error != ERROR_SUCCESS) {
+                PORTABLE_SETTINGS_THROW_WIN32(error);
+            }
+
+            valueNames.resize(returnedSize);
+            break;
+        }
+    }
+
+   protected:
+    std::optional<std::wstring> get_next_value_name() {
+        size_t nextValueNameLen = wcslen(valueNames.c_str());
+        if (nextValueNameLen == 0) {
+            return std::nullopt;
+        }
+
+        std::wstring nextValueName = valueNames.substr(0, nextValueNameLen);
+        valueNames.erase(0, nextValueNameLen + 1);
+
+        return nextValueName;
+    }
+
+    std::optional<std::wstring> get_string(PCWSTR valueName) const {
+        return settings->GetString(valueName);
+    }
+
+    std::optional<int> get_int(PCWSTR valueName) const {
+        return settings->GetInt(valueName);
+    }
+
+    const IniFileSettings* settings;
+    std::wstring valueNames;
+};
+
+class EnumIteratorIniFileInt : public EnumIteratorIniFileBase<int> {
+   public:
+    EnumIteratorIniFileInt(const IniFileSettings* settings)
+        : EnumIteratorIniFileBase(settings) {
+        next();
+    }
+
+    void next() override {
+        auto valueName = get_next_value_name();
+        if (!valueName) {
+            done = true;
+            return;
+        }
+
+        auto itemValue = get_int(valueName->c_str());
+        if (!itemValue) {
+            done = true;
+            return;
+        }
+
+        item = {std::move(*valueName), *itemValue};
+    }
+
+    std::unique_ptr<EnumIteratorImpl> clone() const override {
+        return std::make_unique<EnumIteratorIniFileInt>(*this);
+    }
+};
+
+class EnumIteratorIniFileString : public EnumIteratorIniFileBase<std::wstring> {
+   public:
+    EnumIteratorIniFileString(const IniFileSettings* settings)
+        : EnumIteratorIniFileBase(settings) {
+        next();
+    }
+
+    void next() override {
+        auto valueName = get_next_value_name();
+        if (!valueName) {
+            done = true;
+            return;
+        }
+
+        auto itemValue = get_string(valueName->c_str());
+        if (!itemValue) {
+            done = true;
+            return;
+        }
+
+        item = {std::move(*valueName), std::move(*itemValue)};
+    }
+
+    std::unique_ptr<EnumIteratorImpl> clone() const override {
+        return std::make_unique<EnumIteratorIniFileString>(*this);
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// IniFileSettings
+
+IniFileSettings::IniFileSettings(PCWSTR filename,
+                                 PCWSTR sectionName,
+                                 bool write)
+    : filename(filename), sectionName(sectionName) {
+    if (write) {
+        HANDLE hFile =
+            CreateFile(filename, GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+                       CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (hFile != INVALID_HANDLE_VALUE) {
+            // Write a UTF-16LE BOM to enable Unicode.
+            DWORD dwNumberOfBytesWritten;
+            WriteFile(hFile, "\xFF\xFE", 2, &dwNumberOfBytesWritten, nullptr);
+            CloseHandle(hFile);
+        } else {
+            DWORD error = GetLastError();
+            // An existing file is the benign outcome and a no-op: it keeps the
+            // BOM it was created with. CREATE_NEW reports the name collision
+            // ahead of any sharing or access check, so a file that is held
+            // open, read-only, or write-denied still lands here. Any other
+            // code means the file is absent and couldn't be created, so the
+            // BOM wasn't written and nothing can be stored.
+            if (error != ERROR_FILE_EXISTS) {
+                PORTABLE_SETTINGS_THROW_WIN32(error);
+            }
+        }
+    }
+}
+
+std::optional<std::wstring> IniFileSettings::GetString(PCWSTR valueName) const {
+    std::wstring itemValue;
+
+    for (DWORD size = 256;; size *= 2) {
+        SetLastError(0);
+
+        itemValue.resize(size);
+        UINT returnedSize =
+            GetPrivateProfileString(sectionName.c_str(), valueName, nullptr,
+                                    &itemValue[0], size, filename.c_str());
+
+        DWORD error = GetLastError();
+        if (error == ERROR_MORE_DATA) {
+            continue;  // try with a larger buffer
+        } else if (error == ERROR_FILE_NOT_FOUND ||
+                   error == ERROR_PATH_NOT_FOUND) {
+            return std::nullopt;
+        } else if (error != ERROR_SUCCESS) {
+            PORTABLE_SETTINGS_THROW_WIN32(error);
+        }
+
+        itemValue.resize(returnedSize);
+        break;
+    }
+
+    return itemValue;
+}
+
+void IniFileSettings::SetString(PCWSTR valueName, PCWSTR string) {
+    IniFileSettingsHelperFunctions::ValidateValueName(valueName);
+
+    std::wstring_view stringView{string};
+
+    // An entry ends at the line break, so the line format cannot hold a value
+    // carrying one: it would read back cut at the break, with the rest of it
+    // parsed as further lines of a file that also holds the mod's [Mod]
+    // config. Quoting is the only escape available and does not cover it, so
+    // refuse the write rather than report a mangled value as stored.
+    if (stringView.find_first_of(L"\r\n") != stringView.npos) {
+        PORTABLE_SETTINGS_THROW_WIN32(ERROR_INVALID_DATA);
+    }
+
+    // Quote what the reader would otherwise not return as written: leading or
+    // trailing whitespace is trimmed, and matching outer quotes are stripped.
+    bool canBeTrimmed =
+        !stringView.empty() &&
+        ((stringView.front() >= L'\0' && stringView.front() <= L' ') ||
+         (stringView.back() >= L'\0' && stringView.back() <= L' '));
+
+    bool isQuoted = stringView.length() >= 2 &&
+                    stringView.front() == stringView.back() &&
+                    (stringView.front() == L'"' || stringView.front() == L'\'');
+
+    std::wstring stringEscaped;
+    PCWSTR stringPtr = string;
+
+    if (canBeTrimmed || isQuoted) {
+        stringEscaped.reserve(stringView.length() + 2);
+        stringEscaped += L'"';
+        stringEscaped += stringView;
+        stringEscaped += L'"';
+        stringPtr = stringEscaped.c_str();
+    }
+
+    SetLastError(0);
+
+    WritePrivateProfileString(sectionName.c_str(), valueName, stringPtr,
+                              filename.c_str());
+
+    DWORD error = GetLastError();
+    if (error != ERROR_SUCCESS) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+std::optional<int> IniFileSettings::GetInt(PCWSTR valueName) const {
+    std::optional<std::wstring> data = GetString(valueName);
+    if (!data) {
+        return std::nullopt;
+    }
+
+    return StringToInt(*data);
+}
+
+void IniFileSettings::SetInt(PCWSTR valueName, int value) {
+    SetString(valueName, std::to_wstring(value).c_str());
+}
+
+std::optional<std::vector<BYTE>> IniFileSettings::GetBinary(
+    PCWSTR valueName) const {
+    std::optional<std::wstring> data = GetString(valueName);
+    if (!data) {
+        return std::nullopt;
+    }
+
+    // Adapted from https://stackoverflow.com/a/3382894
+    const auto len = data->length();
+    if (len % 2 != 0) {
+        throw std::invalid_argument("odd length");
+    }
+
+    std::vector<BYTE> result;
+    result.reserve(len / 2);
+    for (auto it = data->begin(); it != data->end();) {
+        int hi = IniFileSettingsHelperFunctions::HexDigitValue(*it++);
+        int lo = IniFileSettingsHelperFunctions::HexDigitValue(*it++);
+        result.push_back(hi << 4 | lo);
+    }
+
+    return result;
+}
+
+void IniFileSettings::SetBinary(PCWSTR valueName,
+                                const BYTE* buffer,
+                                size_t bufferSize) {
+    std::wstring binaryStr;
+    binaryStr.reserve(bufferSize * 2);
+
+    static const WCHAR hexDigits[] = L"0123456789ABCDEF";
+
+    for (const BYTE* p = buffer; p != buffer + bufferSize; p++) {
+        BYTE b = *p;
+        binaryStr.push_back(hexDigits[b >> 4]);
+        binaryStr.push_back(hexDigits[b & 15]);
+    }
+
+    SetString(valueName, binaryStr.c_str());
+}
+
+void IniFileSettings::Remove(PCWSTR valueName) {
+    IniFileSettingsHelperFunctions::ValidateValueName(valueName);
+
+    SetLastError(0);
+
+    WritePrivateProfileString(sectionName.c_str(), valueName, nullptr,
+                              filename.c_str());
+
+    DWORD error = GetLastError();
+    if (error != ERROR_SUCCESS && error != ERROR_FILE_NOT_FOUND &&
+        error != ERROR_PATH_NOT_FOUND) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}
+
+IniFileSettings::EnumIterator<int> IniFileSettings::EnumIntValues() const {
+    return PortableSettings::EnumIterator<int>(
+        std::make_unique<EnumIteratorIniFileInt>(this));
+}
+
+IniFileSettings::EnumIterator<std::wstring> IniFileSettings::EnumStringValues()
+    const {
+    return PortableSettings::EnumIterator<std::wstring>(
+        std::make_unique<EnumIteratorIniFileString>(this));
+}
+
+// static
+void IniFileSettings::RemoveSection(PCWSTR filename, PCWSTR sectionName) {
+    SetLastError(0);
+
+    WritePrivateProfileString(sectionName, nullptr, nullptr, filename);
+
+    DWORD error = GetLastError();
+    if (error != ERROR_SUCCESS && error != ERROR_FILE_NOT_FOUND &&
+        error != ERROR_PATH_NOT_FOUND) {
+        PORTABLE_SETTINGS_THROW_WIN32(error);
+    }
+}

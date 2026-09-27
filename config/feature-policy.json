@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "rule": "Prefer upstream equivalent functionality; user chooses overlapping providers.",
+  "decisions": {
+    "wallpaper": {
+      "status": "chosen_by_user",
+      "provider": "both",
+      "candidates": [
+        "seelen",
+        "windhawk",
+        "both"
+      ],
+      "usage": {
+        "standardImageVideo": "seelen",
+        "mouseParallax": "windhawk_algorithms_in_seelen_media_layer"
+      },
+      "integrationApproved": true,
+      "startBothStockRenderers": false,
+      "coexistence": {
+        "stockRenderers": "upstream_warns_against_combining_animated_wallpaper_apps",
+        "combinedEffects": "implemented_shared_media_layer",
+        "browserVerified": true,
+        "nativeDesktopVerified": false
+      }
+    },
+    "taskbar": {
+      "status": "awaiting_user",
+      "provider": null,
+      "candidates": [
+        "seelen",
+        "windhawk",
+        "deferred"
+      ]
+    },
+    "startLauncher": {
+      "status": "not_in_current_scope",
+      "provider": null,
+      "candidates": [
+        "seelen",
+        "windhawk"
+      ]
+    },
+    "desktopWidgets": {
+      "status": "not_in_current_scope",
+      "provider": null,
+      "candidates": [
+        "seelen",
+        "windhawk"
+      ]
+    },
+    "cursorEffects": {
+      "status": "preferred_by_user_rule",
+      "provider": "windhawk",
+      "evidence": "mods/mouse-trail.wh.cpp; no Seelen equivalent found in current scan",
+      "runtimeEnabled": false
+    },
+    "desktopShortcutIcons": {
+      "status": "chosen_by_user",
+      "provider": "existing_workbench",
+      "integration": "project_bundled_stdio_backend",
+      "nativeApplyRestoreVerified": true,
+      "scope": "Windows .lnk and .url shortcuts"
+    },
+    "imageToIco": {
+      "status": "chosen_by_user",
+      "provider": "existing_workbench",
+      "integration": "automatic_on_image_import",
+      "standalonePanel": false,
+      "formats": [
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "bmp",
+        "gif",
+        "tif",
+        "tiff",
+        "ico"
+      ]
+    },
+    "globalCursorSchemes": {
+      "status": "chosen_by_user",
+      "provider": "existing_cursor_palette_adapter",
+      "integration": "project_bundled_stdio_backend",
+      "nativeApplyRestoreVerified": true,
+      "roles": 17
+    }
+  },
+  "desktopShell": {
+    "compiled": true,
+    "runtimeVerified": false,
+    "runtimeVerificationBlock": "automatic approval rejected native EXE launch with blocked by policy"
+  }
+}

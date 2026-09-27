@@ -1,0 +1,32 @@
+{
+  "name": "seelen-windhawk-workbench-dev",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "catalog": "tsx build-catalog.ts",
+    "build": "npm run catalog && tsx build.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "preview": "tsx server.ts"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.0",
+    "antd": "^6.3.6",
+    "esbuild-svelte": "^0.9.3",
+    "i18next": "^26.0.6",
+    "js-yaml": "^4.1.0",
+    "preact": "^10.29.1",
+    "react-i18next": "^17.0.4",
+    "svelte": "^5.55.4"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.6.0",
+    "esbuild": "^0.28.0",
+    "esbuild-css-modules-plugin": "^3.1.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,149 @@
+header:
+  labels:
+    theme_workbench: Theme workbench
+theme_workbench:
+  title: Theme workbench
+  subtitle: Compose Seelen appearance and Windhawk modules in one page.
+  native_mode: Seelen settings
+  preview_mode: Development preview
+  preview_notice: Desktop shortcuts and mouse pointers can be applied to this PC. Wallpaper parallax is a preview; Seelen appearance requires the compiled application.
+  name: Theme name
+  unsaved: Unsaved changes
+  saved: Saved draft
+  import: Import configuration
+  export: Export configuration
+  overview: Overview
+  seelen: Seelen appearance
+  windhawk: Windhawk modules
+  composition_notice: Composition illustration · not a live desktop screenshot
+  desktop: Desktop
+  selection_counts: '{{themes}} themes · {{icons}} icon packs · {{mods}} modules'
+  current_selection: Current selection
+  seelen_scope: Themes style Seelen components. Icon packs apply to Seelen application icons.
+  windhawk_notice: Adding a module saves its configuration. Install and enable it in Windhawk to change native Windows components.
+  seelen_description: Choose installed resources. Apply Seelen appearance when ready.
+  themes: Themes
+  icon_packs: Icon packs
+  catalog_count: '{{count}} modules from the local source repository'
+  search: Search modules, authors or target processes
+  selected_only: Selected only
+  select_mod: 'Add {{name}} to the configuration'
+  preset: 'Preset for {{name}}'
+  choose_preset: Choose a preset
+  view_source: View source and license
+  no_results: No matching modules
+  load_more: Show more modules
+  selected_count: '{{count}} Windhawk modules selected'
+  restore_draft: Revert draft changes
+  save_draft: Save draft
+  apply_seelen: Apply Seelen appearance
+  draft_saved: Configuration saved. System appearance was not changed.
+  exported: Configuration exported. Resources remain in their original libraries.
+  export_started: Download requested. Resources remain in their original libraries.
+  exported_location: 'Configuration saved to {{path}}'
+  pending_changes: Save or cancel the other Seelen settings before applying this appearance selection.
+  imported: Configuration loaded into the draft. Check missing dependencies before applying.
+  dependencies_missing: Some resources are missing or their source versions changed.
+  invalid_recipe: Invalid theme configuration. The current draft has been preserved.
+  recipe_too_large: Configuration exceeds the 1 MB size limit.
+  seelen_applied: Seelen appearance applied. Windhawk modules remain configuration selections.
+  widget_settings: Component settings
+  widget_description: Configure the existing Seelen components below; use the Seelen header to save these settings.
+  parallax:
+    title: Wallpaper + Parallax
+    description: Move and tilt the same image or video layer smoothly with the pointer.
+    enabled: Enable combined parallax
+    surface: Image and video parallax preview
+    move_pointer: Move the pointer over the preview. Edge compensation crops a small part of the media.
+    effect_off: Parallax is off. Images and videos continue to display normally.
+    example_image: Example image
+    example_video: Example video
+    choose_file: Choose local image or video
+    pause: Pause preview
+    resume: Resume preview
+    sample_image: Example image · original test scene
+    sample_video: Example video · animated test pattern
+    preset: Motion preset
+    strength: Motion strength
+    perspective: Enable perspective tilt
+    tilt: Maximum tilt
+    opposite: Move opposite to pointer
+    elegance: Elegance · subtle
+    silk: Silk · slow
+    depth: Depth · pronounced
+    cinema: Cinema · wide
+    media_notice: Local media is used only in this preview. Drafts and exported configurations store the parallax parameters.
+    unsupported: Choose an image or video supported by your browser.
+    load_failed: Media could not be decoded. Choose a valid image or a video format supported by the browser.
+
+  desktop_settings:
+    icons_title: Desktop icons
+    icons_description: Select desktop shortcuts and replace their icons with your own pictures, individually or in batches.
+    windows_live: Applies to this PC
+    loading: Reading Windows desktop and cursor settings…
+    desktop_unavailable: Desktop component unavailable. Reopen using the source workbench launcher.
+    desktop_reconnect: The desktop component restarted. Please try again.
+    file_too_large: The file is empty or exceeds 32 MB.
+    read_failed: Could not read the file. Please select it again.
+    search_icons: Search desktop shortcuts
+    refresh_icons: Refresh desktop list
+    select_visible: Select search results
+    clear_selection: Clear selection
+    desktop_shortcuts: Desktop shortcuts on this PC
+    select_shortcut: 'Select {{name}}'
+    no_shortcuts: No shortcuts found. Supports .lnk and .url; This PC, Recycle Bin and folders are not included.
+    choose_artwork: Choose a picture
+    image_formats: PNG / JPG / WebP / BMP / GIF / TIFF / ICO. Animated images use the first frame.
+    choose_image: Choose picture
+    replace_icons: 'Replace {{count}} selected icons'
+    image_ready: Picture ready. Click Replace to apply it.
+    icon_backup_notice: Shortcuts are backed up before applying. Pictures are saved in the local library.
+    icons_applied: 'Replaced {{count}} desktop icons and backed up the original shortcuts.'
+    icons_restored: 'Restored {{count}} desktop icons.'
+    saved_images: 'Saved pictures ({{count}})'
+    use_image: 'Use picture {{name}}'
+    icon_history: Icon backups and recovery
+    item_count: '{{count}} items'
+    restore_batch: Undo this replacement
+    read_issues: '{{count}} read notices'
+    cursors_title: Mouse pointers
+    cursors_description: Change all 17 Windows system pointer roles using static or animated cursors.
+    scheme: Cursor scheme
+    current_cursors: Current system pointers
+    default_cursors: Windows default
+    custom_scheme: Custom draft
+    cursor_size: Cursor size
+    read_current: Reload system pointers
+    cursors_loaded: Current system pointers loaded.
+    import_cursor_folder: Import cursor folder
+    choose_cursor_files: Select CUR or ANI files.
+    cursor_imported: 'Matched {{count}} roles from {{total}} files. Unmatched roles keep their current settings.'
+    system_default: System default
+    replace_cursor: Choose cursor file
+    reset_role: Reset this role
+    scheme_name: Scheme name
+    save_scheme: Save cursor scheme
+    scheme_saved: Cursor scheme saved. System pointers have not changed.
+    apply_cursors: Apply mouse pointers
+    cursors_applied: Mouse pointers applied to Windows. A recovery record was saved.
+    restore_cursors: Undo last cursor change
+    cursors_restored: Previous mouse settings restored.
+    cursor_notice: Selections remain a draft until you apply them. Programs using their own cursors may ignore the system scheme.
+    roles:
+      Arrow: Normal select
+      Help: Help select
+      AppStarting: Working in background
+      Wait: Busy
+      Crosshair: Precision select
+      IBeam: Text select
+      NWPen: Handwriting
+      No: Unavailable
+      SizeNS: Vertical resize
+      SizeWE: Horizontal resize
+      SizeNWSE: Diagonal resize 1
+      SizeNESW: Diagonal resize 2
+      SizeAll: Move
+      UpArrow: Alternate select
+      Hand: Link select
+      Person: Person select
+      Pin: Location select

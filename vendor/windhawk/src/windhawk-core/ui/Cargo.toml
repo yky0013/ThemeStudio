@@ -1,0 +1,182 @@
+[package]
+name = "windhawk-ui"
+description = "The native Windhawk management UI: a Tauri 3 shell over windhawk-core.dll via the C ABI"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+# A thin Tauri binary (main.rs) over a testable library (lib.rs), matching the
+# CLI's lib+bin precedent: the protocol-adapter policy lives in the lib; main.rs
+# only builds the Tauri app and runs it. The IPC logic (dispatch, the command
+# handlers, the pure shapers) is exercisable headless through the
+# EmitSink/BridgeCtx seams with no Tauri loop.
+
+# Outside the core layering: like the CLI and the bridge it reaches the core
+# only through the C ABI, driving the DLL entirely through windhawk-core-host
+# (load + ABI/contract gate, session config, typed invoke, the flat HostError).
+# As a real consumer it also depends on the pure wire-DTO crate
+# windhawk-core-protocol + serde_json to parse and shape results into typed
+# DTOs, on serde for the derives the request DTOs and the envelope use, and on
+# tauri for the webview shell + IPC transport, with tauri-runtime-wry as the
+# webview runtime it selects. The launcher + environment
+# surface adds: tauri-plugin-single-instance (re-launch handshake),
+# tauri-plugin-opener (the external-link shim), and windows-sys for the three
+# places the UI touches Win32 directly - the log window's in-process DBWIN
+# capture (logwindow/), the detect-running named mutex + fatal-startup message
+# box (lifecycle/window.rs), and the theme read plus the native-frame theming
+# (shell.rs). The features are the union those modules need.
+[dependencies]
+windhawk-core-host = { workspace = true }
+windhawk-core-protocol = { workspace = true }
+# The runtime-broker transport: the duplex named-pipe channel between this
+# (unelevated) process and the elevated helper that owns the privileged core
+# session. The crate knows no Windhawk command - the frame set lives in
+# src/broker/wire.rs, and the protocol integer, the product version, and the frame
+# cap are handed to it from there.
+windhawk-broker = { workspace = true }
+serde = { workspace = true }
+# raw_value: the channel carries the core's request envelopes and responses
+# verbatim, as embedded raw JSON rather than as re-serialized values, so error
+# codes, messages, and the core's own origins cross the process boundary byte
+# for byte.
+serde_json = { workspace = true, features = ["raw_value"] }
+tauri = { workspace = true }
+tauri-runtime-wry = { workspace = true }
+tauri-plugin-single-instance = { workspace = true }
+tauri-plugin-opener = { workspace = true }
+windows-sys = { workspace = true, features = [
+    "Win32_Foundation",
+    # CreateMutexW/CreateEventW/CreateFileMappingW each take a *const
+    # SECURITY_ATTRIBUTES, so windows-sys only generates them when Win32_Security is
+    # enabled (even though the detect mutex passes a null pointer). The DBWIN objects
+    # carry a real descriptor built from an SDDL (Win32_Security_Authorization) so any
+    # integrity level can write to them (logwindow/capture.rs). lifecycle/window.rs
+    # also tests the token against the Administrators alias
+    # (AllocateAndInitializeSid/CheckTokenMembership/FreeSid), which is what decides
+    # whether a non-portable install wants its elevated helper.
+    "Win32_Security",
+    "Win32_Security_Authorization",
+    # lifecycle/window.rs opens the named event that says a consent dialog is on
+    # screen for a state read alone, which is SYNCHRONIZE - one of the standard
+    # access rights, generated under Win32_Storage_FileSystem.
+    "Win32_Storage_FileSystem",
+    # The log capture decodes the system-codepage (CP_ACP) DBWIN bytes to UTF-16
+    # (Win32_Globalization), timestamps lines (Win32_System_SystemInformation), and
+    # resolves the writing process's name (Win32_System_Diagnostics_ToolHelp).
+    "Win32_Globalization",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_Memory",
+    "Win32_System_SystemInformation",
+    "Win32_System_Threading",
+    # clipboard.rs watches the clipboard from the main window
+    # (AddClipboardFormatListener) and writes what the webview copied back under this
+    # window's ownership - GetClipboardOwner plus open/empty/enumerate/get/set - which is
+    # what gets those copies into Windows clipboard history. It duplicates each format
+    # through the Global* calls of Win32_System_Memory above, and scopes the rewrite to
+    # this app's own webview process over Win32_System_Diagnostics_ToolHelp +
+    # Win32_System_Threading.
+    "Win32_System_DataExchange",
+    # shell.rs reads the light/dark preference from the registry
+    # (Win32_System_Registry) and pushes the matching caption, text, and border
+    # colors to the native window frame via DwmSetWindowAttribute (Win32_Graphics_Dwm).
+    "Win32_System_Registry",
+    "Win32_Graphics_Dwm",
+    # The startup splash (splash/) is a plain Win32 window this crate creates and
+    # paints itself, covering the main window's client area while WebView2 comes
+    # up. It paints the themed background plus the Windhawk mark - an SVG outline
+    # filled as an antialiased path - through GDI+ (Win32_Graphics_GdiPlus) into an
+    # off-screen bitmap it blits from (Win32_Graphics_Gdi: CreateCompatibleDC/
+    # CreateCompatibleBitmap/BitBlt on the device context from BeginPaint), and
+    # sizes the mark for the display it is on (Win32_UI_HiDpi: GetDpiForWindow).
+    "Win32_Graphics_Gdi",
+    "Win32_Graphics_GdiPlus",
+    # shell.rs also gives the window DPI-correct title-bar/taskbar icons: it reads the
+    # window DPI (Win32_UI_HiDpi: GetDpiForWindow/GetSystemMetricsForDpi) and loads the
+    # right-sized image from the executable's embedded icon group
+    # (Win32_System_LibraryLoader: GetModuleHandleW) via LoadIconWithScaleDown
+    # (Win32_UI_Controls), then sets it with WM_SETICON (Win32_UI_WindowsAndMessaging,
+    # which also backs the fatal-startup message box and, in the broker process,
+    # the PeekMessageW/PostThreadMessageW/GetMessageW that take the startup
+    # hourglass back off the pointer - broker/serve.rs).
+    "Win32_System_LibraryLoader",
+    "Win32_UI_Controls",
+    "Win32_UI_HiDpi",
+    # shell.rs reads the Ctrl key state (GetKeyState/VK_CONTROL) when deciding whether
+    # to suppress a WebView2 browser shortcut (disable_browser_shortcuts).
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_WindowsAndMessaging",
+    # lifecycle/window.rs sets the process's explicit AppUserModelID at startup
+    # (Win32_UI_Shell: SetCurrentProcessExplicitAppUserModelID) so the taskbar groups
+    # the UI window under a stable Windhawk identity instead of the exe path. The
+    # elevation ladder's prompt rung raises the UAC dialog through the same module
+    # (ShellExecuteExW with the runas verb, keeping the process handle the shutdown
+    # wait and the exit-code readout need).
+    "Win32_UI_Shell",
+    # The broker process writes its pre-handshake failures through
+    # OutputDebugStringW (Win32_System_Diagnostics_Debug): it has no console, no
+    # window, and no channel yet, and the log pane already captures that stream.
+    "Win32_System_Diagnostics_Debug",
+] }
+# shell.rs disables a few WebView2 browser shortcuts (show downloads, print, reload,
+# hard reload, caret browsing) the app does not want by marking them handled on the
+# controller's
+# AcceleratorKeyPressed event, and trims the right-click context menu to back/forward
+# plus the input clipboard items on the controller's ContextMenuRequested event, and
+# grants the app's own pages the clipboard permission on the core object's
+# PermissionRequested event (a hosted WebView2 asks the host app, and a request nobody
+# answers becomes its own dialog) - all reached through Tauri's `with_webview`.
+# webview2-com is already in the tauri transitive
+# tree (no new license/advisory); this promotes it to a direct edge so the ICoreWebView2*
+# types and the event-handler wrappers are nameable. windows-core (the same version
+# webview2-com pulls) gives shell.rs the `Interface` trait to QueryInterface the core
+# object up to ICoreWebView2_11 (which carries ContextMenuRequested) and the `PWSTR`
+# type to read each menu item's name.
+webview2-com = { workspace = true }
+windows-core = { workspace = true }
+# The `log` facade the Tauri/wry window stack reports through, for the capture in
+# lifecycle/diagnostics.rs: a window or webview creation failure is logged there
+# and then swallowed (the build answers Ok either way), so capturing the last few
+# records is what keeps the reason - the WebView2 HRESULT - for the fatal message
+# the UI shows in its place. webview2-com above doubles as the direct edge that
+# same module asks WebView2 itself why the data folder could not be opened over.
+log = { workspace = true }
+# The ergonomic windows-rs COM wrappers, for the native file dialogs (file_dialog.rs):
+# user-data export opens a Save picker, and user-data import and a filePath or
+# folderPath setting's Browse button an Open picker, via IFileSaveDialog/IFileOpenDialog
+# (Win32_UI_Shell + the COMDLG_FILTERSPEC in Win32_UI_Shell_Common), created and
+# shown over a COM apartment (Win32_System_Com),
+# parented to the main window found by class (Win32_UI_WindowsAndMessaging). windows
+# 0.62 is already in the tree via webview2-com, so this adds no new crate.
+# The same crate enumerates the installed font families for a fontFamily setting's
+# completion (fonts.rs): EnumFontFamiliesExW over the screen DC (Win32_Graphics_Gdi).
+# The same crate also carries the Task Scheduler COM interfaces the elevation
+# ladder's first rung drives (broker/launch.rs): ITaskService/IRegisteredTask,
+# whose RunEx hands the broker its channel through a BSTR VARIANT parameter
+# (Win32_System_Variant, which the generated bindings gate behind Win32_System_Ole
+# as well). That rung is what keeps the everyday launch free of a UAC prompt.
+windows = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Graphics_Gdi",
+    "Win32_System_Com",
+    "Win32_System_Ole",
+    "Win32_System_TaskScheduler",
+    "Win32_System_Variant",
+    "Win32_UI_Shell",
+    "Win32_UI_Shell_Common",
+    "Win32_UI_WindowsAndMessaging",
+] }
+# The editor subsystem (editor/) reads VSCodium's settings.json files, which are
+# JSONC (comments + trailing commas); parse_jsonc in editor/mod.rs reads them
+# through this so a comment-bearing file is not mistaken for empty and clobbered.
+jsonc-parser = { workspace = true }
+
+[build-dependencies]
+tauri-build = { workspace = true }
+
+# tempfile backs the scratch directories and files the tests build.
+[dev-dependencies]
+tempfile = { workspace = true }
+
+[lints]
+workspace = true

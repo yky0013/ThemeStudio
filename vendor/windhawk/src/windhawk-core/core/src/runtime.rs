@@ -1,0 +1,381 @@
+//! The asynchronous-operation runtime: per-operation threads, the operation
+//! registry, and the `OpHandle` state machine whose terminal transition emits
+//! the terminal event - "exactly one completed or failed event" is enforced
+//! here, not by discipline in operation bodies.
+
+use std::collections::HashMap;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
+use std::thread::JoinHandle;
+
+use serde_json::{Map, Value};
+use windhawk_core_ports::CancelToken;
+use windhawk_core_protocol::OperationEvent;
+
+use crate::callbacks::{CallbackDispatcher, LogLevel};
+use crate::error::CoreError;
+
+#[derive(PartialEq, Eq)]
+enum OpState {
+    Running,
+    Terminal,
+}
+
+/// State shared between an operation thread, the registry, and the
+/// `OpContext` handed to the operation body.
+pub struct OpShared {
+    op_id: u64,
+    cancel: CancelToken,
+    state: Mutex<OpState>,
+    dispatcher: Arc<CallbackDispatcher>,
+}
+
+impl OpShared {
+    /// Transition to terminal and emit the terminal event; returns false
+    /// (emitting nothing) if already terminal.
+    fn transition_terminal(&self, event: &OperationEvent) -> bool {
+        {
+            let mut state = self.state.lock().unwrap_or_else(|e| e.into_inner());
+            if *state == OpState::Terminal {
+                return false;
+            }
+            *state = OpState::Terminal;
+        }
+        self.dispatcher.event(self.op_id, event.to_json());
+        true
+    }
+
+    fn is_terminal(&self) -> bool {
+        *self.state.lock().unwrap_or_else(|e| e.into_inner()) == OpState::Terminal
+    }
+}
+
+/// The capability surface of an operation body: progress events and
+/// cooperative cancellation. Terminal events are not emittable from here;
+/// they belong to the state machine.
+pub struct OpContext {
+    shared: Arc<OpShared>,
+    /// Extra fields merged into every object-shaped `progress` payload, so an
+    /// operation that drives sub-operations (import driving per-mod installs)
+    /// can attribute their events without threading a wrapping context through
+    /// the sub-operation's own emit calls. Empty by default (a no-op).
+    progress_stamp: Mutex<Map<String, Value>>,
+}
+
+impl OpContext {
+    pub fn op_id(&self) -> u64 {
+        self.shared.op_id
+    }
+
+    /// Set (or clear, with an empty map) the fields stamped onto every
+    /// object-shaped `progress` payload until the next call. `importUserData`
+    /// sets `{ modId, index, total }` around each per-mod install so the
+    /// install's own `compileTarget` progress is attributed to the right mod.
+    pub fn set_progress_stamp(&self, stamp: Map<String, Value>) {
+        *self
+            .progress_stamp
+            .lock()
+            .unwrap_or_else(|e| e.into_inner()) = stamp;
+    }
+
+    pub fn emit_progress(&self, mut payload: Value) {
+        // Merge the active stamp into an object payload without overwriting a
+        // field the payload already carries (the emitter's own value wins).
+        let stamp = self
+            .progress_stamp
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        if !stamp.is_empty()
+            && let Value::Object(map) = &mut payload
+        {
+            for (key, value) in stamp.iter() {
+                map.entry(key.clone()).or_insert_with(|| value.clone());
+            }
+        }
+        drop(stamp);
+        self.shared.dispatcher.event(
+            self.shared.op_id,
+            OperationEvent::Progress { payload }.to_json(),
+        );
+    }
+
+    /// `startUpdate`'s one-shot download-to-install transition (the TS
+    /// `onInstalling`); a non-terminal event, like progress.
+    pub fn emit_installing(&self) {
+        self.shared
+            .dispatcher
+            .event(self.shared.op_id, OperationEvent::Installing.to_json());
+    }
+
+    pub fn cancel_token(&self) -> &CancelToken {
+        &self.shared.cancel
+    }
+
+    /// Convenience for poll-style cancellation points.
+    pub fn check_canceled(&self) -> Result<(), CoreError> {
+        if self.shared.cancel.is_canceled() {
+            Err(CoreError::canceled())
+        } else {
+            Ok(())
+        }
+    }
+}
+
+/// The operation body: runs on the operation thread with its context.
+pub type OpBody = Box<dyn FnOnce(&OpContext) -> Result<Value, CoreError> + Send>;
+
+/// The synchronously validated part of an async command: a closure that
+/// runs the operation body on its operation thread.
+pub struct PreparedOp(pub OpBody);
+
+struct OpEntry {
+    shared: Arc<OpShared>,
+    join: Option<JoinHandle<()>>,
+}
+
+#[derive(Default)]
+struct RegistryInner {
+    ops: HashMap<u64, OpEntry>,
+    /// Join handles of terminal operations, joined opportunistically on the
+    /// next spawn and finally on destroy, so every thread is joined without the
+    /// registry growing unboundedly.
+    finished: Vec<JoinHandle<()>>,
+}
+
+pub struct OperationRegistry {
+    next_id: AtomicU64,
+    inner: Mutex<RegistryInner>,
+}
+
+impl OperationRegistry {
+    pub fn new() -> Self {
+        Self {
+            next_id: AtomicU64::new(1),
+            inner: Mutex::new(RegistryInner::default()),
+        }
+    }
+
+    /// Spawn an operation thread for a validated async command and return its
+    /// nonzero operation id.
+    pub fn spawn(&self, dispatcher: Arc<CallbackDispatcher>, prepared: PreparedOp) -> u64 {
+        self.reap_finished();
+
+        let op_id = self.next_id.fetch_add(1, Ordering::Relaxed);
+        let shared = Arc::new(OpShared {
+            op_id,
+            cancel: CancelToken::new(),
+            state: Mutex::new(OpState::Running),
+            dispatcher: dispatcher.clone(),
+        });
+
+        // Register before spawning so the thread's terminal bookkeeping
+        // always finds its entry.
+        {
+            let mut inner = self.inner.lock().unwrap_or_else(|e| e.into_inner());
+            inner.ops.insert(
+                op_id,
+                OpEntry {
+                    shared: shared.clone(),
+                    join: None,
+                },
+            );
+        }
+
+        let thread_shared = shared.clone();
+        let body = prepared.0;
+        let spawned = std::thread::Builder::new()
+            .name(format!("windhawk-core op {op_id}"))
+            .spawn(move || {
+                let ctx = OpContext {
+                    shared: thread_shared.clone(),
+                    progress_stamp: Mutex::new(Map::new()),
+                };
+                // The operation-thread top-frame panic firewall.
+                let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| body(&ctx)));
+                let event = match result {
+                    Ok(Ok(value)) => OperationEvent::Completed { result: value },
+                    Ok(Err(error)) => OperationEvent::Failed {
+                        error: error.to_wire(),
+                    },
+                    Err(panic) => {
+                        let message = panic_message(panic);
+                        thread_shared.dispatcher.log(
+                            LogLevel::Error,
+                            format!("operation {op_id} panicked: {message}"),
+                        );
+                        OperationEvent::Failed {
+                            error: CoreError::internal(format!("operation panicked: {message}"))
+                                .to_wire(),
+                        }
+                    }
+                };
+                thread_shared.transition_terminal(&event);
+            });
+
+        match spawned {
+            Ok(handle) => self.store_join(op_id, handle),
+            Err(e) => {
+                // Spawn failure: terminate the operation ourselves; the
+                // caller already received the operation id.
+                shared.transition_terminal(&OperationEvent::Failed {
+                    error: CoreError::internal(format!("failed to spawn operation thread: {e}"))
+                        .to_wire(),
+                });
+            }
+        }
+
+        op_id
+    }
+
+    /// Signal cancellation (`WhCoreCancel`): true if the operation was found
+    /// and signaled, false for unknown or terminal ids (a harmless no-op).
+    pub fn cancel(&self, op_id: u64) -> bool {
+        let shared = {
+            let inner = self.inner.lock().unwrap_or_else(|e| e.into_inner());
+            match inner.ops.get(&op_id) {
+                Some(entry) if !entry.shared.is_terminal() => Some(entry.shared.clone()),
+                _ => None,
+            }
+        };
+        match shared {
+            // Cancel outside the registry lock: hooks run on the
+            // canceling thread and must not run under a rank-3 lock.
+            Some(shared) => {
+                shared.cancel.cancel();
+                true
+            }
+            None => false,
+        }
+    }
+
+    /// Cancel everything and join every operation thread (destroy steps 2
+    /// and 3). Each operation posts its terminal event - `CANCELED` or, if
+    /// it won the race, its real result.
+    pub fn cancel_all_and_join(&self) {
+        let (live, finished) = {
+            let mut inner = self.inner.lock().unwrap_or_else(|e| e.into_inner());
+            (
+                std::mem::take(&mut inner.ops),
+                std::mem::take(&mut inner.finished),
+            )
+        };
+        for entry in live.values() {
+            entry.shared.cancel.cancel();
+        }
+        for (_, entry) in live {
+            if let Some(join) = entry.join {
+                let _ = join.join();
+            }
+        }
+        for join in finished {
+            let _ = join.join();
+        }
+    }
+
+    /// Park a spawned operation thread's join handle: in its registry entry,
+    /// or, when the thread reached terminal fast enough for a concurrent
+    /// `reap_finished` to take the entry first, alongside the other finished
+    /// handles. Dropping it instead would detach the thread and put it beyond
+    /// `cancel_all_and_join`.
+    fn store_join(&self, op_id: u64, handle: JoinHandle<()>) {
+        let mut guard = self.inner.lock().unwrap_or_else(|e| e.into_inner());
+        let inner = &mut *guard;
+        match inner.ops.get_mut(&op_id) {
+            Some(entry) => entry.join = Some(handle),
+            None => inner.finished.push(handle),
+        }
+    }
+
+    /// Move terminal entries' join handles aside and join the (already
+    /// exited) threads, keeping the registry bounded on long-lived
+    /// sessions.
+    fn reap_finished(&self) {
+        let to_join = {
+            let mut inner = self.inner.lock().unwrap_or_else(|e| e.into_inner());
+            let terminal_ids: Vec<u64> = inner
+                .ops
+                .iter()
+                .filter(|(_, e)| e.shared.is_terminal())
+                .map(|(id, _)| *id)
+                .collect();
+            for id in terminal_ids {
+                if let Some(entry) = inner.ops.remove(&id)
+                    && let Some(join) = entry.join
+                {
+                    inner.finished.push(join);
+                }
+            }
+            std::mem::take(&mut inner.finished)
+        };
+        for join in to_join {
+            let _ = join.join();
+        }
+    }
+}
+
+/// The reportable text of a `catch_unwind` payload: the panic message when the
+/// payload is one of the two shapes `panic!` produces, a placeholder otherwise.
+///
+/// Takes the payload box by value on purpose. Behind a `&Box<dyn Any + Send>`
+/// the box itself is what unsize-coerces into the `&dyn Any` parameter, so
+/// every downcast would miss and every panic would report the placeholder.
+pub fn panic_message(panic: Box<dyn std::any::Any + Send>) -> String {
+    if let Some(s) = panic.downcast_ref::<&str>() {
+        (*s).to_owned()
+    } else if let Some(s) = panic.downcast_ref::<String>() {
+        s.clone()
+    } else {
+        "non-string panic payload".to_owned()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_caught_panic_reports_the_message_it_carried() {
+        // Both payload shapes, taken from a real unwind rather than a hand-made
+        // box, so the report is asserted over what `catch_unwind` hands back.
+        let formatted = std::panic::catch_unwind(|| {
+            panic!("boom {}", 1);
+        })
+        .unwrap_err();
+        assert_eq!(panic_message(formatted), "boom 1");
+
+        let literal = std::panic::catch_unwind(|| {
+            panic!("boom");
+        })
+        .unwrap_err();
+        assert_eq!(panic_message(literal), "boom");
+
+        assert_eq!(panic_message(Box::new(7u32)), "non-string panic payload");
+    }
+
+    #[test]
+    fn a_handle_whose_entry_was_reaped_is_still_joined_on_destroy() {
+        let registry = OperationRegistry::new();
+        // An operation whose entry a concurrent reap took before the spawning
+        // thread got back to store the handle.
+        registry.store_join(1, std::thread::spawn(|| {}));
+        assert_eq!(
+            registry
+                .inner
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .finished
+                .len(),
+            1
+        );
+
+        registry.cancel_all_and_join();
+        assert!(
+            registry
+                .inner
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .finished
+                .is_empty()
+        );
+    }
+}

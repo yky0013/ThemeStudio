@@ -1,0 +1,14 @@
+{
+  "allInputsInsideProject": true,
+  "inputCount": 1754,
+  "keySourceInputs": [
+    "vendor/Seelen-UI/libs/ui/svelte/components/Wallpaper/ParallaxLayer.svelte",
+    "vendor/Seelen-UI/libs/ui/svelte/components/Wallpaper/components/ImageWallpaper.svelte",
+    "vendor/Seelen-UI/libs/ui/svelte/components/Wallpaper/components/VideoWallpaper.svelte",
+    "vendor/Seelen-UI/src/ui/react/settings/modules/themeWorkbench/infra/DesktopPanel.tsx",
+    "vendor/Seelen-UI/src/ui/react/settings/components/navigation/NavigationFrame.tsx",
+    "vendor/windhawk/src/windhawk-frontend/apps/windhawk-frontend/src/app/components/EllipsisText.tsx",
+    "vendor/windhawk/src/windhawk-frontend/apps/windhawk-frontend/src/app/panel/shared/ModSelectBox.ts",
+    "vendor/windhawk/src/windhawk-frontend/apps/windhawk-frontend/src/app/panel/shared/ModCardFrame.tsx"
+  ]
+}

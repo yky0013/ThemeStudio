@@ -1,0 +1,12 @@
+node_modules/
+.venv/
+.cache/
+build/
+dist/
+release/
+qa/runtime/
+*.log
+*.pyc
+__pycache__/
+vendor/**/target/
+vendor/**/node_modules/

@@ -1,0 +1,81 @@
+#pragma once
+
+#include "no_destructor.h"
+#include "portable_settings.h"
+
+class StorageManager {
+   public:
+    StorageManager(const StorageManager&) = delete;
+    StorageManager(StorageManager&&) = delete;
+    StorageManager& operator=(const StorageManager&) = delete;
+    StorageManager& operator=(StorageManager&&) = delete;
+
+    static StorageManager& GetInstance();
+
+    std::unique_ptr<PortableSettings> GetAppConfig(PCWSTR section);
+    std::unique_ptr<PortableSettings> GetModConfig(PCWSTR modName,
+                                                   PCWSTR section);
+    std::unique_ptr<PortableSettings> GetModWritableConfig(PCWSTR modName,
+                                                           PCWSTR section,
+                                                           bool write);
+    void EnumMods(std::function<void(PCWSTR)> enumCallback);
+
+    std::filesystem::path GetModStoragePath(PCWSTR modName);
+
+    bool IsPortable();
+    std::filesystem::path GetEnginePath(
+        USHORT machine = IMAGE_FILE_MACHINE_UNKNOWN);
+    std::filesystem::path GetEngineBinariesPath();
+    std::filesystem::path GetModsPath(
+        USHORT machine = IMAGE_FILE_MACHINE_UNKNOWN);
+    std::filesystem::path GetSymbolsPath();
+    std::filesystem::path GetModsWritablePath();
+
+    std::filesystem::path GetEngineAppDataPath();
+    // The base registry key (root and subkey) used for settings, or nullopt for
+    // portable installs that store settings in INI files.
+    std::optional<std::pair<HKEY, std::wstring>> GetSettingsRegistryKey();
+
+    class ModConfigChangeNotification {
+       public:
+        ModConfigChangeNotification();
+
+        HANDLE GetHandle();
+        void ContinueMonitoring();
+
+       private:
+        struct RegistryState {
+            wil::unique_hkey key;
+            wil::unique_event_nothrow eventHandle;
+        };
+
+        struct IniFileState {
+            wil::unique_hfind_change handle;
+        };
+
+        std::variant<std::monostate, RegistryState, IniFileState>
+            monitoringState;
+    };
+
+   private:
+    friend class NoDestructorIfTerminating<StorageManager>;
+
+    StorageManager();
+    ~StorageManager();
+
+    void RegistryEnumMods(std::function<void(PCWSTR)> enumCallback);
+    void IniFilesEnumMods(std::function<void(PCWSTR)> enumCallback);
+
+    struct RegistryPath {
+        HKEY hKey = 0;
+        std::wstring subKey;
+    };
+
+    struct IniFilePath {
+        std::wstring path;
+    };
+
+    bool portableStorage;
+    std::filesystem::path appDataPath;
+    std::variant<std::monostate, RegistryPath, IniFilePath> settingsPath;
+};

@@ -1,0 +1,1170 @@
+//! The event dispatcher: one generic router with NO per-command `match`. For
+//! each `(generation, op_id, event_json)` it runs the host's [`classify_event`],
+//! looks the op up in the [`OpRegistry`] - which pairs the id with the session
+//! that issued it - and acts on the registered [`AsyncKind`] - the
+//! progress mapper for events; a terminal `Shaped` shaper, a `Composite`
+//! follow-up-then-merge, or an `Internal` side effect for the reply, and the
+//! write a successful terminal `records` beside it. The
+//! per-command knowledge lives in the handler that built the `AsyncKind`, never
+//! here; the `failed -> WireError` decode lives ONCE in the host's
+//! `classify_event`, not here.
+//!
+//! The two impure steps are reached through injected seams, so the routing is
+//! exercisable headless against a recording [`EmitSink`] with no Tauri loop: the
+//! core call (an `Fn(&FollowUp) -> Result<Value, HostError>` - the host
+//! `Session`/`GatedCore` invoke in production, a canned result in tests), which
+//! carries both a composite's follow-up between `follow_up` and `merge` and a
+//! terminal record's write; and the [`HostEffect`] a
+//! progress event names (an `Fn(HostEffect)` the bridge performs against its
+//! context, recorded in tests).
+
+use serde_json::Value;
+use windhawk_core_host::{EventClass, HostError, classify_event};
+
+use crate::ipc::emit_sink::EmitSink;
+use crate::ipc::envelope::Envelope;
+use crate::ipc::outcome::{Completion, FollowUp, HostEffect, Terminal, TerminalRecord};
+use crate::ipc::reply;
+use crate::logwindow::LogController;
+use crate::pump::ops::{OpEntry, OpRegistry};
+
+/// Route one core operation event to the op's registered handling. `generation`
+/// is the session that produced the event: an event only reaches an op of its own
+/// session, so it identifies the op-id as much as `op_id` does ([`OpRegistry`]).
+/// An event for an op not yet registered is buffered by the same registry call
+/// that missed it (the register/event race); a malformed event JSON is logged and
+/// dropped (it cannot be a terminal we owe a reply for, since it did not decode).
+// Five of the parameters are the injected seams that keep this router pure and
+// headless-testable (the registry, the emit sink, the log controller, and the two
+// closures); the event itself is the last three.
+#[allow(clippy::too_many_arguments)]
+pub fn dispatch_event(
+    ops: &OpRegistry,
+    emit: &dyn EmitSink,
+    log: &dyn LogController,
+    follow_up: &dyn Fn(&FollowUp) -> Result<Value, HostError>,
+    effect: &dyn Fn(HostEffect),
+    generation: u64,
+    op_id: u64,
+    event_json: &str,
+) {
+    let class = match classify_event(event_json) {
+        Ok(class) => class,
+        Err(error) => {
+            eprintln!("windhawk-ui: undecodable operation event for op {op_id}: {error}");
+            return;
+        }
+    };
+
+    match class {
+        EventClass::Progress(op_event) => {
+            if let Some(kind) = ops.kind_or_buffer(generation, op_id, event_json) {
+                // Registered with a progress mapper: emit its event envelopes. The
+                // common case (no mapper) ignores progress.
+                if let Some(mapper) = kind.progress {
+                    for envelope in mapper(&op_event) {
+                        emit.emit(envelope);
+                    }
+                }
+                // A progress event that marks a host-state change names its
+                // effect, which the bridge performs - so the change is announced
+                // as it happens rather than when the whole op ends.
+                if let Some(mapper) = kind.effect
+                    && let Some(named) = mapper(&op_event)
+                {
+                    effect(named);
+                }
+            }
+        }
+        EventClass::Completed(value) => {
+            if let Some(entry) = ops.take_or_buffer(generation, op_id, event_json) {
+                handle_terminal(emit, log, follow_up, &entry, Ok(value));
+            }
+        }
+        EventClass::Failed(wire) => {
+            if let Some(entry) = ops.take_or_buffer(generation, op_id, event_json) {
+                handle_terminal(emit, log, follow_up, &entry, Err(HostError::wire(wire)));
+            }
+        }
+    }
+}
+
+/// End an op that no event will end: run its terminal path with a supplied
+/// failure, producing exactly the reply (or internal side effect) a `failed`
+/// event from the core would have. The entry comes from
+/// [`OpRegistry::drain_and_install`], which removed it, so this cannot
+/// double-emit.
+///
+/// A free function beside [`handle_terminal`] rather than a registry method: the
+/// terminal path needs `emit`, `log`, and `follow_up`, none of which the registry
+/// knows about, and those three are available on the pump thread - the registry
+/// hands out entries, this module ends them.
+pub fn fail_terminal(
+    emit: &dyn EmitSink,
+    log: &dyn LogController,
+    follow_up: &dyn Fn(&FollowUp) -> Result<Value, HostError>,
+    entry: &OpEntry,
+    error: HostError,
+) {
+    handle_terminal(emit, log, follow_up, entry, Err(error));
+}
+
+/// Turn an op's terminal outcome into its one reply (or, for an internal op,
+/// its side effect), per the op's [`Terminal`]. A failed terminal is ALSO
+/// offered to the log controller generically (the compiler-output surface): the
+/// controller decides whether it is a local-compile failure worth surfacing, so
+/// the dispatcher keeps no per-command match. A successful one first makes the
+/// write it [`record`]s, if it names one.
+fn handle_terminal(
+    emit: &dyn EmitSink,
+    log: &dyn LogController,
+    follow_up: &dyn Fn(&FollowUp) -> Result<Value, HostError>,
+    entry: &OpEntry,
+    outcome: Result<Value, HostError>,
+) {
+    match &outcome {
+        Err(error) => log.report_op_failure(&entry.command, error),
+        Ok(completed) => record(follow_up, entry.kind.records, completed, &entry.context),
+    }
+    match entry.kind.terminal {
+        Terminal::Shaped(shaper) => {
+            // Capture the terminal error before `outcome` is moved into the shaper,
+            // then attach it to the (failure-shaped) reply so the front-end can
+            // surface it generically. The shaper stays a pure success/failure
+            // projection; `report_op_failure` above still owns the compiler-output
+            // surface, and the front-end skips COMPILER_FAILED here to avoid double
+            // surfacing.
+            let error = outcome.as_ref().err().map(reply::error_object);
+            let mut data = shaper(outcome, &entry.context);
+            if let Some(error) = error {
+                reply::attach_error_object(&mut data, error);
+            }
+            emit_reply(emit, entry, data);
+        }
+        Terminal::Composite(completion) => {
+            let data = run_composite(follow_up, &completion, &entry.context, outcome);
+            emit_reply(emit, entry, data);
+        }
+        Terminal::Internal(handler) => handler(outcome, &entry.context, follow_up),
+    }
+}
+
+/// Make the write a successful terminal owes beside its reply, if the op names
+/// one ([`AsyncKind::records`]): the catalog fetches record the versions they
+/// fetched in the user profile. Runs BEFORE a composite's follow-up, so a
+/// follow-up that reads what was just written sees it, and its own result is
+/// discarded - the reply is the terminal's business, not this call's.
+///
+/// A failure is logged and nothing else: the reply the caller is waiting for
+/// stands on its own, and the profile converges on the next fetch or listing
+/// sync. Reporting it would name a write the caller never asked for as the
+/// failure of the read it did ask for.
+fn record(
+    follow_up: &dyn Fn(&FollowUp) -> Result<Value, HostError>,
+    records: Option<TerminalRecord>,
+    completed: &Value,
+    context: &Value,
+) {
+    let Some(records) = records else {
+        return;
+    };
+    let request = records(completed, context);
+    if let Err(error) = follow_up(&request) {
+        eprintln!(
+            "windhawk-ui: terminal record '{}' failed: {error}",
+            request.command
+        );
+    }
+}
+
+/// A composite's terminal: on success, run the one follow-up call and merge; on a
+/// terminal failure, the command's failure shaper (the `follow_up`/`merge` are not
+/// consulted). A follow-up that itself errors takes the command's
+/// `on_follow_up_failure` where it names one - the op landed, so its reply can
+/// still be given - and the failure shaper where it does not.
+///
+/// EITHER way the error is attached. What the two shapers differ over is what the
+/// reply reports, not whether it admits something went wrong: a partial success
+/// is one the front-end has to be able to tell from a whole one, or it adopts
+/// stand-in values (`shape::installed::installed_mod_details_only`) as facts.
+fn run_composite(
+    follow_up: &dyn Fn(&FollowUp) -> Result<Value, HostError>,
+    completion: &Completion,
+    context: &Value,
+    outcome: Result<Value, HostError>,
+) -> Value {
+    let completed = match outcome {
+        Ok(completed) => completed,
+        Err(error) => {
+            eprintln!("windhawk-ui: composite terminal failed: {error}");
+            let mut data = (completion.on_failure)(context);
+            reply::attach_error(&mut data, &error);
+            return data;
+        }
+    };
+    let request = (completion.follow_up)(&completed, context);
+    match follow_up(&request) {
+        Ok(result) => (completion.merge)(&completed, &result, context),
+        Err(error) => {
+            eprintln!(
+                "windhawk-ui: composite follow-up '{}' failed: {error}",
+                request.command
+            );
+            // The op landed, so a command that names a shaper for it reports what
+            // the op did; one whose reply IS the follow-up has nothing to report
+            // and answers as a failure.
+            let mut data = match completion.on_follow_up_failure {
+                Some(shaper) => shaper(&completed, context),
+                None => (completion.on_failure)(context),
+            };
+            reply::attach_error(&mut data, &error);
+            data
+        }
+    }
+}
+
+fn emit_reply(emit: &dyn EmitSink, entry: &OpEntry, data: Value) {
+    emit.emit(Envelope::reply(
+        entry.command.clone(),
+        entry.message_id,
+        data,
+    ));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::ipc::envelope::EnvelopeType;
+    use crate::ipc::outcome::{AsyncKind, Completion};
+    use crate::logwindow::NoopLogController;
+    use crate::pump::ops::{FIRST_GENERATION, OpEntry, Registered};
+    use crate::pump::test_support::{Recorder, register};
+    use serde_json::json;
+    use windhawk_core_protocol::OperationEvent;
+
+    /// A follow-up seam returning a canned result, so the composite routing is
+    /// covered with no session.
+    fn canned(result: Value) -> impl Fn(&FollowUp) -> Result<Value, HostError> {
+        move |_fu: &FollowUp| Ok(result.clone())
+    }
+
+    /// A follow-up seam that always errors (the non-composite tests never reach it).
+    fn failing() -> impl Fn(&FollowUp) -> Result<Value, HostError> {
+        |_fu: &FollowUp| Err(HostError::decode("no follow-up".to_owned()))
+    }
+
+    /// An effect seam for the ops that name no host effect: reaching it is the bug.
+    fn no_effect() -> impl Fn(HostEffect) {
+        |effect: HostEffect| panic!("this op names no host effect, got {effect:?}")
+    }
+
+    /// An effect seam that records what it was asked to perform.
+    #[derive(Default)]
+    struct EffectRecorder {
+        performed: std::cell::RefCell<Vec<HostEffect>>,
+    }
+
+    impl EffectRecorder {
+        fn seam(&self) -> impl Fn(HostEffect) + '_ {
+            |effect: HostEffect| self.performed.borrow_mut().push(effect)
+        }
+
+        fn take(&self) -> Vec<HostEffect> {
+            std::mem::take(&mut self.performed.borrow_mut())
+        }
+    }
+
+    fn entry(command: &str, message_id: i64, kind: AsyncKind, context: Value) -> OpEntry {
+        OpEntry {
+            command: command.to_owned(),
+            message_id,
+            kind,
+            context,
+            // The dispatcher never invokes `cancel`; cancel is covered against a
+            // real session in the smoke. A token needs a session to construct.
+            cancel: None,
+        }
+    }
+
+    // --- Shaped terminal --------------------------------------------------
+
+    fn shaped(outcome: Result<Value, HostError>, ctx: &Value) -> Value {
+        let mod_id = ctx.get("modId").cloned().unwrap_or(Value::Null);
+        match outcome {
+            Ok(v) => json!({ "ok": v, "modId": mod_id }),
+            Err(_) => json!({ "ok": null, "modId": mod_id }),
+        }
+    }
+
+    fn shaped_kind() -> AsyncKind {
+        AsyncKind {
+            terminal: Terminal::Shaped(shaped),
+            progress: None,
+            effect: None,
+            records: None,
+        }
+    }
+
+    #[test]
+    fn completed_runs_the_shaper_and_emits_one_reply() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            7,
+            entry("demo", 42, shaped_kind(), json!({ "modId": "m" })),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            7,
+            &completed(json!({ "n": 1 })),
+        );
+
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        assert_eq!(emitted[0].kind, EnvelopeType::Reply);
+        assert_eq!(emitted[0].command, "demo");
+        assert_eq!(emitted[0].message_id, Some(42));
+        assert_eq!(emitted[0].data, json!({ "ok": { "n": 1 }, "modId": "m" }));
+        // The op is removed by the terminal: a second take finds nothing.
+        assert!(ops.take(FIRST_GENERATION, 7).is_none());
+    }
+
+    #[test]
+    fn failed_runs_the_shapers_failure_branch() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            1,
+            entry("demo", 1, shaped_kind(), json!({ "modId": "m" })),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            1,
+            &failed("CANCELED", "stop"),
+        );
+
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        // The failure-shaped reply now also carries the error object the front-end
+        // surfaces generically (the shaper's own shape is unchanged underneath).
+        assert_eq!(
+            emitted[0].data,
+            json!({ "ok": null, "modId": "m", "error": { "code": "CANCELED", "message": "stop" } })
+        );
+    }
+
+    // --- progress ---------------------------------------------------------
+
+    fn progress_mapper(event: &OperationEvent) -> Vec<Envelope> {
+        match event {
+            OperationEvent::Progress { payload } => vec![Envelope::event("prog", payload.clone())],
+            OperationEvent::Installing => vec![Envelope::event("inst", json!({}))],
+            _ => vec![],
+        }
+    }
+
+    #[test]
+    fn progress_then_terminal_emits_events_then_reply_in_order() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            5,
+            entry(
+                "demo",
+                9,
+                AsyncKind {
+                    terminal: Terminal::Shaped(shaped),
+                    progress: Some(progress_mapper),
+                    effect: None,
+                    records: None,
+                },
+                json!({}),
+            ),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            5,
+            &progress(40),
+        );
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            5,
+            &installing(),
+        );
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            5,
+            &completed(json!(true)),
+        );
+
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 3);
+        assert_eq!(emitted[0].command, "prog");
+        assert_eq!(emitted[0].data, json!({ "progress": 40 }));
+        assert_eq!(emitted[1].command, "inst");
+        assert_eq!(emitted[2].kind, EnvelopeType::Reply);
+    }
+
+    // --- host effects -----------------------------------------------------
+
+    /// An effect mapper naming an effect for one distinguishing payload only, so
+    /// the test can tell a mapped progress event from an unmapped one.
+    fn effect_mapper(event: &OperationEvent) -> Option<HostEffect> {
+        match event {
+            OperationEvent::Progress { payload } if payload["progress"] == json!(100) => {
+                Some(HostEffect::AppSettingsChanged)
+            }
+            _ => None,
+        }
+    }
+
+    #[test]
+    fn a_progress_event_names_its_effect_to_the_seam() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        let effects = EffectRecorder::default();
+        register(
+            &ops,
+            3,
+            entry(
+                "importUserData",
+                11,
+                AsyncKind {
+                    terminal: Terminal::Shaped(shaped),
+                    progress: Some(progress_mapper),
+                    effect: Some(effect_mapper),
+                    records: None,
+                },
+                json!({}),
+            ),
+        );
+
+        // A progress event the mapper does not name leaves the seam untouched; the
+        // event envelopes are emitted either way.
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &effects.seam(),
+            FIRST_GENERATION,
+            3,
+            &progress(40),
+        );
+        assert!(effects.take().is_empty());
+        assert_eq!(rec.take().len(), 1);
+
+        // The named one reaches the seam, while the op stays registered (a progress
+        // event does not end it) so its terminal still produces the one reply.
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &effects.seam(),
+            FIRST_GENERATION,
+            3,
+            &progress(100),
+        );
+        assert_eq!(effects.take(), vec![HostEffect::AppSettingsChanged]);
+        assert_eq!(rec.take().len(), 1);
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &effects.seam(),
+            FIRST_GENERATION,
+            3,
+            &completed(json!(true)),
+        );
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        assert_eq!(emitted[0].kind, EnvelopeType::Reply);
+        // The terminal is not offered to the effect mapper: an effect can never
+        // stand in for the reply.
+        assert!(effects.take().is_empty());
+    }
+
+    // --- composite --------------------------------------------------------
+
+    fn comp_follow_up(_completed: &Value, ctx: &Value) -> FollowUp {
+        FollowUp {
+            command: "listInstalledMods",
+            params: ctx.clone(),
+            stateless: false,
+        }
+    }
+    fn comp_merge(completed: &Value, follow_up: &Value, _ctx: &Value) -> Value {
+        json!({ "completed": completed, "followUp": follow_up })
+    }
+    fn comp_failure(_ctx: &Value) -> Value {
+        json!({ "mods": null })
+    }
+
+    fn composite_kind() -> AsyncKind {
+        AsyncKind {
+            terminal: Terminal::Composite(Completion {
+                follow_up: comp_follow_up,
+                merge: comp_merge,
+                on_failure: comp_failure,
+                on_follow_up_failure: None,
+            }),
+            progress: None,
+            effect: None,
+            records: None,
+        }
+    }
+
+    #[test]
+    fn composite_runs_follow_up_then_merge() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            2,
+            entry("getRepositoryMods", 3, composite_kind(), json!({})),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &canned(json!({ "mods": {} })),
+            &no_effect(),
+            FIRST_GENERATION,
+            2,
+            &completed(json!({ "c": 1 })),
+        );
+
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        assert_eq!(
+            emitted[0].data,
+            json!({ "completed": { "c": 1 }, "followUp": { "mods": {} } })
+        );
+    }
+
+    #[test]
+    fn composite_failed_terminal_uses_on_failure() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            2,
+            entry("getRepositoryMods", 3, composite_kind(), json!({})),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &canned(json!({})),
+            &no_effect(),
+            FIRST_GENERATION,
+            2,
+            &failed("REPO_UNREACHABLE", "down"),
+        );
+
+        assert_eq!(
+            rec.take()[0].data,
+            json!({ "mods": null, "error": { "code": "REPO_UNREACHABLE", "message": "down" } })
+        );
+    }
+
+    #[test]
+    fn composite_follow_up_error_uses_on_failure() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            2,
+            entry("getRepositoryMods", 3, composite_kind(), json!({})),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            2,
+            &completed(json!({ "c": 1 })),
+        );
+
+        // The follow-up's own error is attached (a no-wire decode -> INTERNAL, which
+        // also carries a #[track_caller] origin location).
+        let data = &rec.take()[0].data;
+        assert_eq!(data["mods"], json!(null));
+        assert_eq!(data["error"]["code"], json!("INTERNAL"));
+        assert_eq!(data["error"]["message"], json!("no follow-up"));
+    }
+
+    #[test]
+    fn composite_follow_up_error_answers_from_the_completed_op_where_one_is_named() {
+        fn comp_without_follow_up(completed: &Value, _ctx: &Value) -> Value {
+            json!({ "completed": completed, "followUp": null })
+        }
+
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        let kind = AsyncKind {
+            terminal: Terminal::Composite(Completion {
+                follow_up: comp_follow_up,
+                merge: comp_merge,
+                on_failure: comp_failure,
+                on_follow_up_failure: Some(comp_without_follow_up),
+            }),
+            progress: None,
+            effect: None,
+            records: None,
+        };
+        register(&ops, 2, entry("installMod", 3, kind, json!({})));
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            2,
+            &completed(json!({ "c": 1 })),
+        );
+
+        // The op landed, so its reply is the op's - with the follow-up's failure
+        // attached beside it, that being what tells a partial success from a whole
+        // one.
+        let data = &rec.take()[0].data;
+        assert_eq!(data["completed"], json!({ "c": 1 }));
+        assert_eq!(data["followUp"], json!(null));
+        assert_eq!(data["error"]["message"], json!("no follow-up"));
+    }
+
+    // --- the write a terminal records ------------------------------------
+
+    /// A follow-up seam that records the calls it was handed, in order, and
+    /// answers each with `Value::Null` - or an `Err` for the one command named by
+    /// [`CallLog::failing_on`]. Enough for the record tests: what they assert is
+    /// which calls went out and in what order, not what came back.
+    #[derive(Default)]
+    struct CallLog {
+        calls: std::cell::RefCell<Vec<(String, Value)>>,
+        fails: Option<&'static str>,
+    }
+
+    impl CallLog {
+        fn failing_on(command: &'static str) -> CallLog {
+            CallLog {
+                fails: Some(command),
+                ..CallLog::default()
+            }
+        }
+
+        fn seam(&self) -> impl Fn(&FollowUp) -> Result<Value, HostError> + '_ {
+            |request: &FollowUp| {
+                self.calls
+                    .borrow_mut()
+                    .push((request.command.to_owned(), request.params.clone()));
+                if self.fails == Some(request.command) {
+                    return Err(HostError::decode(format!("{} failed", request.command)));
+                }
+                Ok(Value::Null)
+            }
+        }
+
+        fn commands(&self) -> Vec<String> {
+            self.calls
+                .borrow()
+                .iter()
+                .map(|(command, _)| command.clone())
+                .collect()
+        }
+
+        /// The params the named call went out with.
+        fn params(&self, command: &str) -> Value {
+            self.calls
+                .borrow()
+                .iter()
+                .find(|(name, _)| name == command)
+                .map(|(_, params)| params.clone())
+                .unwrap_or_else(|| panic!("no {command} call was made"))
+        }
+    }
+
+    /// The record a test op owes: a write over the completed value, named so the
+    /// call log can tell it from a composite's follow-up.
+    fn records_the_completed(completed: &Value, context: &Value) -> FollowUp {
+        FollowUp {
+            command: "syncCatalogToProfile",
+            params: json!({ "completed": completed, "context": context }),
+            stateless: false,
+        }
+    }
+
+    fn recording_kind(terminal: Terminal) -> AsyncKind {
+        AsyncKind {
+            terminal,
+            progress: None,
+            effect: None,
+            records: Some(records_the_completed),
+        }
+    }
+
+    /// The write goes out over the completed value and the context, BEFORE the
+    /// follow-up the reply is made from - which is what lets a composite whose
+    /// follow-up READS what was just written (the catalog fetch, whose installed
+    /// listing reports the versions it cached) see it.
+    #[test]
+    fn a_successful_terminal_records_its_write_before_the_follow_up() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        let calls = CallLog::default();
+        register(
+            &ops,
+            4,
+            entry(
+                "getRepositoryMods",
+                12,
+                recording_kind(Terminal::Composite(Completion {
+                    follow_up: comp_follow_up,
+                    merge: comp_merge,
+                    on_failure: comp_failure,
+                    on_follow_up_failure: None,
+                })),
+                json!({ "language": "en" }),
+            ),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &calls.seam(),
+            &no_effect(),
+            FIRST_GENERATION,
+            4,
+            &completed(json!({ "mods": { "a": {} } })),
+        );
+
+        assert_eq!(
+            calls.commands(),
+            vec!["syncCatalogToProfile", "listInstalledMods"]
+        );
+        let params = calls.params("syncCatalogToProfile");
+        assert_eq!(params["completed"], json!({ "mods": { "a": {} } }));
+        assert_eq!(params["context"], json!({ "language": "en" }));
+        // And the op still answers exactly once.
+        assert_eq!(rec.take().len(), 1);
+    }
+
+    /// A write is not a term of the reply: one that fails is logged, and the reply
+    /// the caller is waiting for arrives whole - with NO error attached, which is
+    /// what keeps a front-end from surfacing the failure of something it never
+    /// asked for.
+    #[test]
+    fn a_record_that_fails_leaves_the_reply_whole() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        let calls = CallLog::failing_on("syncCatalogToProfile");
+        register(
+            &ops,
+            4,
+            entry(
+                "getFeaturedMods",
+                13,
+                recording_kind(Terminal::Shaped(shaped)),
+                json!({ "modId": "m" }),
+            ),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &calls.seam(),
+            &no_effect(),
+            FIRST_GENERATION,
+            4,
+            &completed(json!({ "n": 1 })),
+        );
+
+        assert_eq!(calls.commands(), vec!["syncCatalogToProfile"]);
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        assert_eq!(emitted[0].data, json!({ "ok": { "n": 1 }, "modId": "m" }));
+    }
+
+    /// A failed terminal has nothing to record: there is no catalog to have
+    /// cached, so the write must not go out over the failure.
+    #[test]
+    fn a_failed_terminal_records_nothing() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        let calls = CallLog::default();
+        register(
+            &ops,
+            4,
+            entry(
+                "getFeaturedMods",
+                14,
+                recording_kind(Terminal::Shaped(shaped)),
+                json!({ "modId": "m" }),
+            ),
+        );
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &calls.seam(),
+            &no_effect(),
+            FIRST_GENERATION,
+            4,
+            &failed("REPO_UNREACHABLE", "down"),
+        );
+
+        assert!(calls.commands().is_empty());
+        assert_eq!(rec.take().len(), 1);
+    }
+
+    // --- the register/event race buffer ----------------------------------
+
+    #[test]
+    fn event_before_register_is_buffered_and_replayed() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+
+        // Terminal arrives before the op is registered: buffered, nothing emitted.
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            8,
+            &completed(json!({ "n": 9 })),
+        );
+        assert!(rec.take().is_empty());
+
+        // Registering returns the buffered event; the registrant replays it.
+        let buffered = register(
+            &ops,
+            8,
+            entry("demo", 100, shaped_kind(), json!({ "modId": "x" })),
+        );
+        assert_eq!(buffered.len(), 1);
+        for (generation, ev) in &buffered {
+            dispatch_event(
+                &ops,
+                &rec,
+                &NoopLogController,
+                &failing(),
+                &no_effect(),
+                *generation,
+                8,
+                ev,
+            );
+        }
+
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        assert_eq!(emitted[0].message_id, Some(100));
+        assert_eq!(emitted[0].data, json!({ "ok": { "n": 9 }, "modId": "x" }));
+    }
+
+    // --- session generations ----------------------------------------------
+
+    /// A second session's generation, standing in for the broker's.
+    const SECOND_GENERATION: u64 = FIRST_GENERATION + 1;
+
+    /// The reason a generation exists: two sessions allocate op-ids from the same
+    /// counter, so an event of the session that was swapped out must not end the op
+    /// that took its id on the new one.
+    #[test]
+    fn an_event_of_a_drained_session_does_not_end_the_op_that_reuses_its_id() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            1,
+            entry("old", 42, shaped_kind(), json!({ "modId": "old" })),
+        );
+
+        // The second session takes over: the first one's op is handed back to be
+        // failed.
+        let drained = ops.drain_and_install(SECOND_GENERATION);
+        assert_eq!(drained.len(), 1);
+
+        // The new session issues the same op-id.
+        register(
+            &ops,
+            1,
+            entry("new", 43, shaped_kind(), json!({ "modId": "new" })),
+        );
+
+        // The old session's terminal arrives late. It is dropped: no reply, and the
+        // new op stays registered for its own terminal.
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            1,
+            &completed(json!({ "n": 1 })),
+        );
+        assert!(rec.take().is_empty());
+
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            SECOND_GENERATION,
+            1,
+            &completed(json!({ "n": 2 })),
+        );
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        assert_eq!(emitted[0].message_id, Some(43));
+        assert_eq!(emitted[0].data, json!({ "ok": { "n": 2 }, "modId": "new" }));
+    }
+
+    /// The same hazard through the buffer: an event of the session that was swapped
+    /// out and never found its op must not be replayed into the op that registers
+    /// under that id next.
+    #[test]
+    fn a_buffered_event_does_not_survive_the_drain() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+
+        // An event with no op yet: buffered under the installed generation.
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            8,
+            &completed(json!({ "n": 9 })),
+        );
+        assert!(rec.take().is_empty());
+
+        ops.drain_and_install(SECOND_GENERATION);
+
+        // Nothing is replayed to the new session's op, and a late event for the old
+        // one is not buffered for whoever comes after either.
+        let buffered = register(&ops, 8, entry("new", 7, shaped_kind(), json!({})));
+        assert!(buffered.is_empty());
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            9,
+            &completed(json!({ "n": 9 })),
+        );
+        assert!(register(&ops, 9, entry("newer", 8, shaped_kind(), json!({}))).is_empty());
+    }
+
+    /// Swapping BACK to a session the UI already ran on: the local session is kept
+    /// for the process lifetime and keeps its own generation, so its ops and events
+    /// must route again once it is reinstalled. A generation that only ever counted
+    /// forward would drop every event it produces from here on, and every async
+    /// command in degraded mode would hang with no reply.
+    #[test]
+    fn reinstalling_an_earlier_generation_routes_that_sessions_events_again() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+
+        // Away to the second session, then back to the first.
+        ops.drain_and_install(SECOND_GENERATION);
+        register(
+            &ops,
+            4,
+            entry("remote", 1, shaped_kind(), json!({ "modId": "r" })),
+        );
+        let drained = ops.drain_and_install(FIRST_GENERATION);
+        assert_eq!(
+            drained.len(),
+            1,
+            "the remote op is handed back to be failed"
+        );
+
+        // A fresh op on the reinstalled session gets its reply.
+        register(
+            &ops,
+            5,
+            entry("local", 77, shaped_kind(), json!({ "modId": "l" })),
+        );
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            FIRST_GENERATION,
+            5,
+            &completed(json!({ "n": 3 })),
+        );
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1);
+        assert_eq!(emitted[0].message_id, Some(77));
+        assert_eq!(emitted[0].data, json!({ "ok": { "n": 3 }, "modId": "l" }));
+
+        // And the session that was swapped out is still shut out.
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            SECOND_GENERATION,
+            4,
+            &completed(json!({ "n": 4 })),
+        );
+        assert!(rec.take().is_empty());
+    }
+
+    /// An op whose session went away ends like any other failure, through the
+    /// command's own shaper: it is the one thing that stops a `messageWithReply`
+    /// hanging forever on a session that will never emit its terminal.
+    #[test]
+    fn an_op_its_session_left_behind_is_ended_with_the_supplied_failure() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+        register(
+            &ops,
+            9,
+            entry("demo", 21, shaped_kind(), json!({ "modId": "m" })),
+        );
+
+        let drained = ops.drain_and_install(SECOND_GENERATION);
+        assert_eq!(drained.len(), 1);
+        for (_op_id, entry) in &drained {
+            fail_terminal(
+                &rec,
+                &NoopLogController,
+                &failing(),
+                entry,
+                HostError::transport("the channel is gone".to_owned()),
+            );
+        }
+
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1, "exactly one reply, as for any terminal");
+        assert_eq!(emitted[0].message_id, Some(21));
+        // The command's own failure shape, plus the machine-readable error the
+        // front-end surfaces generically.
+        assert_eq!(emitted[0].data["ok"], json!(null));
+        assert_eq!(emitted[0].data["error"]["code"], json!("BROKER_LOST"));
+        assert_eq!(
+            emitted[0].data["error"]["message"],
+            json!("the channel is gone")
+        );
+    }
+
+    /// The same property for an op the drain could not have seen: one still
+    /// STARTING when the swap ran. It is refused by the registry rather than
+    /// recorded under the incoming session, and ended right there - otherwise its
+    /// own session's terminal would arrive carrying a generation the registry no
+    /// longer accepts, be dropped, and leave the `messageWithReply` unanswered.
+    #[test]
+    fn an_op_that_was_starting_when_its_session_went_away_is_ended_too() {
+        let ops = OpRegistry::new();
+        let rec = Recorder::default();
+
+        // The op is stamped with the session that started it; the swap lands
+        // before the op is recorded.
+        let started_under = ops.generation();
+        assert!(ops.drain_and_install(SECOND_GENERATION).is_empty());
+
+        match ops.register(
+            started_under,
+            6,
+            entry("demo", 21, shaped_kind(), json!({ "modId": "m" })),
+        ) {
+            Registered::Orphaned(entry) => fail_terminal(
+                &rec,
+                &NoopLogController,
+                &failing(),
+                &entry,
+                HostError::transport("the channel is gone".to_owned()),
+            ),
+            Registered::Replay(_) => panic!("the op outlived the session that issued its id"),
+        }
+
+        let emitted = rec.take();
+        assert_eq!(emitted.len(), 1, "exactly one reply, as for any terminal");
+        assert_eq!(emitted[0].message_id, Some(21));
+        assert_eq!(emitted[0].data["error"]["code"], json!("BROKER_LOST"));
+
+        // And the op's own late terminal adds nothing: it was answered once.
+        dispatch_event(
+            &ops,
+            &rec,
+            &NoopLogController,
+            &failing(),
+            &no_effect(),
+            started_under,
+            6,
+            &completed(json!({ "n": 1 })),
+        );
+        assert!(rec.take().is_empty());
+    }
+
+    // --- helpers ----------------------------------------------------------
+
+    fn completed(result: Value) -> String {
+        json!({ "type": "completed", "result": result }).to_string()
+    }
+    fn failed(code: &str, message: &str) -> String {
+        json!({ "type": "failed", "error": { "code": code, "message": message } }).to_string()
+    }
+    fn progress(percent: i64) -> String {
+        json!({ "type": "progress", "payload": { "progress": percent } }).to_string()
+    }
+    fn installing() -> String {
+        json!({ "type": "installing" }).to_string()
+    }
+}

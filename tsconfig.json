@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "lib": ["DOM", "ES2023"], "module": "ESNext", "moduleResolution": "bundler",
+    "jsx": "react-jsx", "jsxImportSource": "preact", "allowImportingTsExtensions": true, "resolveJsonModule": true,
+    "esModuleInterop": true, "strict": true, "noUncheckedIndexedAccess": true, "noEmit": true, "skipLibCheck": true,
+    "baseUrl": ".", "paths": {
+      "preact": ["node_modules/preact"], "preact/*": ["node_modules/preact/*"], "antd": ["node_modules/antd"],
+      "react": ["node_modules/preact/compat"], "react/*": ["node_modules/preact/compat/*"],
+      "react-i18next": ["node_modules/react-i18next"], "i18next": ["node_modules/i18next"],
+      "svelte": ["node_modules/svelte"], "svelte/*": ["node_modules/svelte/*"], "styled-components": ["node_modules/styled-components"]
+    }
+  },
+  "include": ["src/app/**/*.ts", "src/app/**/*.tsx", "tests/*.ts", "vendor/Seelen-UI/tools/theme-workbench/css.d.ts"]
+}

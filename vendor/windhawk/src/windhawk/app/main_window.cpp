@@ -1,0 +1,1314 @@
+#include "stdafx.h"
+
+#include "main_window.h"
+
+#include "dark_mode.h"
+#include "functions.h"
+#include "logger.h"
+#include "resource.h"
+#include "session_metadata.h"
+#include "ui_control.h"
+#include "ui_functions.h"
+#include "version.h"
+
+namespace {
+
+constexpr auto kHandleNewProcessInterval = 1000;       // 1sec
+constexpr auto kUpdateInitialDelay = 1000 * 10;        // 10sec
+constexpr auto kUpdateInterval = 1000 * 60 * 60 * 24;  // 24h
+constexpr auto kUpdateRetryTime = 1000 * 60 * 60;      // 1h
+constexpr auto kModTasksDlgInitialDelay = 1000;        // 1sec
+constexpr auto kAppSettingsReloadDelay = 200;          // 200ms
+constexpr auto kUserProfileReloadDelay = 200;          // 200ms
+
+// Hashes the file content with FNV-1a, streaming it so that the whole content
+// is never held at once. Returns std::nullopt if the file can't be read, e.g.
+// while it's momentarily unavailable as it's being replaced.
+std::optional<ULONGLONG> GetFileContentHash(const std::filesystem::path& path) {
+    constexpr ULONGLONG kFnvOffsetBasis = 14695981039346656037ULL;
+    constexpr ULONGLONG kFnvPrime = 1099511628211ULL;
+
+    std::ifstream file(path, std::ios::binary);
+    if (!file) {
+        return std::nullopt;
+    }
+
+    ULONGLONG hash = kFnvOffsetBasis;
+
+    char buffer[4096];
+    while (file.read(buffer, sizeof(buffer)) || file.gcount() > 0) {
+        std::streamsize count = file.gcount();
+        for (std::streamsize i = 0; i < count; i++) {
+            hash ^= static_cast<unsigned char>(buffer[i]);
+            hash *= kFnvPrime;
+        }
+    }
+
+    if (file.bad()) {
+        return std::nullopt;
+    }
+
+    return hash;
+}
+
+ULONGLONG GetTaskbarProcessCreationTime() {
+    HWND currentTaskbarWindow = FindWindow(L"Shell_TrayWnd", nullptr);
+    if (!currentTaskbarWindow) {
+        return 0;
+    }
+
+    DWORD currentTaskbarProcessId;
+    if (!GetWindowThreadProcessId(currentTaskbarWindow,
+                                  &currentTaskbarProcessId)) {
+        return 0;
+    }
+
+    wil::unique_process_handle currentTaskbarProcess(OpenProcess(
+        PROCESS_QUERY_LIMITED_INFORMATION, FALSE, currentTaskbarProcessId));
+    if (!currentTaskbarProcess) {
+        return 0;
+    }
+
+    FILETIME creationTime;
+    FILETIME exitTime;
+    FILETIME kernelTime;
+    FILETIME userTime;
+    if (!GetProcessTimes(currentTaskbarProcess.get(), &creationTime, &exitTime,
+                         &kernelTime, &userTime)) {
+        return 0;
+    }
+
+    return wil::filetime::to_int64(creationTime);
+}
+
+}  // namespace
+
+CMainWindow::CMainWindow(bool trayOnly, bool portable)
+    : m_trayOnly(trayOnly),
+      m_portable(portable),
+      m_taskbarCreatedMsg(RegisterWindowMessage(L"TaskbarCreated")) {}
+
+BOOL CMainWindow::PreTranslateMessage(MSG* pMsg) {
+    if (m_modTasksDlg && m_modTasksDlg->IsDialogMessage(pMsg)) {
+        return TRUE;
+    }
+
+    if (m_modStatusesDlg && m_modStatusesDlg->IsDialogMessage(pMsg)) {
+        return TRUE;
+    }
+
+    if (m_toolkitDlg && m_toolkitDlg->IsDialogMessage(pMsg)) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+BOOL CMainWindow::OnIdle() {
+    enum {
+        kServiceMutex,
+        kAppSettingsChanged,
+        kUserProfileChanged,
+        kModTasksChanged,
+        kModStatusesChanged,
+        kExplorerCrashed,
+        kMaxHandles,
+    };
+
+    HANDLE handleArray[kMaxHandles];
+    int handleTypes[kMaxHandles];
+    DWORD handleCount = 0;
+
+    if (m_serviceMutex) {
+        handleArray[handleCount] = m_serviceMutex.get();
+        handleTypes[handleCount] = kServiceMutex;
+        handleCount++;
+    }
+
+    if (m_appConfigChangeNotification) {
+        handleArray[handleCount] = m_appConfigChangeNotification->GetHandle();
+        handleTypes[handleCount] = kAppSettingsChanged;
+        handleCount++;
+    }
+
+    if (m_userProfileChangeNotification) {
+        handleArray[handleCount] = m_userProfileChangeNotification->GetHandle();
+        handleTypes[handleCount] = kUserProfileChanged;
+        handleCount++;
+    }
+
+    if (m_modTasksChangeNotification) {
+        handleArray[handleCount] = m_modTasksChangeNotification->GetHandle();
+        handleTypes[handleCount] = kModTasksChanged;
+        handleCount++;
+    }
+
+    if (m_modStatusesChangeNotification) {
+        handleArray[handleCount] = m_modStatusesChangeNotification->GetHandle();
+        handleTypes[handleCount] = kModStatusesChanged;
+        handleCount++;
+    }
+
+    if (m_explorerCrashMonitor) {
+        handleArray[handleCount] = m_explorerCrashMonitor->GetEventHandle();
+        handleTypes[handleCount] = kExplorerCrashed;
+        handleCount++;
+    }
+
+    if (handleCount > 0) {
+        DWORD nWaitResult =
+            MsgWaitForMultipleObjectsEx(handleCount, handleArray, INFINITE,
+                                        QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+
+        if (nWaitResult >= WAIT_OBJECT_0 &&
+            nWaitResult < WAIT_OBJECT_0 + handleCount) {
+            switch (handleTypes[nWaitResult - WAIT_OBJECT_0]) {
+                case kServiceMutex:
+                    ::ReleaseMutex(m_serviceMutex.get());
+                    Exit();
+                    break;
+
+                case kAppSettingsChanged:
+                    // The watcher is one-shot; re-arm right away so a write
+                    // during the delay below isn't missed.
+                    try {
+                        m_appConfigChangeNotification->ContinueMonitoring();
+                    } catch (const std::exception& e) {
+                        LOG(L"App settings ContinueMonitoring failed: %S",
+                            e.what());
+                        m_appConfigChangeNotification.reset();
+                    }
+
+                    // A write lands one value at a time. Restart the timer on
+                    // every signal and read once they stop arriving.
+                    SetTimer(Timer::kAppSettingsReload,
+                             kAppSettingsReloadDelay);
+                    break;
+
+                case kUserProfileChanged:
+                    // The watcher is one-shot; re-arm right away so a write
+                    // during the delay below isn't missed.
+                    try {
+                        m_userProfileChangeNotification->ContinueMonitoring();
+                    } catch (const std::exception& e) {
+                        LOG(L"User profile ContinueMonitoring failed: %S",
+                            e.what());
+                        m_userProfileChangeNotification.reset();
+                    }
+
+                    if (m_disableUpdateCheck) {
+                        break;
+                    }
+
+                    // The file is published as a temp file and a rename, and
+                    // one change can be several writes. Restart the timer on
+                    // every signal and read once they stop arriving, so the
+                    // read doesn't race a replace.
+                    SetTimer(Timer::kUserProfileReload,
+                             kUserProfileReloadDelay);
+                    break;
+
+                case kModTasksChanged:
+                    if (m_modTasksDlg) {
+                        m_modTasksDlg->DataChanged();
+
+                        try {
+                            m_modTasksChangeNotification->ContinueMonitoring();
+                        } catch (const std::exception& e) {
+                            LOG(L"Tasks ContinueMonitoring failed: %S",
+                                e.what());
+                            m_modTasksChangeNotification.reset();
+                        }
+                    } else {
+                        // In the common case, there's a short-lived event, such
+                        // as mod initialization, that is cleared right away.
+                        // Wait a bit before creating a dialog, and only create
+                        // it if events still exist.
+                        m_modTasksChangeNotification.reset();
+                        SetTimer(Timer::kModTasksDlgCreate,
+                                 kModTasksDlgInitialDelay);
+                    }
+                    break;
+
+                case kModStatusesChanged:
+                    if (m_modStatusesDlg) {
+                        m_modStatusesDlg->DataChanged();
+                    }
+
+                    try {
+                        m_modStatusesChangeNotification->ContinueMonitoring();
+                    } catch (const std::exception& e) {
+                        LOG(L"Statuses ContinueMonitoring failed: %S",
+                            e.what());
+                        m_modStatusesChangeNotification.reset();
+                    }
+                    break;
+
+                case kExplorerCrashed: {
+                    int explorerCrashCount = 0;
+                    try {
+                        explorerCrashCount =
+                            m_explorerCrashMonitor->GetAmountOfNewEvents();
+                    } catch (const std::exception& e) {
+                        LOG(L"Explorer crash monitor failed: %S", e.what());
+                        m_explorerCrashMonitor.reset();
+                        break;
+                    }
+
+                    if (explorerCrashCount > 0) {
+                        try {
+                            HandleExplorerCrash(explorerCrashCount);
+                        } catch (const std::exception& e) {
+                            LOG(L"Explorer crash handling failed: %S",
+                                e.what());
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    } else {
+        // Just wait for a message to avoid running an infinite loop.
+        MsgWaitForMultipleObjectsEx(0, nullptr, INFINITE, QS_ALLINPUT,
+                                    MWMO_INPUTAVAILABLE);
+    }
+
+    return FALSE;
+}
+
+int CMainWindow::OnCreate(LPCREATESTRUCT lpCreateStruct) {
+    // Register object for message filtering and idle updates.
+    CMessageLoop* pLoop = _Module.GetMessageLoop();
+    ATLASSERT(pLoop != nullptr);
+    pLoop->AddMessageFilter(this);
+    pLoop->AddIdleHandler(this);
+
+    try {
+        if (m_portable) {
+            InitForPortableVersion();
+        } else {
+            InitForNonPortableVersion();
+        }
+    } catch (const std::exception& e) {
+        ::MessageBoxA(nullptr, e.what(), "Could not initialize Windhawk",
+                      MB_ICONERROR);
+        return -1;
+    }
+
+    m_trayIcon.emplace(m_hWnd, UWM_TRAYICON, /*hidden=*/true);
+    m_trayIcon->Create();
+
+    m_updateNotifier.emplace(
+        m_hWnd, static_cast<UINT_PTR>(Timer::kPendingUpdateNotification),
+        *m_trayIcon);
+
+    // Arm before the first read, so a write which races it costs a redundant
+    // reload instead of being missed.
+    try {
+        m_appConfigChangeNotification.emplace(L"Settings");
+    } catch (const std::exception& e) {
+        LOG(L"App settings ChangeNotification failed: %S", e.what());
+    }
+
+    if (!LoadSettings()) {
+        ::MessageBox(nullptr, L"Could not load settings", L"Windhawk error",
+                     MB_ICONERROR);
+    }
+
+    try {
+        m_modTasksChangeNotification.emplace(
+            SessionMetadata::MakeSessionId(m_serviceInfo.processId,
+                                           m_serviceInfo.processCreationTime),
+            SessionMetadata::kCategoryModTask);
+    } catch (const std::exception& e) {
+        LOG(L"Tasks ChangeNotification failed: %S", e.what());
+    }
+
+    // Watch userprofile.json for changes made by any process (the periodic
+    // update check, the engine's mod installs/updates) so the tray update icon
+    // and tooltip stay current without an explicit notification.
+    try {
+        auto userProfileJsonPath =
+            StorageManager::GetInstance().GetUserProfileJsonPath();
+        m_userProfileChangeNotification.emplace(
+            userProfileJsonPath.parent_path());
+
+        // Seed the guard from the current file so a pending pre-existing
+        // notification is filtered.
+        m_lastProfileContentHash = GetFileContentHash(userProfileJsonPath);
+    } catch (const std::exception& e) {
+        LOG(L"User profile ChangeNotification failed: %S", e.what());
+    }
+
+    if (!m_trayOnly) {
+        RunUI();
+    }
+
+    return 0;
+}
+
+void CMainWindow::OnDestroy() {
+    if (m_toolkitHotkeyRegistered) {
+        ::UnregisterHotKey(m_hWnd, static_cast<int>(Hotkey::kToolkit));
+        m_toolkitHotkeyRegistered = false;
+    }
+
+    if (m_trayIcon) {
+        m_trayIcon->Remove();
+    }
+
+    // Unregister message filtering and idle updates.
+    CMessageLoop* pLoop = _Module.GetMessageLoop();
+    ATLASSERT(pLoop != NULL);
+    pLoop->RemoveMessageFilter(this);
+    pLoop->RemoveIdleHandler(this);
+
+    PostQuitMessage(0);
+}
+
+void CMainWindow::OnHotKey(int nHotKeyID, UINT uModifiers, UINT uVirtKey) {
+    switch (static_cast<Hotkey>(nHotKeyID)) {
+        case Hotkey::kToolkit:
+            SetForegroundWindow(GetLastActivePopup());
+            ShowToolkitDialog();
+            break;
+    }
+}
+
+void CMainWindow::OnTimer(UINT_PTR nIDEvent) {
+    switch (static_cast<Timer>(nIDEvent)) {
+        case Timer::kHandleNewProcesses:
+            if (m_engineControl) {
+                m_engineControl->HandleNewProcesses();
+            }
+
+            SetTimer(Timer::kHandleNewProcesses, kHandleNewProcessInterval);
+            break;
+
+        case Timer::kUpdateCheck:
+            KillTimer(Timer::kUpdateCheck);
+
+            try {
+                m_updateChecker = std::make_unique<UpdateChecker>(
+                    m_portable ? UpdateChecker::kFlagPortable : 0,
+                    [this] { PostMessage(UWM_UPDATE_CHECKED); });
+            } catch (const std::exception& e) {
+                LOG(L"UpdateChecker failed: %S", e.what());
+                SetTimer(Timer::kUpdateCheck, kUpdateRetryTime);
+            }
+            break;
+
+        case Timer::kReloadTrayIcons:
+            KillTimer(Timer::kReloadTrayIcons);
+            if (m_trayIcon) {
+                m_trayIcon->UpdateIcons(m_hWnd);
+                m_trayIcon->Modify();
+            }
+            break;
+
+        case Timer::kModTasksDlgCreate:
+            KillTimer(Timer::kModTasksDlgCreate);
+
+            try {
+                std::wstring sessionId = SessionMetadata::MakeSessionId(
+                    m_serviceInfo.processId, m_serviceInfo.processCreationTime);
+
+                m_modTasksChangeNotification.emplace(
+                    sessionId, SessionMetadata::kCategoryModTask);
+
+                if (!CTaskManagerDlg::IsDataSourceEmpty(
+                        sessionId, CTaskManagerDlg::DataSource::kModTask)) {
+                    m_modTasksDlg.emplace(CTaskManagerDlg::DialogOptions{
+                        .dataSource = CTaskManagerDlg::DataSource::kModTask,
+                        .autonomousMode = true,
+                        .autonomousModeShowDelay = m_modTasksDlgDelay,
+                        .sessionManagerProcessId = m_serviceInfo.processId,
+                        .sessionManagerProcessCreationTime =
+                            m_serviceInfo.processCreationTime,
+                        .runButtonCallback = [this](HWND hWnd) { RunUI(hWnd); },
+                        .finalMessageCallback =
+                            [this](HWND hWnd) { m_modTasksDlg.reset(); }});
+
+                    if (!m_modTasksDlg->Create(m_hWnd)) {
+                        m_modTasksDlg.reset();
+                    }
+                }
+            } catch (const std::exception& e) {
+                LOG(L"%S", e.what());
+            }
+            break;
+
+        case Timer::kPendingUpdateNotification:
+            m_updateNotifier->OnPollTimer();
+            break;
+
+        case Timer::kAppSettingsReload:
+            KillTimer(Timer::kAppSettingsReload);
+            LoadSettings();
+            break;
+
+        case Timer::kUserProfileReload:
+            KillTimer(Timer::kUserProfileReload);
+            ReloadUpdateStatus();
+            break;
+    }
+}
+
+BOOL CMainWindow::OnPowerBroadcast(DWORD dwPowerEvent, DWORD_PTR dwData) {
+    if (dwPowerEvent == PBT_APMRESUMEAUTOMATIC && m_checkForUpdates &&
+        !m_updateChecker) {
+        KillTimer(Timer::kUpdateCheck);
+
+        ULONGLONG lastUpdateCheck;
+        try {
+            auto settings =
+                StorageManager::GetInstance().GetAppConfig(L"Settings", false);
+            lastUpdateCheck = std::wcstoull(
+                settings->GetString(L"LastUpdateCheck").value_or(L"0").c_str(),
+                nullptr, 10);
+        } catch (const std::exception& e) {
+            LOG(L"Getting LastUpdateCheck failed: %S", e.what());
+            lastUpdateCheck = 0;
+        }
+
+        SetTimer(Timer::kUpdateCheck, GetNextUpdateDelay(lastUpdateCheck));
+    }
+
+    return FALSE;
+}
+
+void CMainWindow::OnDpiChanged(UINT nDpiX, UINT nDpiY, PRECT pRect) {
+    if (!m_trayIcon) {
+        return;
+    }
+
+    // From the documentation:
+    // "On Windows 10, the taskbar also broadcasts this message when the DPI of
+    // the primary display changes."
+    //
+    // At some point, this stopped happening, probably with the Windows 11 tray
+    // area XAML rewrite. Detect DPI changes here to prevent blurry icons. Since
+    // this window is hidden and doesn't move between monitors, this should
+    // work.
+    m_trayIcon->UpdateIcons(m_hWnd);
+    m_trayIcon->Modify();
+}
+
+void CMainWindow::OnDisplayChange(UINT uBitsPerPixel, CSize sizeScreen) {
+    // This is a fallback for DPI change detection since WM_DPICHANGED is not
+    // always sent. The message seems to arrive before the DPI change is
+    // applied, so delay the icon reload a bit.
+    SetTimer(Timer::kReloadTrayIcons, 1000);
+}
+
+LRESULT CMainWindow::OnDaemonCommand(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch ((DaemonCommand)wParam) {
+        case DaemonCommand::kRunUI:
+            RunUI();
+            break;
+
+        case DaemonCommand::kExit:
+            if (m_portable) {
+                Exit();
+            }
+            break;
+    }
+
+    return 0;
+}
+
+LRESULT CMainWindow::OnTrayIcon(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    enum class Action {
+        kNone,
+        kOpenUI,
+        kOpenLegacyUI,
+        kOpenUpdatePage,
+        kModTaskManager,
+        kToolkit,
+        kExit,
+    };
+
+    auto contextMenuFunc = [this]() {
+        CMenu menu;
+        if (!menu.CreatePopupMenu()) {
+            return Action::kNone;
+        }
+
+        menu.AppendMenu(MF_STRING, static_cast<UINT_PTR>(Action::kOpenUI),
+                        Functions::LoadStrFromRsrc(IDS_TRAY_OPEN));
+        if (GetAsyncKeyState(VK_SHIFT) < 0) {
+            // A hidden entry for troubleshooting, left untranslated.
+            menu.AppendMenu(
+                MF_STRING, static_cast<UINT_PTR>(Action::kOpenLegacyUI),
+                (std::wstring(Functions::LoadStrFromRsrc(IDS_TRAY_OPEN)) +
+                 L" (legacy UI)")
+                    .c_str());
+        }
+        menu.AppendMenu(MF_SEPARATOR);
+        menu.AppendMenu(MF_STRING,
+                        static_cast<UINT_PTR>(Action::kModTaskManager),
+                        Functions::LoadStrFromRsrc(IDS_TRAY_LOADED_MODS));
+        menu.AppendMenu(
+            MF_STRING, static_cast<UINT_PTR>(Action::kToolkit),
+            (std::wstring(Functions::LoadStrFromRsrc(IDS_TRAY_TOOLKIT)) +
+             (m_disableToolkitHotkey ? L"" : L"\tCtrl+Win+W"))
+                .c_str());
+        menu.AppendMenu(MF_SEPARATOR);
+        menu.AppendMenu(MF_STRING, static_cast<UINT_PTR>(Action::kExit),
+                        Functions::LoadStrFromRsrc(IDS_TRAY_EXIT));
+
+        CPoint point;
+        GetCursorPos(&point);
+
+        BOOL result = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD,
+                                          point.x, point.y, m_hWnd);
+
+        return static_cast<Action>(result);
+    };
+
+    Action action = Action::kNone;
+
+    switch (m_trayIcon->HandleMsg(wParam, lParam)) {
+        case AppTrayIcon::TrayAction::kDefault:
+            action = Action::kOpenUI;
+            break;
+
+        case AppTrayIcon::TrayAction::kBalloon:
+            if (m_updateNotifier->AppUpdateAvailable()) {
+                action = Action::kOpenUpdatePage;
+            } else {
+                action = Action::kOpenUI;
+            }
+            break;
+
+        case AppTrayIcon::TrayAction::kContextMenu:
+            ::SetForegroundWindow(m_hWnd);
+            action = contextMenuFunc();
+            break;
+    }
+
+    switch (action) {
+        case Action::kOpenUI:
+            RunUI();
+            break;
+
+        case Action::kOpenLegacyUI:
+            RunUI(nullptr, /*legacyUI=*/true);
+            break;
+
+        case Action::kOpenUpdatePage:
+            OpenUpdatePage();
+            break;
+
+        case Action::kModTaskManager:
+            ShowLoadedModsDialog();
+            break;
+
+        case Action::kToolkit:
+            ShowToolkitDialog();
+            break;
+
+        case Action::kExit:
+            if (m_portable) {
+                Exit();
+            } else {
+                StopService();
+            }
+            break;
+    }
+
+    return 0;
+}
+
+LRESULT CMainWindow::OnUpdateChecked(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    UpdateChecker::Result result = m_updateChecker->HandleResponse();
+    m_updateChecker.reset();
+
+    if (m_exitWhenUpdateCheckDone) {
+        DestroyWindow();
+        return 0;
+    }
+
+    if (!m_checkForUpdates) {
+        return 0;
+    }
+
+    if (SUCCEEDED(result.hrError)) {
+        m_updateNotifier->SetStatus(result.updateStatus,
+                                    UpdateNotifier::Announce::kNewlyFound);
+
+        SetLastUpdateTime();
+
+        SetTimer(Timer::kUpdateCheck, kUpdateInterval);
+    } else {
+        SetTimer(Timer::kUpdateCheck, kUpdateRetryTime);
+    }
+
+    return 0;
+}
+
+LRESULT CMainWindow::OnTaskbarCreated(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    // If the toolkit was never active, close it.
+    // if (m_toolkitDlg && !m_toolkitDlg->WasActive()) {
+    //     m_toolkitDlg->Close();
+    // }
+
+    if (!m_trayIcon) {
+        return 0;
+    }
+
+    // Reload icons since the DPI might have changed. From the documentation:
+    // "On Windows 10, the taskbar also broadcasts this message when the DPI of
+    // the primary display changes."
+    m_trayIcon->UpdateIcons(m_hWnd);
+
+    m_trayIcon->Create();
+
+    // Necessary to apply the newly loaded icon in Windows 11 22H2.
+    m_trayIcon->Modify();
+
+    return 0;
+}
+
+UINT_PTR CMainWindow::SetTimer(Timer nIDEvent,
+                               UINT nElapse,
+                               TIMERPROC lpfnTimer) {
+    return CWindowImpl::SetTimer(static_cast<UINT_PTR>(nIDEvent), nElapse,
+                                 lpfnTimer);
+}
+
+BOOL CMainWindow::KillTimer(Timer nIDEvent) {
+    return CWindowImpl::KillTimer(static_cast<UINT_PTR>(nIDEvent));
+}
+
+void CMainWindow::InitForPortableVersion() {
+    auto settings =
+        StorageManager::GetInstance().GetAppConfig(L"Settings", false);
+
+    if (!settings->GetInt(L"SafeMode").value_or(0)) {
+        m_engineControl.emplace();
+        m_engineControl->HandleNewProcesses();
+    }
+
+    SetTimer(Timer::kHandleNewProcesses, kHandleNewProcessInterval);
+
+    FILETIME creationTime;
+    FILETIME exitTime;
+    FILETIME kernelTime;
+    FILETIME userTime;
+    THROW_IF_WIN32_BOOL_FALSE(GetProcessTimes(
+        GetCurrentProcess(), &creationTime, &exitTime, &kernelTime, &userTime));
+
+    // For the portable version, there's no service, set app info instead.
+    m_serviceInfo.version = VER_FILE_VERSION_LONG;
+    m_serviceInfo.processId = GetCurrentProcessId();
+    m_serviceInfo.processCreationTime = wil::filetime::to_int64(creationTime);
+
+    ::ChangeWindowMessageFilterEx(m_hWnd, UWM_DAEMON_COMMAND, MSGFLT_ALLOW,
+                                  nullptr);
+}
+
+void CMainWindow::InitForNonPortableVersion() {
+    m_serviceMutex.reset(
+        OpenMutex(SYNCHRONIZE, FALSE, ServiceCommon::kMutexName));
+    THROW_LAST_ERROR_IF(!m_serviceMutex);
+
+    wil::unique_handle fileMapping(OpenFileMapping(
+        FILE_MAP_READ, FALSE, ServiceCommon::kInfoFileMappingName));
+    THROW_LAST_ERROR_IF(!fileMapping);
+
+    wil::unique_mapview_ptr<ServiceCommon::ServiceInfo> fileMappingView(
+        reinterpret_cast<ServiceCommon::ServiceInfo*>(
+            MapViewOfFile(fileMapping.get(), FILE_MAP_READ, 0, 0,
+                          sizeof(ServiceCommon::ServiceInfo))));
+    THROW_LAST_ERROR_IF(!fileMappingView);
+
+    m_serviceInfo = *fileMappingView;
+
+    if (m_serviceInfo.version != VER_FILE_VERSION_LONG) {
+        LOG(L"Version mismatch, service: %08X, app: %08X",
+            m_serviceInfo.version, VER_FILE_VERSION_LONG);
+    }
+}
+
+// Applies the settings which can take effect while running. Returns false
+// without applying any of them if they couldn't be read.
+bool CMainWindow::LoadSettings() {
+    LANGID languageId;
+    bool hideTrayIcon;
+    bool disableUpdateCheck;
+    ULONGLONG lastUpdateCheck;
+    bool dontAutoShowToolkit;
+    bool disableToolkitHotkey;
+    int modTasksDlgDelay;
+
+    try {
+        auto settings =
+            StorageManager::GetInstance().GetAppConfig(L"Settings", false);
+
+        auto language = settings->GetString(L"Language").value_or(L"en");
+        LCID lcid = LocaleNameToLCID(language.c_str(), 0);
+        if (lcid == LOCALE_CUSTOM_UNSPECIFIED) {
+            // Languages without a Microsoft-assigned LCID need a synthetic
+            // LANGID that matches the LANGUAGE statement in the resource file.
+            if (language == L"ht") {
+                languageId = MAKELANGID(0xFE, SUBLANG_DEFAULT);
+            } else {
+                // Shouldn't happen.
+                languageId = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+            }
+        } else {
+            languageId = LANGIDFROMLCID(lcid);
+        }
+
+        hideTrayIcon = settings->GetInt(L"HideTrayIcon").value_or(0);
+        disableUpdateCheck =
+            settings->GetInt(L"DisableUpdateCheck").value_or(0);
+
+        if (m_portable) {
+            lastUpdateCheck = std::wcstoull(
+                settings->GetString(L"LastUpdateCheck").value_or(L"0").c_str(),
+                nullptr, 10);
+        } else {
+            // For the non-portable version, update checking is done by another
+            // process; we observe its userprofile.json write via a file-change
+            // watcher.
+            lastUpdateCheck = 0;
+        }
+
+        dontAutoShowToolkit =
+            settings->GetInt(L"DontAutoShowToolkit").value_or(0);
+
+        disableToolkitHotkey =
+            settings->GetInt(L"DisableToolkitHotkey").value_or(0);
+
+        modTasksDlgDelay =
+            settings->GetInt(L"ModTasksDialogDelay")
+                .value_or(CTaskManagerDlg::kAutonomousModeShowDelayDefault);
+    } catch (const std::exception& e) {
+        LOG(L"%S", e.what());
+        return false;
+    }
+
+    if (languageId != m_languageId) {
+        ::SetThreadUILanguage(
+            languageId ? languageId
+                       : MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+
+        bool languageRightToLeft = Functions::IsRightToLeftLanguage(languageId);
+        ModifyStyleEx(languageRightToLeft ? 0 : WS_EX_LAYOUTRTL,
+                      languageRightToLeft ? WS_EX_LAYOUTRTL : 0);
+
+        if (m_modTasksDlg) {
+            m_modTasksDlg->LoadLanguageStrings();
+        }
+
+        if (m_modStatusesDlg) {
+            m_modStatusesDlg->LoadLanguageStrings();
+        }
+
+        if (m_toolkitDlg) {
+            m_toolkitDlg->LoadLanguageStrings();
+        }
+
+        m_languageId = languageId;
+    }
+
+    if (hideTrayIcon != m_hideTrayIcon) {
+        m_trayIcon->Hide(hideTrayIcon);
+
+        m_hideTrayIcon = hideTrayIcon;
+    }
+
+    if (disableUpdateCheck != m_disableUpdateCheck) {
+        // For the non-portable version, update checking is done by another
+        // process; we observe its userprofile.json write via a file-change
+        // watcher.
+        if (m_portable) {
+            m_checkForUpdates = !disableUpdateCheck;
+            if (m_checkForUpdates) {
+                if (!m_updateChecker) {
+                    SetTimer(Timer::kUpdateCheck,
+                             GetNextUpdateDelay(lastUpdateCheck));
+                }
+            } else {
+                if (m_updateChecker) {
+                    m_updateChecker->Abort();
+                } else {
+                    KillTimer(Timer::kUpdateCheck);
+                }
+
+                // The write raises one more signal which settles, since a write
+                // here stays behind a guard it doesn't affect.
+                ResetLastUpdateTime();
+            }
+        }
+
+        if (disableUpdateCheck) {
+            m_updateNotifier->Clear();
+        } else if (auto updateStatus = UserProfile::GetUpdateStatus()) {
+            m_updateNotifier->SetStatus(*updateStatus,
+                                        UpdateNotifier::Announce::kAll);
+        }
+
+        m_disableUpdateCheck = disableUpdateCheck;
+    }
+
+    if (dontAutoShowToolkit != m_dontAutoShowToolkit) {
+        if (!dontAutoShowToolkit) {
+            try {
+                auto explorerPath = wil::GetWindowsDirectory<std::wstring>() +
+                                    L"\\explorer.exe";
+
+                m_explorerCrashMonitor.emplace(explorerPath);
+            } catch (const std::exception& e) {
+                LOG(L"%S", e.what());
+            }
+        } else {
+            m_explorerCrashMonitor.reset();
+        }
+
+        m_dontAutoShowToolkit = dontAutoShowToolkit;
+    }
+
+    if (disableToolkitHotkey != m_disableToolkitHotkey) {
+        if (disableToolkitHotkey) {
+            if (m_toolkitHotkeyRegistered) {
+                ::UnregisterHotKey(m_hWnd, static_cast<int>(Hotkey::kToolkit));
+                m_toolkitHotkeyRegistered = false;
+            }
+        } else {
+            m_toolkitHotkeyRegistered =
+                ::RegisterHotKey(m_hWnd, static_cast<int>(Hotkey::kToolkit),
+                                 MOD_CONTROL | MOD_WIN | MOD_NOREPEAT, 'W');
+            if (!m_toolkitHotkeyRegistered) {
+                LOG(L"RegisterHotKey failed: %u", GetLastError());
+            }
+        }
+
+        m_disableToolkitHotkey = disableToolkitHotkey;
+    }
+
+    m_modTasksDlgDelay = modTasksDlgDelay;
+
+    return true;
+}
+
+void CMainWindow::ReloadUpdateStatus() {
+    auto userProfileJsonPath =
+        StorageManager::GetInstance().GetUserProfileJsonPath();
+
+    // The directory watch also fires for sibling temp files and for the
+    // read-triggered write below. Skip unless userprofile.json itself changed
+    // since it was last handled. The guard is captured before the read, so a
+    // write which lands while the read is in progress is picked up by the
+    // signal it raises instead of being recorded as already handled.
+    std::optional<ULONGLONG> profileContentHash =
+        GetFileContentHash(userProfileJsonPath);
+    if (profileContentHash && profileContentHash == m_lastProfileContentHash) {
+        return;
+    }
+
+    m_lastProfileContentHash = profileContentHash;
+
+    // Reading may rewrite the file to refresh the id, OS, or app version. That
+    // write raises one more signal, whose pass finds nothing left to refresh
+    // and settles.
+    std::optional<UserProfile::UpdateStatus> updateStatus =
+        UserProfile::GetUpdateStatus();
+    if (!updateStatus) {
+        // Leave the notifier as it is, and drop the guard so the write this
+        // read lost to isn't filtered as already handled.
+        m_lastProfileContentHash.reset();
+        return;
+    }
+
+    m_updateNotifier->SetStatus(*updateStatus,
+                                UpdateNotifier::Announce::kIncrease);
+}
+
+void CMainWindow::Exit() {
+    CloseUI();
+
+    if (m_portable) {
+        KillTimer(Timer::kHandleNewProcesses);
+    }
+
+    if (m_updateNotifier) {
+        m_updateNotifier->CancelPending();
+    }
+
+    if (m_updateChecker) {
+        m_updateChecker->Abort();
+        m_exitWhenUpdateCheckDone = true;
+    } else {
+        if (m_checkForUpdates) {
+            KillTimer(Timer::kUpdateCheck);
+        }
+
+        DestroyWindow();
+    }
+}
+
+void CMainWindow::StopService(HWND hWnd) {
+    struct CALLBACK_STATE {
+        bool showOnTaskbar;
+        bool verificationChecked;
+        bool handlingOkButton;
+    };
+
+    CALLBACK_STATE callbackState{
+        .showOnTaskbar = !hWnd,
+    };
+
+    TASKDIALOGCONFIG tdcTaskDialogConfig = {sizeof(TASKDIALOGCONFIG)};
+    TASKDIALOG_BUTTON tbButtons[2];
+
+    tbButtons[0].nButtonID = IDOK;
+    tbButtons[0].pszButtonText =
+        Functions::LoadStrFromRsrc(IDS_EXITDLG_BUTTON_EXIT);
+    tbButtons[1].nButtonID = IDCANCEL;
+    tbButtons[1].pszButtonText =
+        Functions::LoadStrFromRsrc(IDS_EXITDLG_BUTTON_CANCEL);
+
+    tdcTaskDialogConfig.hwndParent = hWnd ? hWnd : m_hWnd;
+    tdcTaskDialogConfig.hInstance = GetModuleHandle(nullptr);
+    tdcTaskDialogConfig.pszWindowTitle =
+        Functions::LoadStrFromRsrc(IDS_EXITDLG_TITLE);
+    tdcTaskDialogConfig.pszMainIcon = MAKEINTRESOURCE(IDR_MAINFRAME);
+    tdcTaskDialogConfig.pszContent =
+        Functions::LoadStrFromRsrc(IDS_EXITDLG_CONTENT);
+    tdcTaskDialogConfig.cButtons = _countof(tbButtons);
+    tdcTaskDialogConfig.pButtons = tbButtons;
+    tdcTaskDialogConfig.nDefaultButton = IDOK;
+    tdcTaskDialogConfig.pszVerificationText =
+        Functions::LoadStrFromRsrc(IDS_EXITDLG_CHECKBOX_AUTOSTART);
+    tdcTaskDialogConfig.pfCallback = [](HWND hWnd, UINT uNotification,
+                                        WPARAM wParam, LPARAM lParam,
+                                        LONG_PTR lpRefData) {
+        auto& callbackState = *reinterpret_cast<CALLBACK_STATE*>(lpRefData);
+
+        CWindow wnd(hWnd);
+
+        switch (uNotification) {
+            case TDN_DIALOG_CONSTRUCTED: {
+                if (callbackState.showOnTaskbar) {
+                    wnd.ModifyStyleEx(0, WS_EX_APPWINDOW);
+                }
+
+                bool languageRightToLeft =
+                    Functions::IsRightToLeftLanguage(GetThreadUILanguage());
+                wnd.ModifyStyleEx(languageRightToLeft ? 0 : WS_EX_LAYOUTRTL,
+                                  languageRightToLeft ? WS_EX_LAYOUTRTL : 0);
+
+                if (!Functions::IsRunAsAdmin()) {
+                    wnd.SendMessage(TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE,
+                                    IDOK, TRUE);
+                }
+                break;
+            }
+
+            case TDN_CREATED:
+                DarkMode::ApplyToTaskDialog(hWnd);
+                break;
+
+            case TDN_VERIFICATION_CLICKED:
+                callbackState.verificationChecked =
+                    static_cast<BOOL>(wParam) != FALSE;
+                break;
+
+            case TDN_BUTTON_CLICKED:
+                switch (wParam) {
+                    case IDOK:
+                        if (callbackState.handlingOkButton) {
+                            return S_FALSE;
+                        }
+
+                        callbackState.handlingOkButton = true;
+
+                        auto resetStateFlagOnScopeExit =
+                            wil::scope_exit([&callbackState] {
+                                callbackState.handlingOkButton = false;
+                            });
+
+                        try {
+                            auto modulePath =
+                                wil::GetModuleFileName<std::wstring>();
+                            PCWSTR commandLine = L"-service-stop";
+                            if (callbackState.verificationChecked) {
+                                commandLine =
+                                    L"-service-stop -also-no-autostart";
+                            }
+
+                            if ((int)(UINT_PTR)ShellExecute(
+                                    nullptr, L"runas", modulePath.c_str(),
+                                    commandLine, nullptr, SW_SHOWNORMAL) > 32) {
+                                return S_OK;
+                            }
+
+                            THROW_LAST_ERROR_IF(GetLastError() !=
+                                                ERROR_CANCELLED);
+                        } catch (const std::exception& e) {
+                            try {
+                                std::string msg =
+                                    "Exiting failed with the error below. If "
+                                    "nothing else works, you can choose to "
+                                    "send an exit signal to the Windhawk "
+                                    "service. Send exit signal?\n\nError:\n";
+
+                                msg += e.what();
+
+                                if (::MessageBoxA(hWnd, msg.c_str(),
+                                                  "Exiting failed",
+                                                  MB_ICONERROR | MB_YESNO |
+                                                      MB_DEFBUTTON2) == IDYES) {
+                                    wil::unique_event namedEvent(::OpenEvent(
+                                        EVENT_MODIFY_STATE, FALSE,
+                                        ServiceCommon::
+                                            kEmergencyStopEventName));
+                                    THROW_LAST_ERROR_IF_NULL(namedEvent);
+
+                                    namedEvent.SetEvent();
+                                }
+                            } catch (const std::exception& e) {
+                                ::MessageBoxA(hWnd, e.what(), "Error",
+                                              MB_ICONERROR);
+                            }
+                        }
+
+                        return S_FALSE;  // leave dialog open
+                }
+                break;
+        }
+
+        return S_OK;
+    };
+    tdcTaskDialogConfig.lpCallbackData =
+        reinterpret_cast<LONG_PTR>(&callbackState);
+
+    BOOL bVerificationFlagChecked;
+    ::TaskDialogIndirect(&tdcTaskDialogConfig, nullptr, nullptr,
+                         &bVerificationFlagChecked);
+}
+
+void CMainWindow::RunUI(HWND hWnd, bool legacyUI) {
+    if (!hWnd) {
+        hWnd = m_hWnd;
+    }
+
+    try {
+        UIControl::RunUIOrBringToFront(hWnd, legacyUI);
+    } catch (const std::exception& e) {
+        ::MessageBoxA(hWnd, e.what(), "Could not launch the UI process",
+                      MB_ICONERROR);
+    }
+}
+
+void CMainWindow::CloseUI() {
+    try {
+        UIControl::CloseUI();
+    } catch (const std::exception& e) {
+        LOG(L"CloseUI failed: %S", e.what());
+    }
+}
+
+UINT CMainWindow::GetNextUpdateDelay(ULONGLONG lastUpdateCheck) {
+    if (lastUpdateCheck == 0) {
+        return kUpdateInitialDelay;
+    }
+
+    ULONGLONG now = wil::filetime::convert_100ns_to_msec(
+        wil::filetime::to_int64(wil::filetime::get_system_time()));
+
+    ULONGLONG nextUpdateDelay = kUpdateInitialDelay;
+    ULONGLONG nextUpdateTime = lastUpdateCheck + kUpdateInterval;
+    if (nextUpdateTime > now) {
+        nextUpdateDelay = nextUpdateTime - now;
+        if (nextUpdateDelay < kUpdateInitialDelay) {
+            nextUpdateDelay = kUpdateInitialDelay;
+        } else if (nextUpdateDelay > kUpdateInterval) {
+            nextUpdateDelay = kUpdateInterval;
+        }
+    }
+
+    return static_cast<UINT>(nextUpdateDelay);
+}
+
+void CMainWindow::SetLastUpdateTime() {
+    ULONGLONG now = wil::filetime::convert_100ns_to_msec(
+        wil::filetime::to_int64(wil::filetime::get_system_time()));
+
+    try {
+        auto settings =
+            StorageManager::GetInstance().GetAppConfig(L"Settings", true);
+        settings->SetString(L"LastUpdateCheck", std::to_wstring(now).c_str());
+    } catch (const std::exception& e) {
+        LOG(L"%S", e.what());
+    }
+}
+
+void CMainWindow::ResetLastUpdateTime() {
+    try {
+        auto settings =
+            StorageManager::GetInstance().GetAppConfig(L"Settings", true);
+        settings->Remove(L"LastUpdateCheck");
+    } catch (const std::exception& e) {
+        LOG(L"%S", e.what());
+    }
+}
+
+void CMainWindow::OpenUpdatePage() {
+    PCWSTR url =
+        L"https://windhawk.net/download?version=" VER_FILE_VERSION_WSTR;
+
+    if ((int)(UINT_PTR)ShellExecute(m_hWnd, nullptr, url, nullptr, nullptr,
+                                    SW_SHOWNORMAL) <= 32) {
+        MessageBox(
+            L"Could not open the update page, please update Windhawk manually",
+            L"Error", MB_ICONERROR);
+    }
+}
+
+void CMainWindow::ShowLoadedModsDialog() {
+    if (m_modStatusesDlg) {
+        ::SetForegroundWindow(*m_modStatusesDlg);
+        return;
+    }
+
+    m_modStatusesDlg.emplace(CTaskManagerDlg::DialogOptions{
+        .dataSource = CTaskManagerDlg::DataSource::kModStatus,
+        .sessionManagerProcessId = m_serviceInfo.processId,
+        .sessionManagerProcessCreationTime = m_serviceInfo.processCreationTime,
+        .runButtonCallback = [this](HWND hWnd) { RunUI(hWnd); },
+        .finalMessageCallback =
+            [this](HWND hWnd) {
+                m_modStatusesDlg.reset();
+                m_modStatusesChangeNotification.reset();
+            }});
+
+    if (!m_modStatusesDlg->Create(m_hWnd)) {
+        m_modStatusesDlg.reset();
+        return;
+    }
+
+    m_modStatusesDlg->ShowWindow(SW_SHOWNORMAL);
+
+    try {
+        m_modStatusesChangeNotification.emplace(
+            SessionMetadata::MakeSessionId(m_serviceInfo.processId,
+                                           m_serviceInfo.processCreationTime),
+            SessionMetadata::kCategoryModStatus);
+    } catch (const std::exception& e) {
+        LOG(L"Statuses ChangeNotification failed: %S", e.what());
+    }
+}
+
+void CMainWindow::ShowToolkitDialog(bool triggeredBySystemInstability) {
+    if (m_toolkitDlg) {
+        ::SetForegroundWindow(*m_toolkitDlg);
+        return;
+    }
+
+    bool createInactive = triggeredBySystemInstability;
+
+    m_toolkitDlg.emplace(CToolkitDlg::DialogOptions{
+        .createInactive = createInactive,
+        .showTaskbarCrashExplanation = triggeredBySystemInstability,
+        .runButtonCallback = [this](HWND hWnd) { RunUI(hWnd); },
+        .loadedModsButtonCallback =
+            [this](HWND hWnd) { ShowLoadedModsDialog(); },
+        .exitButtonCallback =
+            [this](HWND hWnd) {
+                if (m_portable) {
+                    Exit();
+                } else {
+                    StopService(hWnd);
+                }
+            },
+        .safeModeButtonCallback =
+            [this](HWND hWnd) {
+                if (::MessageBox(
+                        hWnd, Functions::LoadStrFromRsrc(IDS_SAFE_MODE_TEXT),
+                        Functions::LoadStrFromRsrc(IDS_SAFE_MODE_TITLE),
+                        MB_ICONWARNING | MB_OKCANCEL | MB_DEFBUTTON2) == IDOK) {
+                    try {
+                        SwitchToSafeMode();
+                    } catch (const std::exception& e) {
+                        ::MessageBoxA(hWnd, e.what(), "Error", MB_ICONERROR);
+                    }
+                }
+            },
+        .finalMessageCallback = [this](HWND hWnd) { m_toolkitDlg.reset(); }});
+
+    if (!m_toolkitDlg->Create(m_hWnd)) {
+        m_toolkitDlg.reset();
+        return;
+    }
+
+    m_toolkitDlg->ShowWindow(createInactive ? SW_SHOWNOACTIVATE
+                                            : SW_SHOWNORMAL);
+}
+
+void CMainWindow::SwitchToSafeMode() {
+    try {
+        auto modulePath = wil::GetModuleFileName<std::wstring>();
+
+        std::wstring commandLine = L"\"" + modulePath + L"\" -wait";
+
+        STARTUPINFO si = {sizeof(STARTUPINFO)};
+        wil::unique_process_information process;
+
+        THROW_IF_WIN32_BOOL_FALSE(CreateProcess(
+            modulePath.c_str(), commandLine.data(), nullptr, nullptr, FALSE,
+            NORMAL_PRIORITY_CLASS, nullptr, nullptr, &si, &process));
+    } catch (const std::exception& e) {
+        LOG(L"%S", e.what());
+    }
+
+    if (m_portable) {
+        auto settings =
+            StorageManager::GetInstance().GetAppConfig(L"Settings", true);
+        settings->SetInt(L"SafeMode", 1);
+
+        Exit();
+    } else {
+        wil::unique_event namedEvent(::OpenEvent(
+            EVENT_MODIFY_STATE, FALSE, ServiceCommon::kSafeModeStopEventName));
+        THROW_LAST_ERROR_IF_NULL(namedEvent);
+
+        namedEvent.SetEvent();
+    }
+}
+
+void CMainWindow::HandleExplorerCrash(int explorerCrashCount) {
+    VERBOSE(L"Detected %d explorer crashes", explorerCrashCount);
+
+    ULONGLONG currentTickCount = GetTickCount64();
+
+    if (explorerCrashCount >= 2 ||
+        (m_explorerLastTerminatedTickCount &&
+         currentTickCount - *m_explorerLastTerminatedTickCount <=
+             kExplorerSecondCrashMaxPeriod)) {
+        bool skipShowingToolkit = false;
+        ULONGLONG taskbarProcessCreationTime = GetTaskbarProcessCreationTime();
+        if (taskbarProcessCreationTime) {
+            ULONGLONG currentTime =
+                wil::filetime::to_int64(wil::filetime::get_system_time());
+            ULONGLONG msSinceCreationTime =
+                wil::filetime::convert_100ns_to_msec(
+                    currentTime - taskbarProcessCreationTime);
+            if (msSinceCreationTime > kExplorerSecondCrashMaxPeriod) {
+                VERBOSE(
+                    L"Taskbar process created %u ms ago, not showing toolkit",
+                    msSinceCreationTime);
+                skipShowingToolkit = true;
+            }
+        }
+
+        if (!skipShowingToolkit && !m_toolkitDlg) {
+            ShowToolkitDialog(/*triggeredBySystemInstability=*/true);
+        }
+    }
+
+    m_explorerLastTerminatedTickCount = currentTickCount;
+}

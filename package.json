@@ -1,0 +1,33 @@
+{
+  "name": "theme-studio",
+  "version": "0.1.0",
+  "description": "Desktop Theme Studio based on Seelen UI and Windhawk source",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "build": "tsx tools/build.ts",
+    "check": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "dev": "tsx tools/dev-server.ts"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.11.0",
+    "antd": "6.3.6",
+    "i18next": "26.0.6",
+    "js-yaml": "4.1.0",
+    "preact": "10.29.1",
+    "react-i18next": "17.0.4",
+    "svelte": "5.55.4",
+    "styled-components": "6.5.3"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "4.0.9",
+    "@types/node": "25.6.0",
+    "esbuild": "0.28.0",
+    "esbuild-css-modules-plugin": "3.1.4",
+    "esbuild-svelte": "0.9.3",
+    "tsx": "4.19.3",
+    "typescript": "5.9.3"
+  }
+}

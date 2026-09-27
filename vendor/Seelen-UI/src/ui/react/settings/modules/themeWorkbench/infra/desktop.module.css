@@ -1,0 +1,48 @@
+.section { display: flex; flex-direction: column; gap: 16px; }
+.heading { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.heading p { margin-top: 7px; color: light-dark(#67728a, #b4bfd1); font-size: 12px; line-height: 1.6; }
+.live { white-space: nowrap; padding: 5px 10px; border-radius: 20px; background: light-dark(#e5f5eb, #16362c); color: light-dark(#287847, #8bddb1); font-size: 11px; }
+.fieldset { display: flex; flex-direction: column; gap: 15px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.section button, .section select, .section input:not([type=checkbox]) { border: 1px solid light-dark(#d5dae5, #ffffff30); border-radius: 8px; padding: 9px 12px; font: inherit; font-size: 12px; color: inherit; background: light-dark(#fff, #222739); }
+.section button { cursor: pointer; }
+.section button:hover:not(:disabled) { border-color: #7562c7; }
+.section button:disabled, .section fieldset:disabled { opacity: .6; cursor: default; }
+.section button.primary { background: #7562c7; color: white; border-color: #7562c7; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.toolbar > input { flex: 1; min-width: 150px; }
+.toolbar label { display: flex; gap: 8px; align-items: center; font-size: 12px; }
+.iconLayout { display: grid; grid-template-columns: minmax(0, 1fr) 245px; gap: 20px; }
+.shortcuts { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: 8px; max-height: 350px; overflow: auto; align-content: start; }
+.shortcuts label { padding: 10px; border: 1px solid light-dark(#dfe3ed, #ffffff25); border-radius: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 0; }
+.shortcuts img { object-fit: contain; flex-shrink: 0; }
+.shortcuts label > span { overflow: hidden; }
+.shortcuts strong { display: block; font-size: 12px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shortcuts small { display: block; margin-top: 5px; font-size: 10px; color: light-dark(#718097, #a8b5cb); }
+.section .selected { border-color: #8874d7; background: light-dark(#f0ecfc, #302a49); }
+.artwork { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 15px; border-radius: 12px; background: light-dark(#f3f4fa, #ffffff08); text-align: center; }
+.artworkPreview { display: grid; place-items: center; height: 75px; }
+.artworkPreview img { width: 64px; height: 64px; object-fit: contain; }
+.artworkPreview span { font-size: 46px; color: #aa9fda; }
+.artwork strong { font-size: 12px; overflow-wrap: anywhere; }
+.artwork p, .artwork small, .note { font-size: 11px; color: light-dark(#717b90, #b0b9ca); line-height: 1.6; }
+.library { display: flex; gap: 10px; flex-wrap: wrap; max-height: 230px; overflow: auto; padding-top: 10px; }
+.library button { display: flex; flex-direction: column; width: 100px; gap: 5px; align-items: center; }
+.library img { width: 44px; height: 44px; object-fit: contain; }
+.library span { font-size: 10px; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.section summary { font-size: 12px; color: light-dark(#6254ab, #c4b6ff); cursor: pointer; }
+.history { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.history > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; }
+.cursorLayout { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 20px; }
+.roleGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 8px; }
+.roleGrid button { display: flex; align-items: center; gap: 8px; text-align: left; padding: 9px; }
+.roleGrid img { width: 30px; height: 30px; object-fit: contain; }
+.roleGrid span { font-size: 11px; }
+.defaultIcon { width: 30px; text-align: center; font-size: 24px !important; }
+.cursorDetail { padding: 16px; display: flex; flex-direction: column; gap: 12px; align-items: stretch; background: light-dark(#f3f4fa, #ffffff08); border-radius: 12px; }
+.cursorDetail strong { font-size: 13px; }
+.cursorDetail > img { align-self: center; object-fit: contain; }
+.cursorDetail p { font-size: 11px; overflow-wrap: anywhere; color: light-dark(#657088, #afbad0); }
+.message { padding: 10px 14px; border-radius: 8px; background: light-dark(#e9f6ef, #1d392d); color: light-dark(#276b49, #a9ddbc); font-size: 12px; line-height: 1.7; white-space: pre-wrap; }
+.message.error { background: light-dark(#fff0ee, #4c2a29); color: light-dark(#ad463d, #f0bbb3); }
+.issues p { font-size: 11px; line-height: 1.6; }
+@media (max-width: 700px) { .iconLayout, .cursorLayout { grid-template-columns: 1fr; } .artwork { max-width: none; } .heading { flex-wrap: wrap; } }

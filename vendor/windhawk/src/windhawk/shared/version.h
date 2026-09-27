@@ -1,0 +1,35 @@
+#pragma once
+
+// Version
+#define VERSION_MAJOR               2
+#define VERSION_MINOR               0
+#define VERSION_REVISION            0
+
+// Pre-release tag appended to the human-readable version string, e.g.
+// "-alpha.1". Empty for a final release. It lives only in the string forms
+// (VER_FILE_VERSION_STR/_WSTR) and the .rc "FileVersion"/"ProductVersion"
+// string values; the numeric fields above, VER_FILE_VERSION (the .rc
+// FILEVERSION tuple) and VER_FILE_VERSION_LONG stay strictly numeric.
+#define VERSION_PRERELEASE          "-alpha.6"
+
+// etc.
+#define STRINGIZE2(s)               #s
+#define STRINGIZE(s)                STRINGIZE2(s)
+#define W2(x)                       L ## x
+#define W(x)                        W2(x)
+#define N(x)                        x
+#define LONG_ID(a,b,c,d)            (((a)<<24) | ((b)<<16) | ((c)<<8) | (d))
+
+// The version is a SemVer major.minor.patch triple. The .rc FILEVERSION tuple
+// and the packed LONG_ID form are four fields wide, so both pad with a fourth
+// field of 0.
+#define VER_FILE_VERSION            VERSION_MAJOR,VERSION_MINOR,VERSION_REVISION,0
+
+#define VER_FILE_VERSION_TSTR(t)    t(STRINGIZE(VERSION_MAJOR))    t(".") \
+                                    t(STRINGIZE(VERSION_MINOR))    t(".") \
+                                    t(STRINGIZE(VERSION_REVISION)) t(VERSION_PRERELEASE)
+
+#define VER_FILE_VERSION_STR        VER_FILE_VERSION_TSTR(N)
+#define VER_FILE_VERSION_WSTR       VER_FILE_VERSION_TSTR(W)
+
+#define VER_FILE_VERSION_LONG       LONG_ID(VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, 0)

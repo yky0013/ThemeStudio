@@ -1,0 +1,51 @@
+# cargo-deny configuration: advisory database, license allowlist,
+# duplicate-version detection, registry pinning. Run: cargo deny check
+
+[graph]
+targets = [
+    "i686-pc-windows-msvc",
+    "x86_64-pc-windows-msvc",
+    "aarch64-pc-windows-msvc",
+]
+
+[advisories]
+yanked = "deny"
+
+[licenses]
+# The workspace crates are unpublished (publish = false); the allowlist
+# governs external dependencies.
+private = { ignore = true }
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Zlib",
+    # The Tauri UI pulls a handful of MPL-2.0 crates - the Servo CSS stack and
+    # helpers cssparser, cssparser-macros, dtoa-short, selectors, and option-ext
+    # (via dirs-sys). MPL-2.0 is file-level (weak) copyleft: it permits use in a
+    # larger work without affecting that work's license, requiring only that
+    # modifications to the MPL files themselves stay MPL. These are unmodified
+    # upstream crates linked into the x64/ARM64 UI only (not the i686 core), so
+    # the obligation is satisfied by shipping them as-is.
+    "MPL-2.0",
+]
+
+[bans]
+# Advisory, not blocking: the Tauri UI and the build-script trees carry
+# duplicate versions the workspace cannot pin away, and cargo-deny builds ONE
+# graph over every target and workspace member, so a blocking rule could not be
+# scoped to the i686 core's own tree - excluding the UI member would also drop
+# it from the advisory and license checks that exist for it.
+multiple-versions = "warn"
+wildcards = "deny"
+# Workspace path dependencies carry no version; external wildcards stay
+# banned.
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
