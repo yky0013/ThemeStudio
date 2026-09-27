@@ -1,4 +1,4 @@
-param([ValidateSet('Create','Upload','Verify')][string]$Stage='Verify')
+param([ValidateSet('Create','Upload','Verify','Publish')][string]$Stage='Verify', [string[]]$AssetName)
 $ErrorActionPreference = 'Stop'
 $projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $repository = 'yky0013/ThemeStudio'
@@ -26,16 +26,31 @@ if ($Stage -eq 'Create') {
 
 安装包包含 WebView2 离线运行库和原始引擎/编译工具；卸载停止工作室运行组件，保留用户素材及图标/指针备份。源码保留上游许可证、固定提交、完整对应源码和本地集成记录。此仓库为私有仓库。
 '@
-    $release = Invoke-RestMethod -Method Post -Uri ('https://api.github.com/repos/' + $repository + '/releases') -Headers $headers -ContentType 'application/json' -Body (@{tag_name=$tag;target_commitish=$commit;name=('桌面主题工作室 ' + $version);body=$body;draft=$false;prerelease=$true} | ConvertTo-Json -Compress) -TimeoutSec 30
+    $release = Invoke-RestMethod -Method Post -Uri ('https://api.github.com/repos/' + $repository + '/releases') -Headers $headers -ContentType 'application/json' -Body (@{tag_name=$tag;target_commitish=$commit;name=('桌面主题工作室 ' + $version);body=$body;draft=$true;prerelease=$true} | ConvertTo-Json -Compress) -TimeoutSec 30
     $release | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $releaseFile -Encoding utf8
     [pscustomobject]@{release=$release.html_url;id=$release.id;tag=$release.tag_name;commit=$commit} | ConvertTo-Json
     return
 }
 $release = Get-Content -LiteralPath $releaseFile -Raw | ConvertFrom-Json
 if ($release.tag_name -cne $tag) { throw 'Saved release tag does not match this version.' }
+if ($Stage -eq 'Publish') {
+    $result = Get-Content -LiteralPath (Join-Path $projectRoot 'qa\runtime\installer-0.2.0\result.json') -Raw | ConvertFrom-Json
+    if (-not $result.passed) { throw 'Installer verification must pass before publication.' }
+    & $PSCommandPath -Stage Verify
+    if ($LASTEXITCODE -ne 0) { throw 'Release asset verification failed.' }
+    $commit = (git -C $projectRoot rev-parse HEAD).Trim()
+    $release = Invoke-RestMethod -Method Patch -Uri ('https://api.github.com/repos/' + $repository + '/releases/' + $release.id) -Headers $headers -ContentType 'application/json' -Body (@{draft=$false;target_commitish=$commit} | ConvertTo-Json -Compress) -TimeoutSec 30
+    $release | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $releaseFile -Encoding utf8
+    [pscustomobject]@{release=$release.html_url;published=(-not $release.draft);tag=$release.tag_name} | ConvertTo-Json
+    return
+}
 $assetResponse = Invoke-RestMethod -Uri ('https://api.github.com/repos/' + $repository + '/releases/' + $release.id + '/assets') -Headers $headers -TimeoutSec 30
 $assets = @($assetResponse)
-$files = @(('ThemeStudio-' + $version + '-Windows-x64-Setup.exe'), ('ThemeStudio-' + $version + '-source.zip'), 'SHA256.txt', 'release.json')
+$files = @(('ThemeStudio-' + $version + '-Windows-x64-Setup.exe'), ('ThemeStudio-' + $version + '-source.zip'), ('ThemeStudio-' + $version + '-project-data.zip'), 'SHA256.txt', 'release.json')
+if ($AssetName) {
+    if ($Stage -ne 'Upload' -or @($AssetName | Where-Object {$_ -cnotin $files}).Count -ne 0) { throw 'Asset selection is valid only for known release files during upload.' }
+    $files = @($files | Where-Object {$_ -cin $AssetName})
+}
 $verification = @()
 Add-Type -AssemblyName System.Net.Http
 foreach ($name in $files) {

@@ -10,7 +10,7 @@
 
 新项目数据保存在 `%LOCALAPPDATA%/ThemeStudio`；原工作台数据保持原位。关闭主窗口会关闭图标/指针后端；已经启用的桌面壁纸、Seelen 和 Windhawk 引擎继续运行，可在设置页停用。
 
-当前版本：0.2.0。安装/启动管理员授权、逐项图片对应、真实桌面媒体播放和运行组件启用已接入；本轮的源码、原生运行与安装验证分别记录在 docs/development/。图文教程位于 `docs/guide/index.html`，离线随程序安装。详见 `docs/installer-verification.json`。
+当前版本：0.2.0。安装/启动管理员授权、逐项图片对应、真实桌面媒体播放和运行组件启用已接入；本轮的源码、原生运行与安装验证分别记录在 docs/development/。图文教程位于 `docs/guide/index.html`，离线随程序安装。本版构建及交付状态见 `docs/development/verification-0.2.0/installer-build.json`，旧版安装记录保留在 `docs/installer-verification.json`。
 
 ## 已接入
 

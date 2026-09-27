@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "date": "2026-09-27T20:45:37.2153890+08:00",
+  "installer": "ThemeStudio-0.2.0-Windows-x64-Setup.exe",
+  "bytes": 428918482,
+  "sha256": "52eff8ca47936e3709177f0d1fabaa77d54169fad2f2f792d204be75c4ebf1a4",
+  "manifests": {
+    "release/ThemeStudio/ThemeStudio.exe": {
+      "level": "requireAdministrator",
+      "embedded": true
+    },
+    "installers/ThemeStudio-0.2.0-Windows-x64-Setup.exe": {
+      "level": "asInvoker",
+      "embedded": true
+    },
+    "setupPrivilegeMode": "admin",
+    "note": "Original Inno bootstrap remains asInvoker; the setup directive requests elevation for the internal administrative installer."
+  },
+  "automatedChecks": {
+    "frontendTests": 20,
+    "typeScript": true,
+    "backendTests": 31
+  },
+  "nativeChecks": {
+    "windhawkMouseTrailDllLoaded": true,
+    "imageAndVideoWorkerWBackground": true,
+    "publicDesktopWriteAndExactRestore": true,
+    "seelenDockToolbarApplyAndEngineStop": true,
+    "independentPicturesAndExactRestore": true,
+    "nativeTaskbarRestoredVisible": true
+  },
+  "installerRegression": {
+    "resultPath": "qa/runtime/installer-0.2.0/result.json",
+    "status": "waiting_for_windows_uac"
+  },
+  "cleanup": {
+    "userRequested": "Remove local project files after GitHub handoff; retain the installer",
+    "status": "pending_installer_regression_and_verified_backups"
+  }
+}

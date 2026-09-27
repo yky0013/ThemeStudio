@@ -177,5 +177,11 @@
     "Git clone at theme-studio stalled; primary repo recovered with filtered metadata plus verified source archive blobs. Old theme-studio folder now holds research worker outputs; copy markdown/checkpoints only into primary repo before finalizing."
   ],
   "administratorSeelenVerified": true,
-  "ownedTestEnvironmentRestored": true
+  "ownedTestEnvironmentRestored": true,
+  "delivery": {
+    "installerSha256": "52eff8ca47936e3709177f0d1fabaa77d54169fad2f2f792d204be75c4ebf1a4",
+    "githubInstallerUploadedAndDigestVerified": true,
+    "status": "awaiting_windows_uac_for_install_uninstall_regression",
+    "localInstaller": "E:\\desktop\\windows\\ThemeStudio-0.2.0-Windows-x64-Setup.exe"
+  }
 }

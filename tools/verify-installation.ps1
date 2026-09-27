@@ -1,4 +1,4 @@
-param([ValidateSet('Install','Check','Uninstall','All')][string]$Stage = 'Check')
+﻿param([ValidateSet('Install','Check','Uninstall','All')][string]$Stage = 'Check')
 $ErrorActionPreference = 'Stop'
 $principal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run the installer regression with Windows administrator authorization.' }
