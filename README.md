@@ -54,6 +54,8 @@ npm.cmd run build
 
 来源导入清单：`docs/source-imports.json`、`docs/desktop-source-imports.json`。固定上游源码、作者声明和各自许可证保存在 `vendor/` 与 `licenses/`。新整合代码采用 AGPL-3.0-or-later；Windhawk 宿主及模组的原许可证仍分别适用，不能将全部模组统一视为 MIT。Microsoft WebView2 SDK 的许可和 notice 随发布目录附带。
 
-该项目是基于这些源码的独立衍生项目，不是 Seelen 或 Windhawk 的官方发行版。原目录和旧入口保留，后续整合开发在本目录进行。
+该项目是基于这些源码的独立衍生项目，不是 Seelen 或 Windhawk 的官方发行版。后续开发可以直接克隆本仓库；构建和运行不依赖旧工作区。
+
+源码及安装包发布于 [yky0013/ThemeStudio](https://github.com/yky0013/ThemeStudio)。[v0.1.1 发布页](https://github.com/yky0013/ThemeStudio/releases/tag/v0.1.1) 保存与安装包匹配的源码、旧工作区源码和 Git 元数据、清理前项目数据，以及 SHA-256 校验记录。旧开发入口、运行环境和本机数据按用户要求清理，清理证据见 `docs/handoff/`。
 
 安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；官方运行库下载来源及哈希在 `config/webview2-runtime.json`，运行 `tools/fetch-runtime.ps1` 获取锁定的离线运行库。分发时同时提供匹配源码压缩包，保留许可证及作者声明。

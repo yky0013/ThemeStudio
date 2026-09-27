@@ -1,0 +1,50 @@
+[
+  {
+    "name": "ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+    "bytes": 228824398,
+    "sha256": "feb381f18740a5b3d38aa370f69d45b2d8b51550fbf7398b4b3a562c3de9000f",
+    "remoteDigest": "sha256:feb381f18740a5b3d38aa370f69d45b2d8b51550fbf7398b4b3a562c3de9000f",
+    "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+    "verified": true
+  },
+  {
+    "name": "ThemeStudio-0.1.1-source.zip",
+    "bytes": 72354543,
+    "sha256": "b061ee04df71988aa41467c5bc8c938256deeffc4eaab8deda50675d7675d902",
+    "remoteDigest": "sha256:b061ee04df71988aa41467c5bc8c938256deeffc4eaab8deda50675d7675d902",
+    "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/ThemeStudio-0.1.1-source.zip",
+    "verified": true
+  },
+  {
+    "name": "SHA256.txt",
+    "bytes": 203,
+    "sha256": "77bec96980409e17c4479851950040cbe5d0c3085db668de18e34a8994eb4953",
+    "remoteDigest": "sha256:77bec96980409e17c4479851950040cbe5d0c3085db668de18e34a8994eb4953",
+    "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/SHA256.txt",
+    "verified": true
+  },
+  {
+    "name": "release.json",
+    "bytes": 576,
+    "sha256": "1555afab485ff6fd04a1161de9e59e9c72ddc5e756f1f3fe25a6750dac4e4bcb",
+    "remoteDigest": "sha256:1555afab485ff6fd04a1161de9e59e9c72ddc5e756f1f3fe25a6750dac4e4bcb",
+    "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/release.json",
+    "verified": true
+  },
+  {
+    "name": "windows-legacy-workspace-20260927.zip",
+    "bytes": 275510437,
+    "sha256": "c09eaf9a3bf6510f2d9a44c2e2e5ad329dc01cf26de45a18e38e33a5dc8b43e3",
+    "remoteDigest": "sha256:c09eaf9a3bf6510f2d9a44c2e2e5ad329dc01cf26de45a18e38e33a5dc8b43e3",
+    "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/windows-legacy-workspace-20260927.zip",
+    "verified": true
+  },
+  {
+    "name": "windows-project-data-before-cleanup-20260927.zip",
+    "bytes": 55151511,
+    "sha256": "7d14589386a2256da3e042fb41ab76d198b04fb82146863347b7917765943624",
+    "remoteDigest": "sha256:7d14589386a2256da3e042fb41ab76d198b04fb82146863347b7917765943624",
+    "url": "https://github.com/yky0013/ThemeStudio/releases/download/v0.1.1/windows-project-data-before-cleanup-20260927.zip",
+    "verified": true
+  }
+]

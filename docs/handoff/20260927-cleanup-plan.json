@@ -1,0 +1,72 @@
+{
+  "workspace": "E:\\desktop\\windows",
+  "keep": "E:\\desktop\\windows\\ThemeStudio-0.1.1-Windows-x64-Setup.exe",
+  "deleteWorkspaceChildren": [
+    "E:\\desktop\\windows\\Cursor-Palette",
+    "E:\\desktop\\windows\\docs",
+    "E:\\desktop\\windows\\icon-workbench",
+    "E:\\desktop\\windows\\image-to-ico",
+    "E:\\desktop\\windows\\Lively-Wallpaper",
+    "E:\\desktop\\windows\\Seelen-UI",
+    "E:\\desktop\\windows\\theme-studio",
+    "E:\\desktop\\windows\\upstream-snapshots",
+    "E:\\desktop\\windows\\wallpaper-workbench",
+    "E:\\desktop\\windows\\windhawk",
+    "E:\\desktop\\windows\\windhawk-mods",
+    "E:\\desktop\\windows\\安装桌面图标工作台.cmd",
+    "E:\\desktop\\windows\\壁纸工作台.lnk",
+    "E:\\desktop\\windows\\启动壁纸工作台.cmd",
+    "E:\\desktop\\windows\\启动壁纸视差预览.cmd",
+    "E:\\desktop\\windows\\启动鼠标指针工作台.cmd",
+    "E:\\desktop\\windows\\启动图标与鼠标工作台.cmd",
+    "E:\\desktop\\windows\\启动图片转ICO.cmd",
+    "E:\\desktop\\windows\\启动源码开发版.cmd",
+    "E:\\desktop\\windows\\启动主题工作台.cmd",
+    "E:\\desktop\\windows\\启动桌面图标工作台.cmd",
+    "E:\\desktop\\windows\\启动桌面主题工作室.cmd",
+    "E:\\desktop\\windows\\鼠标指针工作台.lnk",
+    "E:\\desktop\\windows\\图标与鼠标工作台.lnk",
+    "E:\\desktop\\windows\\图片转ICO.lnk",
+    "E:\\desktop\\windows\\项目大纲.md",
+    "E:\\desktop\\windows\\主题工作台.lnk",
+    "E:\\desktop\\windows\\桌面图标工作台.lnk",
+    "E:\\desktop\\windows\\AGENTS.md",
+    "E:\\desktop\\windows\\windows主题包.txt"
+  ],
+  "deleteProjectData": [
+    "C:\\Users\\yky\\AppData\\Local\\ThemeStudio",
+    "C:\\Users\\yky\\AppData\\Local\\DesktopIconWorkbench",
+    "C:\\Users\\yky\\AppData\\Local\\Cursor-Palette",
+    "C:\\Users\\yky\\AppData\\Local\\Lively Wallpaper",
+    "C:\\Users\\yky\\AppData\\Local\\Temp\\Lively Wallpaper",
+    "C:\\Users\\yky\\AppData\\Local\\Temp\\Setup Log 2026-09-27 #001.txt"
+  ],
+  "uninstall": {
+    "name": "Lively Wallpaper",
+    "expectedInstallDirectory": "E:\\desktop\\windows\\wallpaper-workbench\\runtime",
+    "registeredPath": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{E3E43E1B-DEC8-44BF-84A6-243DBA3F2CB1}}_is1"
+  },
+  "before": {
+    "freeBytes": 61841510400,
+    "wallpaper": "E:\\desktop\\图片\\0dpwmx4817qsmm8dgg-16745468140249.png",
+    "cursors": {
+      "Arrow": "C:\\Windows\\Resources\\Themes\\ASUS\\Normal Select.ani",
+      "Help": "C:\\Windows\\Resources\\Themes\\ASUS\\Help Select.ani",
+      "AppStarting": "C:\\Windows\\Resources\\Themes\\ASUS\\Working In Background.ani",
+      "Wait": "C:\\Windows\\Resources\\Themes\\ASUS\\Busy.ani",
+      "Crosshair": null,
+      "IBeam": "C:\\Windows\\Resources\\Themes\\ASUS\\Text Select.ani",
+      "NWPen": "C:\\Windows\\Resources\\Themes\\ASUS\\Handwriting.ani",
+      "No": "C:\\Windows\\Resources\\Themes\\ASUS\\Unavailable.ani",
+      "SizeNS": "C:\\Windows\\Resources\\Themes\\ASUS\\Vertical Resize.ani",
+      "SizeWE": "C:\\Windows\\Resources\\Themes\\ASUS\\Horizontal Resize.ani",
+      "SizeNWSE": "C:\\Windows\\Resources\\Themes\\ASUS\\Diagonal Resize 1.ani",
+      "SizeNESW": "C:\\Windows\\Resources\\Themes\\ASUS\\Diagonal Resize 2.ani",
+      "SizeAll": "C:\\Windows\\Resources\\Themes\\ASUS\\Move.ani",
+      "UpArrow": null,
+      "Hand": "C:\\Windows\\Resources\\Themes\\ASUS\\Link Select.ani",
+      "Pin": null,
+      "Person": null
+    }
+  }
+}
