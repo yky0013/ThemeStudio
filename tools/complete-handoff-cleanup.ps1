@@ -5,6 +5,11 @@ if ($workspaceRoot -ine 'E:\desktop\windows' -or $projectRoot -ine (Join-Path $w
 $version = (Get-Content -LiteralPath (Join-Path $projectRoot 'package.json') -Raw | ConvertFrom-Json).version
 $testResult = Get-Content -LiteralPath (Join-Path $projectRoot 'qa\runtime\installer-0.2.0\result.json') -Raw | ConvertFrom-Json
 if (-not $testResult.passed) { throw 'The final installer regression must pass before cleanup.' }
+$pendingChanges = @(git -C $projectRoot status --porcelain)
+if ($LASTEXITCODE -ne 0 -or $pendingChanges.Count -ne 0) { throw 'Commit and back up all source changes before cleanup.' }
+$delivery = Get-Content -LiteralPath (Join-Path $projectRoot 'installers\release.json') -Raw | ConvertFrom-Json
+$head = (git -C $projectRoot rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0 -or $delivery.sourceCommit -cne $head) { throw 'The source archive does not match the current checkout.' }
 $remote = Get-Content -LiteralPath (Join-Path $projectRoot 'installers\github-assets-verified.json') -Raw | ConvertFrom-Json
 $expected = @(('ThemeStudio-' + $version + '-Windows-x64-Setup.exe'), ('ThemeStudio-' + $version + '-source.zip'), ('ThemeStudio-' + $version + '-project-data.zip'), 'SHA256.txt', 'release.json')
 foreach ($name in $expected) {

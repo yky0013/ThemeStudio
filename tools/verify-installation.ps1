@@ -10,7 +10,7 @@ $registryPath = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{3471
 $legacyRegistry = $registryPath.Replace('HKLM:', 'HKCU:')
 $groupName = '桌面主题工作室'
 $groupDirectory = Join-Path ([Environment]::GetFolderPath('CommonPrograms')) $groupName
-$version = (Get-Content -LiteralPath (Join-Path $studioRoot 'package.json') -Raw | ConvertFrom-Json).version
+$version = (Get-Content -LiteralPath (Join-Path $studioRoot 'package.json') -Raw -Encoding utf8 | ConvertFrom-Json).version
 $installer = Join-Path $studioRoot ('installers\ThemeStudio-' + $version + '-Windows-x64-Setup.exe')
 $sentinel = Join-Path $env:LOCALAPPDATA 'ThemeStudio\installer-qa-retention.txt'
 New-Item -ItemType Directory -Path $qaRoot -Force | Out-Null
@@ -73,7 +73,7 @@ if ($Stage -eq 'Check') {
     New-Item -ItemType Directory -Path (Join-Path $nativeRoot 'desktop') -Force | Out-Null
     $application = Start-Process -FilePath (Join-Path $installDirectory 'ThemeStudio.exe') -ArgumentList @('--smoke-dir', ('"' + $nativeRoot + '"')) -WindowStyle Hidden -PassThru
     if (-not $application.WaitForExit(60000) -or $application.ExitCode -ne 0) { throw 'Installed native application did not finish its readiness check.' }
-    $nativeReport = Get-Content -LiteralPath (Join-Path $nativeRoot 'native-runtime.json') -Raw | ConvertFrom-Json
+    $nativeReport = Get-Content -LiteralPath (Join-Path $nativeRoot 'native-runtime.json') -Raw -Encoding utf8 | ConvertFrom-Json
     if (-not $nativeReport.ready -or $nativeReport.version -ne $version -or $nativeReport.error) { throw 'Installed native application readiness failed.' }
     $checks.nativeWebViewReady = $true
     $checks | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $qaRoot 'installed.json') -Encoding utf8

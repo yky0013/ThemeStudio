@@ -57,6 +57,15 @@ foreach ($name in $files) {
     $item = Get-Item -LiteralPath (Join-Path $releaseDirectory $name)
     $hash = (Get-FileHash -LiteralPath $item.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
     $asset = @($assets | Where-Object {$_.name -ceq $item.Name})
+    if ($asset.Count -eq 1 -and $Stage -eq 'Upload' -and $asset[0].digest -cne ('sha256:' + $hash)) {
+        $currentRelease = Invoke-RestMethod -Uri ('https://api.github.com/repos/' + $repository + '/releases/' + $release.id) -Headers $headers -TimeoutSec 30
+        if (-not $currentRelease.draft -or $currentRelease.tag_name -cne $tag) { throw 'Replace changed assets only in this unpublished version draft.' }
+        $replacedId = $asset[0].id
+        Invoke-RestMethod -Method Delete -Uri ('https://api.github.com/repos/' + $repository + '/releases/assets/' + $replacedId) -Headers $headers -TimeoutSec 30 | Out-Null
+        $assets = @($assets | Where-Object {$_.id -ne $replacedId})
+        $asset = @()
+        Write-Output ('Updating draft asset ' + $item.Name)
+    }
     if ($asset.Count -eq 0 -and $Stage -eq 'Upload') {
         $client = [System.Net.Http.HttpClient]::new()
         $client.Timeout = [TimeSpan]::FromMinutes(20)

@@ -1,6 +1,6 @@
 {
   "version": "0.2.0",
-  "date": "2026-09-27T20:45:37.2153890+08:00",
+  "date": "2026-09-27T23:03:53.6481308+08:00",
   "installer": "ThemeStudio-0.2.0-Windows-x64-Setup.exe",
   "bytes": 428918482,
   "sha256": "52eff8ca47936e3709177f0d1fabaa77d54169fad2f2f792d204be75c4ebf1a4",
@@ -30,11 +30,52 @@
     "nativeTaskbarRestoredVisible": true
   },
   "installerRegression": {
-    "resultPath": "qa/runtime/installer-0.2.0/result.json",
-    "status": "waiting_for_windows_uac"
+    "status": "passed",
+    "result": {
+      "time": "2026-09-27T23:02:51.9803342+08:00",
+      "version": "0.2.0",
+      "passed": true
+    },
+    "installation": {
+      "customPath": "E:\\desktop\\windows\\ThemeStudio-dev\\qa\\runtime\\installer-0.2.0\\安装 位置\\ThemeStudio",
+      "registeredDisplayName": "桌面主题工作室",
+      "registeredVersion": "0.2.0",
+      "machineWideInstall": true,
+      "uninstallRegistered": true,
+      "uninstallerExists": true,
+      "guideInstalled": true,
+      "applicationShortcut": true,
+      "guideShortcut": true,
+      "uninstallShortcut": true,
+      "userDataRetained": true,
+      "payloadHashesMatch": true,
+      "nativeWebViewReady": true
+    },
+    "uninstallation": {
+      "registryRemoved": true,
+      "programRemoved": true,
+      "shortcutsRemoved": true,
+      "userDataRetained": true
+    },
+    "nativeWindow": {
+      "product": "Theme Studio",
+      "version": "0.2.0",
+      "ready": true,
+      "time": "2026-09-27T23:02:47.5259389+08:00",
+      "dataDirectory": "E:\\desktop\\windows\\ThemeStudio-dev\\qa\\runtime\\installer-0.2.0\\native-smoke\\data",
+      "executable": "E:\\desktop\\windows\\ThemeStudio-dev\\qa\\runtime\\installer-0.2.0\\安装 位置\\ThemeStudio\\ThemeStudio.exe",
+      "nativeWebView": true,
+      "backend": "bundled executable",
+      "ui": {
+        "roles": 17,
+        "shortcuts": 0,
+        "title": "桌面主题工作室"
+      },
+      "error": null
+    }
   },
   "cleanup": {
     "userRequested": "Remove local project files after GitHub handoff; retain the installer",
-    "status": "pending_installer_regression_and_verified_backups"
+    "status": "ready_after_verified_remote_backups"
   }
 }
