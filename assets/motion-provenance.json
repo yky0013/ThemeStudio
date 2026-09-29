@@ -1,0 +1,186 @@
+{
+  "generator": "tools/build-motion-wallpapers.py",
+  "clips": [
+    {
+      "id": "wuthering-waves",
+      "source": "wuthering-waves/wallpaper.jpg",
+      "sourceSha256": "bd076d742ee7a784bb6ca7f076ccabfd1e80e9967a84e0fe478165d678c26b9a",
+      "output": "wuthering-waves/wallpaper-motion.mp4",
+      "sha256": "a7237ae8b6a330036d893828cef8bfa14624f3a994a11761b385bf7e30502b54",
+      "bytes": 2582997,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "45be2b28f66bd13c47c9d8cf346b740b",
+        "f65e46bbe5eff7217c89101f1ae983bb"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "punishing-gray-raven",
+      "source": "punishing-gray-raven/wallpaper.jpg",
+      "sourceSha256": "012eb33f1f9e0aa765be2650d8e2bb16b78f6645f825f8c1e4721f2e025b14dc",
+      "output": "punishing-gray-raven/wallpaper-motion.mp4",
+      "sha256": "6bbf139c36a9127b8199d2f1a87fef87791ed457216ae001c5f4a3858b67c6c2",
+      "bytes": 2872374,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "013f54ce2aa3cdaa5016f35ef5474533",
+        "b2cb20c6df8b7eda4b6579e833f657bc"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "genshin-impact",
+      "source": "genshin-impact/wallpaper.jpg",
+      "sourceSha256": "dd1506c5c6af7df644ed45b3f9bbc42c5dacb5e62d6f434dd316270966b0de14",
+      "output": "genshin-impact/wallpaper-motion.mp4",
+      "sha256": "bf3f07cc81255d242f8b30ec2d01c91bcd52b55a0c5e4fb7b35f621bcd85fde5",
+      "bytes": 3860433,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "7ee303a4d5b8ab73a48f660768f42717",
+        "1afabcdcfc2c805c4e606107f413dec4"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "identity-v",
+      "source": "identity-v/wallpaper.jpg",
+      "sourceSha256": "9b12ebfeae8d2a88b22543ef8b0a6de9a33a8ffb6127a97946a175fce82244b1",
+      "output": "identity-v/wallpaper-motion.mp4",
+      "sha256": "dd88d0e2257777f28be56e90840f0e8aa44c11b3438379eb024ba6251b1e71ef",
+      "bytes": 2227611,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "7ff7c3bdcb025ba86492ce93588235d9",
+        "d54e69dd5e7108947a54f6423130d0aa"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "milk-mocha-dogs",
+      "source": "milk-mocha-dogs/wallpaper.jpg",
+      "sourceSha256": "9fafd075c3b66a9e0fddad6f8385db8a822a0632a1a10903e9d2c09095819e64",
+      "output": "milk-mocha-dogs/wallpaper-motion.mp4",
+      "sha256": "addebfa467ad53f86c8958ad3c3f82a59e83e37ce356ef35f5a3618e462e9d09",
+      "bytes": 2552928,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "710e2900abe2f8b01836145ecadbdeea",
+        "ea5e8be6a7aef355e4775a29dcc95f2e"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "honkai-star-rail",
+      "source": "honkai-star-rail/wallpaper.jpg",
+      "sourceSha256": "cec23d7193a4935c7dd1f23c731e9fef784aff974545954f0fffba6b478adfce",
+      "output": "honkai-star-rail/wallpaper-motion.mp4",
+      "sha256": "379ab0a88aa179beb8f4364de56a17cff2b4a74f01363e15c32d706eaced0161",
+      "bytes": 2869536,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "f12c17bcbce487df9065e9c01ff94357",
+        "4d7343b7cbe567d8abbb403af43ee07e"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "zenless-zone-zero",
+      "source": "zenless-zone-zero/wallpaper.jpg",
+      "sourceSha256": "0bb479f0add4cd37be2a2c92a8db4560026bde8cd365e82fa3b4511199046946",
+      "output": "zenless-zone-zero/wallpaper-motion.mp4",
+      "sha256": "057b8ffdc24ea38ca3adb546aefe177d5dbac48cf3a4dbeeba37888850898c06",
+      "bytes": 2787334,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "a2a45824d516ba6f60a6926b86e2e5e8",
+        "020cc99d9a57eefa489a0fc8e55059a8"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "arknights",
+      "source": "arknights/wallpaper.jpg",
+      "sourceSha256": "8fe28f08e0b9bc97c689522c105c4569f6eab6d6c400b8841e16bbe351c3fe1d",
+      "output": "arknights/wallpaper-motion.mp4",
+      "sha256": "c05c53d5cf9dd2008ee082c4ed6c808c021e1348062a43e341c7a578d97c0e2b",
+      "bytes": 2521353,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "120cd1b7f0cc90651432e757e7f375e2",
+        "0177e1532bad48e93dd481e826a6c315"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "blue-archive",
+      "source": "blue-archive/wallpaper.jpg",
+      "sourceSha256": "a1cb0fe14770d187b5a67475d6f3b47f627f9728b4f36b75b9dad4748787a18c",
+      "output": "blue-archive/wallpaper-motion.mp4",
+      "sha256": "8e48d7311dd5c0f0f13dbfeee40fcacdad736de0b525bbb13f021d48bdf3e41b",
+      "bytes": 2528283,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "9d8e0103fd9c750b1b94fac341ad2322",
+        "93d1399f770bfa039cc401bf307bbfaa"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    },
+    {
+      "id": "chiikawa",
+      "source": "chiikawa/wallpaper.jpg",
+      "sourceSha256": "8b33f6b6b42a491e76b69972e2a0eba18fb474125d327561fb2c2f81f20ba020",
+      "output": "chiikawa/wallpaper-motion.mp4",
+      "sha256": "20a8084644c1912f66d734ae72fafe8d773d806f8c4cb5a7a48d788af7fdf8ef",
+      "bytes": 2869780,
+      "width": 1920,
+      "height": 1080,
+      "frames": 288,
+      "fps": 24,
+      "duration": 12,
+      "distinctFrameHashes": [
+        "06ea5a1aa19fe4af0cfc5e407c5fbcf6",
+        "582af32d2e1da8d391428bf6c033c58b"
+      ],
+      "method": "Periodic camera drift and procedural soft-light particles; original artwork retained."
+    }
+  ],
+  "notes": "Derived ambient motion, not character animation. Silent seamless periodic trajectories."
+}

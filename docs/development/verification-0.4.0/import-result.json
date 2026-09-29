@@ -1,0 +1,23 @@
+{
+  "full": {
+    "id": "imported-b0d55fa27ca0d25feaf9b8498c1eb607",
+    "name": "鸣潮 · 导入示例",
+    "version": "1.0.0",
+    "duplicate": false,
+    "updated": false
+  },
+  "static": {
+    "id": "imported-610d26f3c70b200e44d0ce225abf1750",
+    "name": "纯静态 · 导入示例",
+    "version": "1.0.0",
+    "duplicate": false,
+    "updated": false
+  },
+  "duplicate": {
+    "id": "imported-b0d55fa27ca0d25feaf9b8498c1eb607",
+    "name": "鸣潮 · 导入示例",
+    "version": "1.0.0",
+    "duplicate": true
+  },
+  "reopenedCount": 12
+}

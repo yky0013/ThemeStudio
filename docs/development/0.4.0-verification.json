@@ -1,0 +1,88 @@
+{
+  "version": "0.4.0",
+  "date": "2026-09-29T09:20:48.328164",
+  "typescript": "passed",
+  "frontendTests": 21,
+  "backendTests": 61,
+  "native": {
+    "checks": [
+      {
+        "id": "imported-b0d55fa27ca0d25feaf9b8498c1eb607",
+        "name": "鸣潮 · 导入示例",
+        "source": "imported",
+        "poster": true,
+        "icons": 12,
+        "nativePreview": true
+      },
+      {
+        "id": "imported-610d26f3c70b200e44d0ce225abf1750",
+        "name": "纯静态 · 导入示例",
+        "source": "imported",
+        "poster": true,
+        "icons": 0,
+        "nativePreview": true
+      },
+      {
+        "importedVideoDecoded": true,
+        "width": 1920,
+        "advanced": true
+      },
+      {
+        "version": "0.4.0",
+        "updatesNativeControls": true,
+        "sourceErrorShown": "GitHub 暂时限制了更新请求，请稍后重试或使用离线更新。"
+      },
+      {
+        "cards": 12,
+        "staticOnlyPreview": true,
+        "optionalAccessories": true,
+        "exportControl": true
+      },
+      {
+        "width": 1338,
+        "height": 864,
+        "noHorizontalOverflow": true
+      }
+    ],
+    "errors": [],
+    "passed": true
+  },
+  "readiness": true,
+  "offlineUpdate": {
+    "passed": true,
+    "sourceVersion": "0.3.1",
+    "targetVersion": "0.4.0",
+    "realInstallerBytes": 167337062,
+    "sha256": "d40e3a281930cea430ece9d81b58328f2dc6fd7b34ae9320ed1f48ef539a2c32",
+    "restartPersistence": true,
+    "nativeMetadataAndUnicodeCommand": "passed",
+    "installerLaunched": false
+  },
+  "installer": {
+    "path": "E:\\desktop\\windows\\ThemeStudio\\installers\\ThemeStudio-0.4.0-Windows-x64-Setup.exe",
+    "bytes": 167337062,
+    "sha256": "d40e3a281930cea430ece9d81b58328f2dc6fd7b34ae9320ed1f48ef539a2c32",
+    "checksumPath": "E:\\desktop\\windows\\ThemeStudio\\installers\\ThemeStudio-0.4.0-Windows-x64-Setup.exe.sha256",
+    "built": true,
+    "installedThisTurn": false
+  },
+  "samplePackage": {
+    "path": "E:\\desktop\\windows\\ThemeStudio\\installers\\ThemeStudio-示例套装.tspack",
+    "bytes": 3343068,
+    "sha256": "edf332609b218bec0049b92df049631e954506490ec75b550fd106c8fd265c7c",
+    "icons": 12,
+    "cursorStates": 17,
+    "animatedWallpaper": true,
+    "repositoryPath": "examples/ThemeStudio-example.tspack"
+  },
+  "portableExecutable": "E:\\desktop\\windows\\ThemeStudio\\release\\ThemeStudio-0.4.0\\ThemeStudio.exe",
+  "nativeExecutableSha256": "c31a37d7c06c22264bba980d441f404ce3e7df071a7cb1de8821a7f05ec04ec7",
+  "nativeEvidence": "E:\\desktop\\windows\\ThemeStudio\\qa\\runtime\\packages-0.4.0-20260929090915",
+  "publication": "Local build only; no upload or repository visibility change.",
+  "limitations": [
+    "The anonymous GitHub update source returned HTTP 404 during discovery/native testing, and a later native retry hit HTTP 403/rate limiting. No usable public online release download was verified.",
+    "The actual overwrite installation and UAC installer launch were not run. Real installer staging, checksum revalidation, metadata and quoted Unicode/spaced handoff arguments were verified.",
+    "Imported theme application/restoration used real isolated shortcut fixtures and mocked system wallpaper/cursor writes; the current desktop was not modified."
+  ],
+  "repositoryEvidence": "docs/development/verification-0.4.0"
+}

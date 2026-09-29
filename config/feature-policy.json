@@ -26,6 +26,7 @@
     "taskbar": {
       "status": "chosen_by_user",
       "provider": "seelen",
+      "desktopModes": { "windows": "native_windows_taskbar", "mac": "seelen_dock_and_top_toolbar", "userSelectable": true },
       "selectedAt": "2026-09-27",
       "components": [
         "dock",

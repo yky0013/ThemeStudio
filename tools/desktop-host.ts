@@ -9,6 +9,10 @@ import type { IncomingMessage } from "node:http";
 
 export const operations = new Set(["state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.apply", "cursors.save", "cursors.restore", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop"]);
 export const sessionToken = randomBytes(32).toString("hex");
+operations.add('runtime.desktop.apply');
+// Browser development can read the library; native file pickers and updater
+// installer handoff are deliberately available only in the Windows host.
+operations.add('templates.list');
 export function authorizedDesktopRequest(request: Pick<IncomingMessage, "headers" | "method">): boolean {
   return request.method === "POST" && request.headers["x-workbench-token"] === sessionToken &&
     request.headers["content-type"]?.split(";")[0] === "application/json" &&

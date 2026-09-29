@@ -13,7 +13,7 @@ interface SurfaceApi {
   setPaused(paused: boolean): void;
 }
 interface WallpaperMedia { id: string; name: string; kind: "image" | "video"; url: string }
-interface WallpaperState { active: boolean; paused?: boolean; media?: WallpaperMedia; settings?: ParallaxSettings }
+interface WallpaperState { active: boolean; paused?: boolean; mode?: string; media?: WallpaperMedia; settings?: ParallaxSettings }
 export function ParallaxPanel({ settings, onChange, desktopClient, desktopNative = false }:
   { settings: ParallaxSettings; onChange: (s: ParallaxSettings) => void; desktopClient?: DesktopClient; desktopNative?: boolean }) {
   const { t } = useTranslation();
@@ -32,32 +32,56 @@ export function ParallaxPanel({ settings, onChange, desktopClient, desktopNative
   const [desktop, setDesktop] = useState<WallpaperState>({ active: false });
   const [desktopBusy, setDesktopBusy] = useState(false);
   const desktopRunning = useRef(false);
+  const selectedSource = useRef({kind: "image" as "image" | "video", url: "./fixtures/parallax-landscape.svg"});
+  const pausedRef = useRef(false);
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings; pausedRef.current = paused;
 
   useEffect(() => {
     alive.current = true;
-    const instance = mount(MediaSurface, { target: host.current!, props: { initialSettings: settings, onMediaError: () => { if (alive.current) setError(p("load_failed")); } } });
-    surface.current = instance as unknown as SurfaceApi;
+    let instance: ReturnType<typeof mount> | null = null;
+    let visible = false;
+    const visibility = () => surface.current?.setPaused(pausedRef.current || !visible || document.hidden);
+    const observer = new IntersectionObserver(entries => {
+      visible = entries.some(entry => entry.isIntersecting);
+      if (visible && !instance) {
+        instance = mount(MediaSurface, { target: host.current!, props: { initialSettings: settingsRef.current,
+          onMediaError: () => { if (alive.current) setError(p("load_failed")); },
+          onMediaLoad: () => { if (alive.current) setError(""); } } });
+        surface.current = instance as unknown as SurfaceApi;
+        void surface.current.setMedia(selectedSource.current.kind, selectedSource.current.url).then(visibility);
+      }
+      visibility();
+    }, {rootMargin:"180px"});
+    observer.observe(host.current!);
+    document.addEventListener("visibilitychange", visibility);
     return () => {
       alive.current = false; selection.current++; surface.current = null;
       const owned = objectUrl.current; objectUrl.current = null;
-      void unmount(instance).finally(() => { if (owned) URL.revokeObjectURL(owned); });
+      observer.disconnect(); document.removeEventListener("visibilitychange", visibility);
+      if (instance) void unmount(instance).finally(() => { if (owned) URL.revokeObjectURL(owned); });
+      else if (owned) URL.revokeObjectURL(owned);
     };
   }, []);
   useEffect(() => surface.current?.setOptions(settings), [settings]);
   useEffect(() => {
     if (!desktopNative || !desktopClient) return;
-    void desktopClient.call<WallpaperState>("wallpaper.status").then(async (state) => {
+    const refresh = () => { void desktopClient.call<WallpaperState>("wallpaper.status").then(async (state) => {
       if (!alive.current) return;
       setDesktop(state);
       if (state.media) { setMedia(state.media); await changeMedia(state.media.kind, state.media.url, state.media.name); }
       if (state.active && state.settings) onChange(state.settings);
-    }).catch((failure) => { if (alive.current) setError(String(failure)); });
+    }).catch((failure) => { if (alive.current) setError(String(failure)); }); };
+    refresh();
+    document.addEventListener("theme-studio-template-applied", refresh);
+    return () => document.removeEventListener("theme-studio-template-applied", refresh);
   }, [desktopClient, desktopNative]);
 
   const changeMedia = async (type: "image" | "video", source: string, name: string | null, owned = false) => {
     const revision = ++selection.current;
     const previous = objectUrl.current;
     objectUrl.current = owned ? source : null;
+    selectedSource.current = {kind:type,url:source};
     try {
       await surface.current?.setMedia(type, source);
       if (alive.current && selection.current === revision) { setKind(type); setFilename(name); setPaused(false); setError(""); }
@@ -99,7 +123,7 @@ export function ParallaxPanel({ settings, onChange, desktopClient, desktopNative
           <button type="button" disabled={desktopBusy} onClick={() => chooseExample("image")}>{p("example_image")}</button>
           <button type="button" disabled={desktopBusy} onClick={() => chooseExample("video")}>{p("example_video")}</button>
           <button type="button" disabled={desktopBusy} onClick={chooseLocal}>{p("choose_file")}</button>
-          <button type="button" disabled={kind !== "video"} onClick={() => { surface.current?.setPaused(!paused); setPaused(!paused); }}>{p(paused ? "resume" : "pause")}</button>
+          <button type="button" onClick={() => { surface.current?.setPaused(!paused); setPaused(!paused); }}>{p(paused ? "resume" : "pause")}</button>
           <input type="file" accept="image/*,video/*" ref={fileInput} hidden onChange={(e) => selectFile(e.currentTarget.files?.[0])} />
         </div>
         <p className={styles.caption}>{filename || p(kind === "video" ? "sample_video" : "sample_image")}</p>
@@ -110,10 +134,10 @@ export function ParallaxPanel({ settings, onChange, desktopClient, desktopNative
             const result = await desktopClient!.call<WallpaperState>("wallpaper.apply", { mediaId: resource.id, settings, paused: false });
             setDesktop(result);
           })}>{p(desktopBusy ? "applying" : "apply_desktop")}</button>
-          <button type="button" disabled={!desktop.active || desktopBusy} onClick={() => void runDesktop(async () => { setDesktop(await desktopClient!.call<WallpaperState>("wallpaper.pause", { paused: !desktop.paused })); })}>{p(desktop.paused ? "resume_desktop" : "pause_desktop")}</button>
+          <button type="button" disabled={!desktop.active || desktopBusy || desktop.mode === "static"} onClick={() => void runDesktop(async () => { setDesktop(await desktopClient!.call<WallpaperState>("wallpaper.pause", { paused: !desktop.paused })); })}>{p(desktop.paused ? "resume_desktop" : "pause_desktop")}</button>
           <button type="button" disabled={!desktop.active || desktopBusy} onClick={() => void runDesktop(async () => { setDesktop(await desktopClient!.call<WallpaperState>("wallpaper.stop")); })}>{p("restore_desktop")}</button>
         </div>
-        <p role="status" className={styles.caption}>{p(!desktopNative ? "native_required" : desktop.active ? desktop.paused ? "desktop_paused" : "desktop_active" : "desktop_inactive")}</p>
+        <p role="status" className={styles.caption}>{desktop.active && desktop.mode === "static" ? "静态省内存模式：由 Windows 显示壁纸，无需后台播放进程。" : p(!desktopNative ? "native_required" : desktop.active ? desktop.paused ? "desktop_paused" : "desktop_active" : "desktop_inactive")}</p>
         {error && <p role="alert">{error}</p>}
       </div>
       <div className={styles.controls}>

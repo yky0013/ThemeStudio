@@ -8,13 +8,13 @@ import { DEFAULT_PARALLAX, parseParallax, type ParallaxSettings, type Rect } fro
 interface Surface {
   setMedia(kind: "image" | "video", source: string): Promise<void>;
   setOptions(settings: ParallaxSettings): void;
-  setPaused(paused: boolean): void;
+  setPaused(paused: boolean): Promise<void>;
   setPointer(x: number, y: number, bounds: Rect): void;
 }
 interface WallpaperCommand {
   operation: "apply" | "pointer";
   requestId?: string;
-  media?: { id: string; name: string; kind: "image" | "video"; url: string };
+  media?: { id: string; name: string; kind: "image" | "video"; animated?: boolean; url: string };
   settings?: ParallaxSettings;
   paused?: boolean;
   x?: number;
@@ -61,10 +61,10 @@ native.addEventListener("message", async ({ data }) => {
     }
     if (ownRevision !== revision) return;
     surface.setOptions(parseParallax(data.settings));
-    surface.setPaused(!!data.paused);
+    await surface.setPaused(!!data.paused);
     const video = document.querySelector("video");
     if (video && !data.paused) await video.play();
-    native.postMessage({ operation: "wallpaper.applied", requestId: data.requestId, mediaId: currentMedia, kind: data.media.kind, playing: !!video && !video.paused });
+    native.postMessage({ operation: "wallpaper.applied", requestId: data.requestId, mediaId: currentMedia, kind: data.media.kind, playing: video ? !video.paused : !!data.media.animated && !data.paused });
   } catch (error) {
     if (ownRevision === revision) native.postMessage({ operation: "wallpaper.error", requestId: data.requestId, error: error instanceof Error ? error.message : String(error) });
   }

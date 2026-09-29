@@ -1,0 +1,238 @@
+{
+  "version": "0.3.0",
+  "templates": 10,
+  "cursor_files": 170,
+  "template_icons": 120,
+  "application_icon_resources": {
+    "3": 7,
+    "14": 1
+  },
+  "python_tests": 38,
+  "typescript_tests": 20,
+  "native_preview": {
+    "checks": [
+      {
+        "template": "wuthering-waves",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "punishing-gray-raven",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "genshin-impact",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "identity-v",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "milk-mocha-dogs",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "honkai-star-rail",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "zenless-zone-zero",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "arknights",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "blue-archive",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "template": "chiikawa",
+        "virtualHostImage": {
+          "width": 1672,
+          "height": 941
+        },
+        "thumbnail": true
+      },
+      {
+        "virtualHostVideo": true
+      },
+      {
+        "previewPanel": true
+      },
+      {
+        "suspension": {
+          "observedSuspended": true,
+          "resumed": true,
+          "suspended": true
+        }
+      },
+      {
+        "readOnlyPlan": {
+          "id": "wuthering-waves",
+          "matches": []
+        },
+        "nativeSystemApplyTested": false
+      }
+    ],
+    "errors": [],
+    "passed": true
+  },
+  "compiler_validation": {
+    "passed": true,
+    "engineStarted": false,
+    "results": [
+      {
+        "architecture": "x86",
+        "compiled": true,
+        "disabled": true,
+        "result": {
+          "id": "local@theme-studio-validation-x86",
+          "version": "1.0",
+          "metadata": {
+            "version": "1.0",
+            "id": "theme-studio-validation-x86",
+            "name": "Theme Studio isolated compiler validation",
+            "description": "Disabled fixture, no hooks",
+            "author": "Theme Studio",
+            "include": [
+              "ThemeStudio.Nonexistent.Validation.exe"
+            ],
+            "architecture": [
+              "x86"
+            ]
+          },
+          "config": {
+            "libraryFileName": "local@theme-studio-validation-x86_1.0_363657.dll",
+            "disabled": true,
+            "loggingEnabled": false,
+            "debugLoggingEnabled": false,
+            "include": [
+              "ThemeStudio.Nonexistent.Validation.exe"
+            ],
+            "exclude": [],
+            "includeCustom": [],
+            "excludeCustom": [],
+            "includeExcludeCustomOnly": false,
+            "patternsMatchCriticalSystemProcesses": false,
+            "architecture": [
+              "x86"
+            ],
+            "version": "1.0",
+            "updatesDisabledForVersion": ""
+          },
+          "architectures": [
+            "x86"
+          ],
+          "compiledLocally": true
+        }
+      },
+      {
+        "architecture": "x86-64",
+        "compiled": true,
+        "disabled": true,
+        "result": {
+          "id": "local@theme-studio-validation-x86-64",
+          "version": "1.0",
+          "metadata": {
+            "version": "1.0",
+            "id": "theme-studio-validation-x86-64",
+            "name": "Theme Studio isolated compiler validation",
+            "description": "Disabled fixture, no hooks",
+            "author": "Theme Studio",
+            "include": [
+              "ThemeStudio.Nonexistent.Validation.exe"
+            ],
+            "architecture": [
+              "x86-64"
+            ]
+          },
+          "config": {
+            "libraryFileName": "local@theme-studio-validation-x86-64_1.0_620933.dll",
+            "disabled": true,
+            "loggingEnabled": false,
+            "debugLoggingEnabled": false,
+            "include": [
+              "ThemeStudio.Nonexistent.Validation.exe"
+            ],
+            "exclude": [],
+            "includeCustom": [],
+            "excludeCustom": [],
+            "includeExcludeCustomOnly": false,
+            "patternsMatchCriticalSystemProcesses": false,
+            "architecture": [
+              "x86-64"
+            ],
+            "version": "1.0",
+            "updatesDisabledForVersion": ""
+          },
+          "architectures": [
+            "x86-64"
+          ],
+          "compiledLocally": true
+        }
+      }
+    ]
+  },
+  "memory": {
+    "metric": "sum of process working sets, shared pages can be counted more than once",
+    "sample_window_seconds": [
+      5,
+      10
+    ],
+    "before_mib": 602.66,
+    "after_mib": 506.06,
+    "reduction_percent": 16.03,
+    "scope": "settings window, median of samples 5-10; single-machine observation, not a guarantee"
+  },
+  "release_payload_bytes": 722956562,
+  "installation_performed": false,
+  "system_theme_apply_tested": false,
+  "limitation": "Automatic approval rejected the test that would temporarily change the current global wallpaper and cursors. Shortcut application/restore used real temporary fixtures; wallpaper/cursor writes were mocked in unit tests.",
+  "installer": {
+    "path": "E:\\desktop\\windows\\ThemeStudio-0.3.0-Windows-x64-Setup.exe",
+    "bytes": 137939019,
+    "sha256": "2bc87974c7aae97b9045c8fa1dfe245fbea93ca3264a0a5e9511a78043a75102",
+    "previous_bytes": 428918482,
+    "reduction_percent": 67.84,
+    "webview2_bootstrapper_bundled": true,
+    "internet_only_if_webview2_missing": true
+  }
+}

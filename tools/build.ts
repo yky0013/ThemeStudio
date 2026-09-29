@@ -35,6 +35,8 @@ await esbuild.build({ absWorkingDir: project, entryPoints: { app: "src/app/main.
 });
 fs.copyFileSync(path.join(project, "src/app/index.html"), path.join(project, "dist/index.html"));
 fs.copyFileSync(path.join(project, "src/app/wallpaper.html"), path.join(project, "dist/wallpaper.html"));
+fs.cpSync(path.join(project, "assets/templates"), path.join(project, "dist/templates"), { recursive: true });
+fs.cpSync(path.join(project, "assets/brand"), path.join(project, "dist/brand"), { recursive: true });
 fs.cpSync(path.join(project, "vendor/Seelen-UI/src/ui/react/settings/public/fixtures"), path.join(project, "dist/fixtures"), { recursive: true });
 fs.cpSync(path.join(project, "licenses"), path.join(project, "dist/licenses"), { recursive: true });
 if (fs.existsSync(path.join(project, "docs/guide"))) fs.cpSync(path.join(project, "docs/guide"), path.join(project, "dist/help"), { recursive: true });

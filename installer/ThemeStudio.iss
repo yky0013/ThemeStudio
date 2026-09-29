@@ -1,10 +1,11 @@
 ; Theme Studio offline installer. User data is owned by the application,
 ; outside {app}, and is intentionally retained on uninstall.
 #define AppName "桌面主题工作室"
-#define AppVersion "0.2.0"
+#define AppVersion "0.4.0"
 
 [Setup]
 AppId={{34717904-40BD-47C3-9AE5-4CA3B55820B5}
+AppMutex=Local\ThemeStudio.Application
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppPublisher=Theme Studio
@@ -24,15 +25,17 @@ UninstallDisplayIcon={app}\ThemeStudio.exe
 OutputDir=..\installers
 OutputBaseFilename=ThemeStudio-{#AppVersion}-Windows-x64-Setup
 WizardStyle=modern
-Compression=lzma2
+Compression=lzma2/max
+LZMAUseSeparateProcess=yes
 SolidCompression=yes
 CloseApplications=yes
 RestartApplications=no
 SetupLogging=yes
 InfoBeforeFile=安装说明.txt
-VersionInfoDescription=桌面主题工作室离线安装程序
+VersionInfoDescription=桌面主题工作室精简安装程序
 VersionInfoProductName={#AppName}
-VersionInfoVersion=0.2.0.0
+VersionInfoVersion=0.4.0.0
+SetupIconFile=..\assets\brand\theme-studio.ico
 
 [Languages]
 Name: "chinesesimp"; MessagesFile: "ChineseSimplified.isl"
@@ -44,8 +47,8 @@ ConfirmUninstall=确定要卸载 %1 吗？%n%n卸载只删除程序文件，素�
 Name: "desktopicon"; Description: "创建桌面快捷方式"; GroupDescription: "快捷方式："; Flags: unchecked
 
 [Files]
-Source: "..\release\ThemeStudio\*"; DestDir: "{app}"; Excludes: "ThemeStudio.Diagnostic.exe"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\.cache\runtime\MicrosoftEdgeWebView2RuntimeInstallerX64.exe"; Flags: dontcopy nocompression
+Source: "..\release\ThemeStudio-{#AppVersion}\*"; DestDir: "{app}"; Excludes: "ThemeStudio.Diagnostic.exe,ThemeStudio.Diagnostic.exe.config"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\.cache\runtime\MicrosoftEdgeWebview2Setup.exe"; Flags: dontcopy nocompression
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"
@@ -54,7 +57,7 @@ Name: "{group}\卸载桌面主题工作室"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\ThemeStudio.exe"; Description: "启动桌面主题工作室"; Flags: nowait postinstall skipifsilent runasoriginaluser
+Filename: "{app}\ThemeStudio.exe"; Description: "启动桌面主题工作室"; Flags: nowait postinstall skipifsilent runascurrentuser
 Filename: "{app}\wwwroot\help\index.html"; Description: "打开图文使用教程"; Flags: shellexec nowait postinstall skipifsilent unchecked runasoriginaluser
 
 [UninstallRun]
@@ -103,9 +106,9 @@ begin
     Log('WebView2 Runtime already present; bundled runtime skipped.');
     Exit;
   end;
-  WizardForm.PreparingLabel.Caption := '正在补齐 Microsoft Edge WebView2 运行库，请稍候…';
-  ExtractTemporaryFile('MicrosoftEdgeWebView2RuntimeInstallerX64.exe');
-  if not Exec(ExpandConstant('{tmp}\MicrosoftEdgeWebView2RuntimeInstallerX64.exe'),
+  WizardForm.PreparingLabel.Caption := '正在从微软下载 WebView2 运行库，请保持网络连接…';
+  ExtractTemporaryFile('MicrosoftEdgeWebview2Setup.exe');
+  if not Exec(ExpandConstant('{tmp}\MicrosoftEdgeWebview2Setup.exe'),
       '/silent /install', '', SW_HIDE, ewWaitUntilTerminated, ExitCode) then begin
     Result := Format('无法启动 WebView2 运行库安装程序（错误 %d）。请保留安装日志后重试。', [ExitCode]);
     Exit;

@@ -10,7 +10,7 @@ const directory = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(directory, "../dist");
 const port = Number(process.env.THEME_WORKBENCH_PORT || 4327);
 const desktopHost = new DesktopHost();
-const mime: Record<string, string> = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".mp4": "video/mp4" };
+const mime: Record<string, string> = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".mp4": "video/mp4", ".jpg":"image/jpeg", ".png":"image/png", ".webp":"image/webp", ".ico":"image/x-icon" };
 const server = http.createServer(async (request, response) => {
   try {
     if (request.headers.host !== `127.0.0.1:${port}` ||

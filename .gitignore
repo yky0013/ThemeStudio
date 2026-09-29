@@ -7,6 +7,8 @@ build/
 dist/
 release/
 qa/runtime/
+qa/
+.playwright-cli/
 *.log
 *.pyc
 __pycache__/

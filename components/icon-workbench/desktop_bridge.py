@@ -23,6 +23,8 @@ from backend import (Assignment, IconStore, IMAGE_EXTENSIONS, MAX_ICO_BYTES,
 from cursor_adapter import CursorAdapter, ROLE_KEYS, ROLES, snapshot, read_json
 from native_icons import ico_image, shortcut_image, cursor_image
 from runtime_adapter import RuntimeAdapter
+from template_adapter import TemplateAdapter, StaticWallpaper
+from app_updater import AppUpdater
 
 
 def identity(value):
@@ -44,6 +46,8 @@ class DesktopBridge:
         self.cursor_versions = {}
         self.previews = {}
         self.runtime = RuntimeAdapter(self.store.directory)
+        self.templates = TemplateAdapter(self)
+        self.updater = AppUpdater(self.store.directory)
 
     def rows(self):
         extras = self.store.read_settings().get('extra_paths', [])
@@ -66,6 +70,8 @@ class DesktopBridge:
 
     def state(self):
         rows, errors = self.rows()
+        current_keys = {(row['path'], row['sha256']) for row in rows}
+        self.previews = {key:value for key,value in self.previews.items() if key in current_keys}
         shortcuts = []
         for row in rows:
             key = (row['path'], row['sha256'])
@@ -141,6 +147,32 @@ class DesktopBridge:
         return values
 
     def dispatch(self, operation, payload):
+        if operation.startswith('updates.'):
+            return self.updater.dispatch(operation, payload)
+        if operation == 'templates.list':
+            return self.templates.list()
+        if operation == 'templates.import':
+            with self.store.lock():
+                return self.templates.packages.import_archive(payload.get('path', ''))
+        if operation == 'templates.export':
+            return self.templates.export(payload.get('id'))
+        if operation == 'templates.media':
+            return self.templates.media(payload.get('id'))
+        if operation == 'templates.plan':
+            item, matches = self.templates.plan(payload.get('id'))
+            return {'id':item['id'],'matches':[row['name'] for row in matches]}
+        if operation == 'templates.apply':
+            return self.templates.apply(payload.get('id'), payload.get('mediaId'), payload.get('icons', True), payload.get('cursors', True), payload.get('wallpaperMode', 'static'), payload.get('motionMediaId'))
+        if operation == 'templates.current':
+            return self.templates.current()
+        if operation == 'templates.restore':
+            return self.templates.restore()
+        if operation == 'wallpaper.static.apply':
+            return StaticWallpaper(self.store.directory).apply(payload.get('mediaId'), payload.get('settings'))
+        if operation == 'wallpaper.static.status':
+            return StaticWallpaper(self.store.directory).status()
+        if operation == 'wallpaper.static.restore':
+            return StaticWallpaper(self.store.directory).restore()
         if operation.startswith('runtime.'):
             return self.runtime.dispatch(operation, payload)
         if operation == 'state':
@@ -263,6 +295,7 @@ def main():
         print(json.dumps(bridge.runtime.shutdown(), ensure_ascii=False), flush=True)
         return
     bridge.runtime.progress = lambda stage, name='': print(json.dumps({'event': 'runtime.progress', 'stage': stage, 'name': name}, ensure_ascii=False), flush=True)
+    bridge.updater.progress = lambda **values: print(json.dumps({'event': 'updates.progress', **values}, ensure_ascii=False), flush=True)
     sys.stdin.reconfigure(encoding='utf-8')
     sys.stdout.reconfigure(encoding='utf-8')
     while line := sys.stdin.readline(48 * 1024 * 1024 + 1):

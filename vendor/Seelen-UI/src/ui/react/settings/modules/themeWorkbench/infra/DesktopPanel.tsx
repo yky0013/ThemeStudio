@@ -53,7 +53,11 @@ export function DesktopPanel({ client }: { client: DesktopClient }) {
       setMessage({ text: ["desktop_unavailable", "desktop_reconnect", "file_too_large", "read_failed"].includes(key) ? tt(key) : key, error: true });
     } finally { running.current = false; setBusy(false); }
   };
-  useEffect(() => { void run(() => refresh(true)); }, [client]);
+  useEffect(() => {
+    const refreshAll = () => { void run(() => refresh(true)); };
+    refreshAll(); document.addEventListener("theme-studio-template-applied", refreshAll);
+    return () => document.removeEventListener("theme-studio-template-applied", refreshAll);
+  }, [client]);
   const reportChanges = (result: ChangeResult, restored = false) => {
     const success = result.entries.filter((e) => e.status === (restored ? "restored" : "applied")).length;
     const failures = result.entries.filter((e) => e.status !== (restored ? "restored" : "applied"));

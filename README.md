@@ -4,13 +4,37 @@
 
 ## 启动
 
-在其他电脑上运行 `installers/ThemeStudio-0.2.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；安装包内置微软官方 x64 WebView2 离线运行库，缺失时安装；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
+在其他电脑上运行 `installers/ThemeStudio-0.4.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.4.0/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
 
 卸载会保留已应用的外观、素材和备份；要恢复原外观请先在程序内恢复。
 
 新项目数据保存在 `%LOCALAPPDATA%/ThemeStudio`；原工作台数据保持原位。关闭主窗口会关闭图标/指针后端；已经启用的桌面壁纸、Seelen 和 Windhawk 引擎继续运行，可在设置页停用。
 
-当前版本：0.2.0。安装/启动管理员授权、逐项图片对应、真实桌面媒体播放和运行组件启用已接入；本轮的源码、原生运行与安装验证分别记录在 docs/development/。图文教程位于 `docs/guide/index.html`，离线随程序安装。本版构建及交付状态见 `docs/development/verification-0.2.0/installer-build.json`，旧版安装记录保留在 `docs/installer-verification.json`。
+当前版本：0.4.0。支持导入完整主题数据包和应用更新；图文教程位于 `docs/guide/index.html`，离线随程序安装。该版本的实现与验证记录见 `docs/development/0.4.0-changes.md` 和 `docs/development/0.4.0-verification.json`。
+
+## 0.4.0 新增
+
+- 导入 `.tspack` / `.zip` 主题数据包后，套装直接加入一键主题库；支持完整套装导出、预览、静态或动态壁纸和配件应用。
+- 数据包会校验素材、限制解压范围和大小；同包去重、新版本更新同一套装，保留历史资源供恢复使用。
+- “应用更新”支持检查 GitHub 正式版本、显示说明、下载与取消、SHA-256 校验，以及启动安装向导；也可选择本地安装 EXE 与同目录 `.exe.sha256` 进行离线更新。
+- 当前发布源匿名访问为 404，在线更新会说明不可用。后续需提供公开正式发布源；本次未发布安装包或更改仓库可见性。
+- 数据包制作说明：[theme-pack-format.md](docs/theme-pack-format.md)。安装器构建自动生成配套 `.exe.sha256`。
+
+## 0.3.1 新增
+
+- 10 套默认主题均内置 1080p、12 秒静音循环 MP4，可选择静态或动态版本，预览支持播放/暂停。动态版由原插画生成缓慢运镜和柔光效果，并非角色动作视频。
+- Windows 原生任务栏与 Mac 风格（Seelen 悬浮 Dock + 顶部工具栏）可独立切换；记住用户选择，应用其他组合时继续遵守。
+- GIF、动态 WebP、APNG 在关闭视差时仍保持动画，支持暂停和继续。
+- 动态模板与静态模板之间可恢复，播放失败时回滚模板；变更记录保存在本机。
+- 验证记录见 `docs/development/0.3.1-verification.json`。
+
+## 0.3.0 新增
+
+- 10 套一键主题、配套壁纸/17 状态指针/12 款图标，应用前备份并支持恢复。
+- 修复本地壁纸图片与视频的预览加载。
+- 静态壁纸免后台播放器，设置窗口最小化时暂停渲染，非可见内容延迟加载。
+- 新应用图标与精简安装包；保留模组编译能力。
+- 验证与边界见 `docs/development/0.3.0-changes.md` 和 `docs/development/0.3.0-verification.json`。
 
 ## 已接入
 
@@ -59,4 +83,4 @@ npm.cmd run build
 
 源码及安装包发布于 [yky0013/ThemeStudio](https://github.com/yky0013/ThemeStudio)。[v0.1.1 发布页](https://github.com/yky0013/ThemeStudio/releases/tag/v0.1.1) 保存与安装包匹配的源码、旧工作区源码和 Git 元数据、清理前项目数据，以及 SHA-256 校验记录。旧开发入口、运行环境和本机数据按用户要求清理，清理证据见 `docs/handoff/`。
 
-安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；官方运行库下载来源及哈希在 `config/webview2-runtime.json`，运行 `tools/fetch-runtime.ps1` 获取锁定的离线运行库。分发时同时提供匹配源码压缩包，保留许可证及作者声明。
+安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；0.3.0 精简安装包的官方引导安装器来源及哈希在 `config/webview2-bootstrapper.json`，运行 `tools/fetch-bootstrapper.ps1` 准备。`config/webview2-runtime.json` 保留历史完整离线运行库信息。分发时同时提供匹配源码压缩包，保留许可证及作者声明。本仓库保存 0.4.0 完整源码、素材、测试和验证记录；安装包仍为本地交付，尚未上传 GitHub Releases。

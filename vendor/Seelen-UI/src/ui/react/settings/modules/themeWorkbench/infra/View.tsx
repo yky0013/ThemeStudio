@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import { Alert, Button, Checkbox, Select, Tag } from "antd";
 import { useTranslation } from "react-i18next";
@@ -40,6 +40,14 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
   const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const [visiblePanels, setVisiblePanels] = useState<Record<string,boolean>>({});
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) { setVisiblePanels(old => ({...old,[entry.target.id]:true})); observer.unobserve(entry.target); } });
+    }, {rootMargin:"220px"});
+    for (const id of ["workbench-seelen","workbench-windhawk"]) { const node=document.getElementById(id); if(node)observer.observe(node); }
+    return () => observer.disconnect();
+  }, []);
   const problems = checkDependencies(recipe, themes, icons, mods);
   const dirty = JSON.stringify(recipe) !== JSON.stringify(saved);
   const visible = filterMods(mods, query).filter((mod) => !showSelected || recipe.windhawk.some((item) => item.id === mod.id));
@@ -162,7 +170,7 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
           <div><strong>{item.name}</strong><p>{item.description || item.id}</p></div>
         </label>)}</div>
         {renderSettings}
-        {renderRuntime?.(recipe)}
+        {visiblePanels["workbench-seelen"] && renderRuntime?.(recipe)}
       </section>
       <section id="workbench-windhawk" className={groupStyles.group}>
         <div className={cs.sectionTitle}><h2>{tt("windhawk")}</h2><span>{tt("catalog_count", { count: mods.length })}</span></div>
@@ -172,7 +180,7 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
           <Checkbox checked={showSelected} onChange={(event) => { setShowSelected(event.target.checked); setLimit(24); }}>{tt("selected_only")}</Checkbox>
           <span>{visible.length}</span>
         </div>
-        <div className={cs.modGrid}>{visible.slice(0, limit).map((mod) => {
+        <div className={cs.modGrid}>{(visiblePanels["workbench-windhawk"] ? visible.slice(0, limit) : []).map((mod) => {
           const selected = recipe.windhawk.find((item) => item.id === mod.id);
           if (renderMod) return <div key={mod.id}>{renderMod(mod, selected,
             (checked) => update(toggleMod(recipe, mod, checked)),

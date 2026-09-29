@@ -57,13 +57,62 @@ internal static class WallpaperFiles
     {
         object item; return value != null && value.TryGetValue(key, out item) && item is bool && (bool)item;
     }
+    internal static bool AnimatedImage(string file)
+    {
+        var extension = Path.GetExtension(file).ToLowerInvariant();
+        if (extension == ".gif")
+        {
+            using (var image = Image.FromFile(file))
+                return image.GetFrameCount(System.Drawing.Imaging.FrameDimension.Time) > 1;
+        }
+        if (extension != ".png" && extension != ".webp") return false;
+        // Inspect bounded container chunks; do not decode large still images just
+        // to decide whether the Windows wallpaper API can display them.
+        using (var reader = new BinaryReader(File.OpenRead(file)))
+        {
+            var stream = reader.BaseStream;
+            stream.Position = extension == ".png" ? 8 : 12;
+            for (int i = 0; i < 10000 && stream.Position + 8 <= stream.Length; i++)
+            {
+                uint length; string type;
+                if (extension == ".png")
+                {
+                    var bytes = reader.ReadBytes(4);
+                    length = ((uint)bytes[0] << 24) | ((uint)bytes[1] << 16) | ((uint)bytes[2] << 8) | bytes[3];
+                    type = Encoding.ASCII.GetString(reader.ReadBytes(4));
+                    if (type == "acTL") return true;
+                    if (type == "IDAT" || type == "IEND") return false;
+                }
+                else
+                {
+                    type = Encoding.ASCII.GetString(reader.ReadBytes(4)); length = reader.ReadUInt32();
+                    if (type == "ANIM" || type == "ANMF") return true;
+                    if (type == "VP8X" && length > 0 && stream.Position < stream.Length)
+                    {
+                        byte flags = reader.ReadByte(); stream.Position--;
+                        if ((flags & 2) != 0) return true;
+                    }
+                }
+                long next = stream.Position + length + (extension == ".png" ? 4 : length % 2);
+                if (next > stream.Length) return false;
+                stream.Position = next;
+            }
+        }
+        return false;
+    }
+    internal static bool CanUseStatic(string data, string id)
+    {
+        Media(data, id);
+        return Regex.IsMatch(id, "\\.(jpg|jpeg|png|bmp|webp|gif)$") && !AnimatedImage(Path.Combine(MediaDirectory(data), id));
+    }
     internal static object Media(string data, string id)
     {
         if (id == null || !Regex.IsMatch(id, "^[a-f0-9]{64}\\.(png|jpg|jpeg|webp|bmp|gif|svg|mp4|webm|m4v|mov|mkv|avi)$")) throw new InvalidDataException("壁纸资源无效，请重新选择文件。");
         var file = Path.Combine(MediaDirectory(data), id);
         if (!File.Exists(file)) throw new FileNotFoundException("壁纸素材已不存在，请重新导入。");
         var metadata = Read(file + ".json");
-        return new { id = id, name = Text(metadata, "name") ?? id, kind = Text(metadata, "kind") ?? "image", url = "https://" + MediaHost + "/" + id };
+        var kind = Regex.IsMatch(id, "\\.(mp4|webm|m4v|mov|mkv|avi)$") ? "video" : "image";
+        return new { id = id, name = Text(metadata, "name") ?? id, kind = kind, animated = kind == "video" || AnimatedImage(file), url = "https://" + MediaHost + "/" + id };
     }
     internal static object Import(string data, string source)
     {
@@ -152,7 +201,7 @@ internal sealed class NativeWallpaperClient
             if (WallpaperFiles.Text(observed, "requestId") != request) continue;
             var error = WallpaperFiles.Text(observed, "error");
             if (!String.IsNullOrEmpty(error)) throw new InvalidOperationException("桌面壁纸应用失败：" + error);
-            if (WallpaperFiles.Flag(observed, "active") == expectedActive) return Status();
+            if (WallpaperFiles.Flag(observed, "active") == expectedActive && (expectedActive || !WallpaperFiles.Running(data))) return Status();
         }
         throw new TimeoutException("桌面播放层没有完成启动，请查看状态后重试。");
     }

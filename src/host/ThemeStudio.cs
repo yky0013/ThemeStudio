@@ -18,8 +18,8 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("Theme Studio")]
 [assembly: AssemblyProduct("桌面主题工作室")]
-[assembly: AssemblyVersion("0.2.0.0")]
-[assembly: AssemblyFileVersion("0.2.0.0")]
+[assembly: AssemblyVersion("0.4.0.0")]
+[assembly: AssemblyFileVersion("0.4.0.0")]
 
 internal static class Program
 {
@@ -55,7 +55,8 @@ internal static class Program
             catch { Environment.ExitCode = 1; }
             return;
         }
-        Application.Run(new StudioWindow(smoke, smoke == null ? null : qaScript));
+        using (var applicationMutex = new Mutex(false, "Local\\ThemeStudio.Application"))
+            Application.Run(new StudioWindow(smoke, smoke == null ? null : qaScript));
     }
 }
 
@@ -69,6 +70,7 @@ internal sealed class StudioWindow : Form
     private readonly JavaScriptSerializer json = new JavaScriptSerializer { MaxJsonLength = 48 * 1024 * 1024, RecursionLimit = 100 };
     private readonly WebView2 view = new WebView2 { Dock = DockStyle.Fill };
     private readonly SemaphoreSlim bridgeLock = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim appearanceLock = new SemaphoreSlim(1, 1);
     private readonly HashSet<string> operations = new HashSet<string> { "state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.save", "cursors.apply", "cursors.restore", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop" };
     private Process backend;
     private StreamWriter backendInput;
@@ -78,9 +80,13 @@ internal sealed class StudioWindow : Form
     private string backendError = "";
     private System.Windows.Forms.Timer smokeTimeout;
     private readonly NativeWallpaperClient wallpaper;
+    private bool suspendPending;
+    private bool updateHandoff;
+    private bool closeAfterRequests;
 
     internal StudioWindow(string smoke, string script)
     {
+        operations.Add("runtime.desktop.apply");
         smokeDirectory = smoke;
         qaScript = script;
         dataDirectory = smoke == null ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ThemeStudio") : Path.Combine(smoke, "data");
@@ -101,6 +107,7 @@ internal sealed class StudioWindow : Form
         Shown += Initialize;
         FormClosing += OnClosing;
         FormClosed += OnClosed;
+        Resize += UpdateVisibility;
         if (smoke != null)
         {
             ShowInTaskbar = false; Opacity = 0;
@@ -108,6 +115,25 @@ internal sealed class StudioWindow : Form
             smokeTimeout.Tick += delegate { if (!ready || qaScript != null) { Environment.ExitCode = 2; WriteReport(false, "Native UI test timed out", null); Close(); } };
             smokeTimeout.Start();
         }
+    }
+
+    private async void UpdateVisibility(object sender, EventArgs args)
+    {
+        if (view.CoreWebView2 == null || closing) return;
+        if (WindowState != FormWindowState.Minimized)
+        {
+            view.CoreWebView2.Resume(); view.Visible = true; return;
+        }
+        if (suspendPending || activeRequests > 0) return;
+        suspendPending = true;
+        try
+        {
+            view.Visible = false;
+            await view.CoreWebView2.TrySuspendAsync();
+            if (WindowState != FormWindowState.Minimized) { view.CoreWebView2.Resume(); view.Visible = true; }
+        }
+        catch { view.Visible = WindowState != FormWindowState.Minimized; }
+        finally { suspendPending = false; }
     }
 
     private bool IsLocal(string address)
@@ -142,6 +168,9 @@ internal sealed class StudioWindow : Form
             core.Settings.AreBrowserAcceleratorKeysEnabled = false;
             core.SetVirtualHostNameToFolderMapping(VirtualHost, Path.Combine(Application.StartupPath, "wwwroot"), CoreWebView2HostResourceAccessKind.Deny);
             core.SetVirtualHostNameToFolderMapping(WallpaperFiles.MediaHost, WallpaperFiles.MediaDirectory(dataDirectory), CoreWebView2HostResourceAccessKind.Allow);
+            var packsDirectory = Path.Combine(dataDirectory, "theme-packs", "assets");
+            Directory.CreateDirectory(packsDirectory);
+            core.SetVirtualHostNameToFolderMapping("packs.theme-studio.invalid", packsDirectory, CoreWebView2HostResourceAccessKind.Allow);
             core.NavigationStarting += delegate(object s, CoreWebView2NavigationStartingEventArgs e)
             {
                 if (!IsLocal(e.Uri)) { e.Cancel = true; if (e.IsUserInitiated) OpenExternal(e.Uri); }
@@ -200,10 +229,25 @@ internal sealed class StudioWindow : Form
         finally { bridgeLock.Release(); }
     }
 
+    private async Task<Dictionary<string, object>> BackendAction(string operation, object payload)
+    {
+        var answer = json.Deserialize<Dictionary<string, object>>(await CallBackend(json.Serialize(new { id = -1, operation = operation, payload = payload })));
+        if (answer.ContainsKey("error")) throw new InvalidOperationException(Convert.ToString(answer["error"]));
+        return answer["result"] as Dictionary<string, object>;
+    }
+
+    private object WithMedia(Dictionary<string, object> status)
+    {
+        var id = WallpaperFiles.Text(status, "mediaId");
+        if (id != null) status["media"] = WallpaperFiles.Media(dataDirectory, id);
+        return status;
+    }
+
     private async void Receive(object sender, CoreWebView2WebMessageReceivedEventArgs args)
     {
         if (closing || !IsLocal(args.Source)) return;
         object id = null;
+        bool appearanceOwned = false;
         activeRequests++;
         try
         {
@@ -211,21 +255,197 @@ internal sealed class StudioWindow : Form
             var request = json.Deserialize<Dictionary<string, object>>(args.WebMessageAsJson);
             id = request["id"];
             var operation = request["operation"] as string;
+            if (updateHandoff) throw new InvalidOperationException("正在启动更新安装程序，请稍候。");
+            if (operation == "updates.install" || operation == "templates.apply" || operation == "templates.restore" || operation == "wallpaper.apply" || operation == "wallpaper.stop" || operation == "wallpaper.pause" || (operation != null && operation.StartsWith("runtime.") && operation != "runtime.state"))
+            {
+                appearanceOwned = await appearanceLock.WaitAsync(0);
+                if (!appearanceOwned) throw new InvalidOperationException("正在应用桌面设置，请等待当前操作完成。");
+            }
+            if (operation == "app.qa-suspend" && smokeDirectory != null && qaScript != null)
+            {
+                view.Visible = false;
+                var suspended = await view.CoreWebView2.TrySuspendAsync();
+                var observedSuspended = view.CoreWebView2.IsSuspended;
+                await Task.Delay(1000);
+                view.CoreWebView2.Resume(); view.Visible = true;
+                view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = new { suspended = suspended, observedSuspended = observedSuspended, resumed = !view.CoreWebView2.IsSuspended } }));
+                return;
+            }
             if (operation == "app.qa-complete" && smokeDirectory != null && qaScript != null)
             {
                 File.WriteAllText(Path.Combine(smokeDirectory, "qa-result.json"), json.Serialize(request["payload"]), new UTF8Encoding(false));
                 using (var capture = File.Create(Path.Combine(smokeDirectory, "native-ui.png"))) await view.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, capture);
                 view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = new { ok = true } }));
-                smokeTimeout.Stop(); BeginInvoke(new Action(Close)); return;
+                smokeTimeout.Stop(); closeAfterRequests = true; return;
+            }
+            if (operation != null && operation.StartsWith("templates.", StringComparison.Ordinal))
+            {
+                var payload = request.ContainsKey("payload") ? request["payload"] as Dictionary<string, object> : null;
+                object result;
+                if (operation == "templates.list") result = await BackendAction(operation, new { });
+                else if (operation == "templates.import")
+                {
+                    using (var dialog = new OpenFileDialog { Title = "导入主题数据包", Filter = "ThemeStudio 主题数据包|*.tspack;*.zip", CheckFileExists = true, Multiselect = false })
+                    {
+                        result = dialog.ShowDialog(this) == DialogResult.OK ? await BackendAction(operation, new { path = dialog.FileName }) : null;
+                    }
+                }
+                else if (operation == "templates.export")
+                {
+                    var templateId = WallpaperFiles.Text(payload, "id");
+                    await BackendAction("templates.plan", new { id = templateId });
+                    using (var dialog = new SaveFileDialog { Title = "导出完整主题数据包", Filter = "ThemeStudio 主题数据包|*.tspack", DefaultExt = "tspack", AddExtension = true, FileName = templateId + ".tspack", OverwritePrompt = true })
+                    {
+                        if (dialog.ShowDialog(this) != DialogResult.OK) result = null;
+                        else
+                        {
+                            var exported = await BackendAction(operation, new { id = templateId });
+                            var source = WallpaperFiles.Text(exported, "path");
+                            var destination = dialog.FileName;
+                            await Task.Run(delegate { File.Copy(source, destination, true); });
+                            result = new { path = destination };
+                        }
+                    }
+                }
+                else if (operation == "templates.restore")
+                {
+                    var current = await BackendAction("templates.current", new { });
+                    var active = WallpaperFiles.Running(dataDirectory) ? WallpaperFiles.Read(WallpaperFiles.ConfigPath(dataDirectory)) : null;
+                    if (active != null && WallpaperFiles.Text(active, "mediaId") != WallpaperFiles.Text(current, "motionMediaId"))
+                        throw new InvalidOperationException("当前动态壁纸已被其他操作修改，请先停止它再恢复模板。");
+                    if (active != null) await wallpaper.Stop();
+                    Dictionary<string, object> restored = null;
+                    Exception restoreFailure = null;
+                    try { restored = await BackendAction(operation, new { }); }
+                    catch (Exception failure) { restoreFailure = failure; }
+                    if (restoreFailure != null) { if (active != null) await wallpaper.Apply(active); throw restoreFailure; }
+                    var restoreId = WallpaperFiles.Text(restored, "id");
+                    if (restoreId != null && System.Text.RegularExpressions.Regex.IsMatch(restoreId, "^[a-f0-9]{32}$"))
+                    {
+                        var previous = WallpaperFiles.Read(Path.Combine(dataDirectory, "template-native-history", restoreId + ".json"));
+                        if (previous != null && previous.ContainsKey("previous")) previous = previous["previous"] as Dictionary<string, object>;
+                        if (previous != null && WallpaperFiles.Flag(previous, "enabled")) await wallpaper.Apply(previous);
+                    }
+                    result = restored;
+                }
+                else
+                {
+                    var templateId = WallpaperFiles.Text(payload, "id");
+                    if (templateId == null || !System.Text.RegularExpressions.Regex.IsMatch(templateId, "^[a-z0-9-]{1,64}$")) throw new InvalidDataException("模板编号无效。");
+                    var plan = await BackendAction("templates.plan", new { id = templateId });
+                    if (operation == "templates.plan") result = plan;
+                    else
+                    {
+                        var mode = WallpaperFiles.Text(payload, "wallpaperMode") ?? "static";
+                        if (mode != "static" && mode != "animated") throw new InvalidDataException("壁纸模式无效。");
+                        var sources = await BackendAction("templates.media", new { id = templateId });
+                        if (mode == "animated" && WallpaperFiles.Text(sources, "animatedWallpaper") == null) throw new InvalidDataException("这套主题只提供静态壁纸，请选择静态版。");
+                        var resource = await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, WallpaperFiles.Text(sources, "wallpaper")); });
+                        var media = json.Deserialize<Dictionary<string, object>>(json.Serialize(resource));
+                        var motion = mode == "animated" ? json.Deserialize<Dictionary<string, object>>(json.Serialize(await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, WallpaperFiles.Text(sources, "animatedWallpaper")); }))) : null;
+                        if (operation == "templates.preview") result = motion ?? media;
+                        else if (operation == "templates.apply")
+                        {
+                            var previous = WallpaperFiles.Running(dataDirectory) ? WallpaperFiles.Read(WallpaperFiles.ConfigPath(dataDirectory)) : null;
+                            await wallpaper.Stop();
+                            payload["mediaId"] = media["id"];
+                            payload["wallpaperMode"] = mode;
+                            payload["motionMediaId"] = motion == null ? null : motion["id"];
+                            Exception templateFailure = null;
+                            Dictionary<string, object> applied = null;
+                            try
+                            {
+                                applied = await BackendAction(operation, payload);
+                                WallpaperFiles.Write(Path.Combine(dataDirectory, "template-native-history", WallpaperFiles.Text(applied, "id") + ".json"), new { previous = previous, mode = mode });
+                                if (motion != null) await wallpaper.Apply(new Dictionary<string, object> {
+                                    { "mediaId", motion["id"] }, { "settings", new Dictionary<string, object> {
+                                        { "enabled", false }, { "preset", "elegance" }, { "strength", 1 }, { "perspective", false }, { "tilt", 0 }, { "opposite", true } } }
+                                });
+                            }
+                            catch (Exception failure) { templateFailure = failure; }
+                            if (templateFailure != null)
+                            {
+                                var failures = new List<string> { templateFailure.Message };
+                                try { await wallpaper.Stop(); } catch (Exception recovery) { failures.Add(recovery.Message); }
+                                if (applied != null) { try { await BackendAction("templates.restore", new { }); } catch (Exception recovery) { failures.Add(recovery.Message); } }
+                                if (previous != null) { try { await wallpaper.Apply(previous); } catch (Exception recovery) { failures.Add(recovery.Message); } }
+                                throw new InvalidOperationException(String.Join("；", failures.ToArray()));
+                            }
+                            result = applied;
+                        }
+                        else throw new InvalidDataException("不支持的模板操作。");
+                    }
+                }
+                if (!closing) view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = result }));
+                return;
+            }
+            if (operation != null && operation.StartsWith("updates.", StringComparison.Ordinal))
+            {
+                var payload = request.ContainsKey("payload") ? request["payload"] as Dictionary<string, object> : null;
+                object result;
+                if (operation == "updates.state" || operation == "updates.check") result = await BackendAction(operation, new { });
+                else if (operation == "updates.download") result = await BackendAction(operation, new { version = WallpaperFiles.Text(payload, "version") });
+                else if (operation == "updates.cancel")
+                {
+                    var folder = Path.Combine(dataDirectory, "updates"); Directory.CreateDirectory(folder);
+                    File.WriteAllText(Path.Combine(folder, "cancel"), "cancel");
+                    result = new { ok = true };
+                }
+                else if (operation == "updates.local")
+                {
+                    using (var dialog = new OpenFileDialog { Title = "选择更新安装包（同目录需有 .exe.sha256 文件）", Filter = "ThemeStudio 安装包|ThemeStudio-*-Windows-x64-Setup.exe", CheckFileExists = true, Multiselect = false })
+                    {
+                        result = dialog.ShowDialog(this) == DialogResult.OK ? await BackendAction(operation, new { path = dialog.FileName }) : null;
+                    }
+                }
+                else if (operation == "updates.install")
+                {
+                    if (activeRequests > 1) throw new InvalidOperationException("其他操作尚未完成，请稍后启动安装。");
+                    updateHandoff = true;
+                    try
+                    {
+                        var verified = await BackendAction("updates.verify", new { id = WallpaperFiles.Text(payload, "id") });
+                        var installer = WallpaperFiles.Text(verified, "path");
+                        var version = WallpaperFiles.Text(verified, "version");
+                        var launched = Process.Start(InstallerUpdate.Prepare(installer, version, Application.StartupPath));
+                        if (launched == null) throw new IOException("未能启动更新安装程序。");
+                        launched.Dispose();
+                        result = new { started = true };
+                        closeAfterRequests = true;
+                    }
+                    catch { updateHandoff = false; throw; }
+                }
+                else throw new InvalidDataException("不支持的更新操作。");
+                if (!closing) view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = result }));
+                return;
             }
             if (operation != null && operation.StartsWith("wallpaper.", StringComparison.Ordinal))
             {
                 var payload = request.ContainsKey("payload") ? request["payload"] as Dictionary<string, object> : null;
                 object result;
-                if (operation == "wallpaper.status") result = wallpaper.Status();
-                else if (operation == "wallpaper.apply") result = await wallpaper.Apply(payload);
+                if (operation == "wallpaper.status")
+                {
+                    var still = await BackendAction("wallpaper.static.status", new { });
+                    result = WallpaperFiles.Flag(still, "active") && !WallpaperFiles.Running(dataDirectory) ? WithMedia(still) : wallpaper.Status();
+                }
+                else if (operation == "wallpaper.apply")
+                {
+                    var mediaId = WallpaperFiles.Text(payload, "mediaId");
+                    WallpaperFiles.Media(dataDirectory, mediaId);
+                    var settings = WallpaperFiles.Settings(payload["settings"]);
+                    if (!WallpaperFiles.Flag(settings, "enabled") && WallpaperFiles.CanUseStatic(dataDirectory, mediaId))
+                    {
+                        await wallpaper.Stop();
+                        result = WithMedia(await BackendAction("wallpaper.static.apply", payload));
+                    }
+                    else result = await wallpaper.Apply(payload);
+                }
                 else if (operation == "wallpaper.pause") result = await wallpaper.Pause(WallpaperFiles.Flag(payload, "paused"));
-                else if (operation == "wallpaper.stop") result = await wallpaper.Stop();
+                else if (operation == "wallpaper.stop")
+                {
+                    if (WallpaperFiles.Running(dataDirectory)) result = await wallpaper.Stop();
+                    else result = WithMedia(await BackendAction("wallpaper.static.restore", new { }));
+                }
                 else if (operation == "wallpaper.example")
                 {
                     var name = WallpaperFiles.Text(payload, "kind") == "video" ? "parallax-motion.mp4" : "parallax-landscape.svg";
@@ -252,7 +472,7 @@ internal sealed class StudioWindow : Form
                 view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = new { ok = true } }));
                 if (smokeDirectory != null)
                 {
-                    if (qaScript == null) { smokeTimeout.Stop(); BeginInvoke(new Action(Close)); }
+                    if (qaScript == null) { smokeTimeout.Stop(); closeAfterRequests = true; }
                     else await view.CoreWebView2.ExecuteScriptAsync(File.ReadAllText(qaScript, Encoding.UTF8));
                 }
                 return;
@@ -264,16 +484,26 @@ internal sealed class StudioWindow : Form
         catch (Exception error)
         {
             if (!closing) view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, error = error.Message }));
-            if (smokeDirectory != null) WriteReport(false, error.ToString(), null);
+            if (smokeDirectory != null)
+                File.WriteAllText(Path.Combine(smokeDirectory, "native-action-error.json"), json.Serialize(new { requestId = id, error = error.ToString(), time = DateTimeOffset.Now.ToString("o") }), new UTF8Encoding(false));
         }
-        finally { activeRequests--; }
+        finally
+        {
+            if (appearanceOwned) appearanceLock.Release();
+            activeRequests--;
+            if (!closing && activeRequests == 0)
+            {
+                if (closeAfterRequests) BeginInvoke(new Action(Close));
+                else UpdateVisibility(this, EventArgs.Empty);
+            }
+        }
     }
 
     private void WriteReport(bool success, string error, object payload)
     {
         var destination = smokeDirectory ?? Path.Combine(dataDirectory, "diagnostics");
         Directory.CreateDirectory(destination);
-        var report = new { product = "Theme Studio", version = "0.2.0", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
+        var report = new { product = "Theme Studio", version = "0.4.0", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
             executable = Application.ExecutablePath, nativeWebView = true, backend = "bundled executable", ui = payload, error = error };
         File.WriteAllText(Path.Combine(destination, "native-runtime.json"), json.Serialize(report), new UTF8Encoding(false));
     }
@@ -293,5 +523,6 @@ internal sealed class StudioWindow : Form
         }
         view.Dispose();
         bridgeLock.Dispose();
+        appearanceLock.Dispose();
     }
 }

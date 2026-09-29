@@ -18,10 +18,13 @@ import "../../vendor/Seelen-UI/libs/core/styles/colors.css";
 import "../../vendor/Seelen-UI/src/ui/react/settings/styles/variables.css";
 import cs from "./studio.module.css";
 import { RuntimePanel, type RuntimeState } from "./runtime.tsx";
+import { TemplateLibrary } from "./templates.tsx";
+import { DesktopModePicker } from "./desktop-mode.tsx";
+import { UpdatePanel } from "./updates.tsx";
 
 const messages = {
-  "zh-CN": { name: "桌面主题工作室", subtitle: "让桌面，成为你的样子", native: "桌面应用", local: "本机开发", collapse: "展开或收起导航", desktop: "桌面图标", cursors: "鼠标指针", parallax: "壁纸与视差", seelen: "Seelen 外观", windhawk: "Windhawk 模组", source: "查看源码", draft: "待启用", appearance: "外观", light: "浅色", dark: "深色", scope: "逐项对应图片与桌面图标；把图片和视频应用到桌面；启用 Seelen Dock、工具栏和已选 Windhawk 模组。", about: "基于 Seelen UI 与 Windhawk", version: "独立项目 · v0.2.0" },
-  en: { name: "Theme Studio", subtitle: "Make your desktop your own", native: "Desktop app", local: "Local development", collapse: "Expand or collapse navigation", desktop: "Desktop icons", cursors: "Mouse pointers", parallax: "Wallpaper & parallax", seelen: "Seelen appearance", windhawk: "Windhawk mods", source: "View source", draft: "Pending activation", appearance: "Appearance", light: "Light", dark: "Dark", scope: "Pair pictures with individual shortcuts, apply images and videos to the desktop, and activate Seelen Dock, toolbar and selected Windhawk mods.", about: "Based on Seelen UI and Windhawk", version: "Independent project · v0.2.0" },
+  "zh-CN": { name: "桌面主题工作室", subtitle: "让桌面，成为你的样子", native: "桌面应用", local: "本机开发", collapse: "展开或收起导航", desktop: "桌面图标", cursors: "鼠标指针", parallax: "壁纸与视差", seelen: "Seelen 外观", windhawk: "Windhawk 模组", source: "查看源码", draft: "待启用", appearance: "外观", light: "浅色", dark: "深色", scope: "逐项对应图片与桌面图标；把图片和视频应用到桌面；启用 Seelen Dock、工具栏和已选 Windhawk 模组。", about: "基于 Seelen UI 与 Windhawk", version: "独立项目 · v0.4.0" },
+  en: { name: "Theme Studio", subtitle: "Make your desktop your own", native: "Desktop app", local: "Local development", collapse: "Expand or collapse navigation", desktop: "Desktop icons", cursors: "Mouse pointers", parallax: "Wallpaper & parallax", seelen: "Seelen appearance", windhawk: "Windhawk mods", source: "View source", draft: "Pending activation", appearance: "Appearance", light: "Light", dark: "Dark", scope: "Pair pictures with individual shortcuts, apply images and videos to the desktop, and activate Seelen Dock, toolbar and selected Windhawk mods.", about: "Based on Seelen UI and Windhawk", version: "Independent project · v0.4.0" },
 };
 await i18n.use(initReactI18next).init({ lng: localStorage.getItem("theme-studio.language") || "zh-CN", fallbackLng: "en", interpolation: { escapeValue: false }, resources: {
   en: { translation: { ...(yaml.load(enYaml) as object), studio: messages.en } },
@@ -36,14 +39,23 @@ if (stored) { try { initial = parseRecipe(stored); } catch { /* Keep unreadable 
 function Studio() {
   const [language, setLanguage] = useState(i18n.language === "en" ? "en" : "zh-CN");
   const [dark, setDark] = useState(localStorage.getItem("theme-studio.dark") === "true");
-  const [active, setActive] = useState("desktop");
+  const [active, setActive] = useState("desktop-mode");
+  const [accent, setAccent] = useState(localStorage.getItem("theme-studio.accent") || "#7967c6");
   const [runtimes, setRuntimes] = useState<RuntimeState | null>(null);
   const text = messages[language as keyof typeof messages];
   const items = [
+    { id: "desktop-mode", label: language === "en" ? "Desktop style" : "桌面风格", icon: "▣" },
+    { id: "templates", label: language === "en" ? "Theme collections" : "一键主题", icon: "◈" },
     { id: "desktop", label: text.desktop, icon: "▦" }, { id: "cursors", label: text.cursors, icon: "↖" },
     { id: "parallax", label: text.parallax, icon: "▧" }, { id: "seelen", label: text.seelen, icon: "◈" },
     { id: "windhawk", label: text.windhawk, icon: "✦" },
+    { id: "updates", label: language === "en" ? "App updates" : "应用更新", icon: "↻" },
   ];
+  useEffect(() => {
+    const update = (event: Event) => setAccent((event as CustomEvent<{accent:string}>).detail.accent);
+    document.addEventListener("theme-studio-template-applied", update);
+    return () => document.removeEventListener("theme-studio-template-applied", update);
+  }, []);
   useEffect(() => {
     document.documentElement.style.colorScheme = dark ? "dark" : "light";
     document.title = text.name;
@@ -58,7 +70,7 @@ function Studio() {
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
-  return <I18nextProvider i18n={i18n}><ConfigProvider theme={{ token: { colorPrimary: "#7967c6", borderRadius: 9, fontFamily: "Microsoft YaHei UI, Segoe UI, sans-serif" }, algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm }}>
+  return <I18nextProvider i18n={i18n}><ConfigProvider theme={{ token: { colorPrimary: accent, borderRadius: 9, fontFamily: "Microsoft YaHei UI, Segoe UI, sans-serif" }, algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm }}>
     <div className={cs.shell}>
       <NavigationFrame title={text.name} items={items} active={active} collapseLabel={text.collapse} onSelect={(id) => { setActive(id); document.getElementById(`workbench-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
         footer={<><span className={cs.sourceNote}>{text.about}</span><span className={cs.version}>{text.version}</span></>} />
@@ -70,6 +82,8 @@ function Studio() {
         </header>
         <main id="studio-content" className={cs.content}>
           <p className={cs.scope}>{text.scope}</p>
+          <DesktopModePicker client={studioClient} native={isDesktopApp} />
+          <TemplateLibrary client={studioClient} native={isDesktopApp} />
           <WorkbenchView embedded initial={initial} native={isDesktopApp} desktopClient={studioClient} mods={catalog.mods}
             themes={[{ id: "@default/theme", name: "Seelen Default" }, { id: "@eythaann/bubbles", name: "Bubbles" }, { id: "@workbench/wallpaper-parallax", name: text.parallax }]}
             icons={[{ id: "@system/icon-pack", name: language === "en" ? "System icons" : "系统图标" }]}
@@ -84,6 +98,7 @@ function Studio() {
                 <option value="" disabled>{i18n.t("theme_workbench.choose_preset")}</option>{mod.themeChoices.map((choice) => <option key={choice.id} value={choice.id}>{choice.label}</option>)}
               </select>}
             </div>} />
+          <UpdatePanel client={studioClient} native={isDesktopApp} />
         </main>
       </div>
     </div>

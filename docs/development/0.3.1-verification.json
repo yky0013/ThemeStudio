@@ -1,0 +1,125 @@
+{
+  "version": "0.3.1",
+  "date": "2026-09-29",
+  "typescript": "passed",
+  "frontendTests": 20,
+  "backendTests": 44,
+  "clips": {
+    "count": 10,
+    "totalBytes": 27672629,
+    "resolution": "1920x1080",
+    "fps": 24,
+    "durationSeconds": 12,
+    "audio": false,
+    "packagedHashesMatch": true,
+    "provenance": "assets/motion-provenance.json"
+  },
+  "native": {
+    "checks": [
+      {
+        "clip": "wuthering-waves",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "punishing-gray-raven",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "genshin-impact",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "identity-v",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "milk-mocha-dogs",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "honkai-star-rail",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "zenless-zone-zero",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "arknights",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "blue-archive",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "clip": "chiikawa",
+        "decoded": true,
+        "advancing": true
+      },
+      {
+        "dynamicToStatic": true,
+        "restorePreviousAnimation": true,
+        "pauseResume": true
+      },
+      {
+        "format": "gif",
+        "animatedWithoutParallax": true,
+        "pauseResume": true
+      },
+      {
+        "format": "webp",
+        "animatedWithoutParallax": true,
+        "pauseResume": true
+      },
+      {
+        "format": "png",
+        "animatedWithoutParallax": true,
+        "pauseResume": true
+      },
+      {
+        "desktopModeReported": "windows",
+        "liveMacSwitch": "not run: requires administrator"
+      }
+    ],
+    "errors": [],
+    "passed": true
+  },
+  "nativeEvidence": "E:\\desktop\\windows\\ThemeStudio\\qa\\runtime\\motion-0.3.1-20260929013539",
+  "browser": {
+    "desktopChoices": 2,
+    "themeCards": 10,
+    "dynamicPreviewAdvances": true,
+    "staticSwitchRemovesVideo": true,
+    "closeRemovesVideo": true,
+    "gifPauseCanvasFrozen": true,
+    "gifResumeRestoresAnimation": true,
+    "noHorizontalOverflowAt940x720": true,
+    "consoleErrors": 0
+  },
+  "wallpaperRestored": true,
+  "limitations": [
+    "Mac style settings and mode persistence have automated tests; live Seelen activation needs administrator privileges and was not run in this non-admin session.",
+    "Ambient motion from the original artwork; not character animation.",
+    "Physical multi-monitor rendering not tested this turn."
+  ],
+  "publication": "Local build only; not uploaded to GitHub.",
+  "originalArtworkUnchanged": true,
+  "installer": {
+    "path": "E:\\desktop\\windows\\ThemeStudio\\installers\\ThemeStudio-0.3.1-Windows-x64-Setup.exe",
+    "bytes": 167312982,
+    "sha256": "d5dde831c381ea970d45bf993f5fd5cfd2257df288e0b534d4cd1482e814ce57",
+    "built": true,
+    "installedThisTurn": false
+  },
+  "portableExecutable": "E:\\desktop\\windows\\ThemeStudio\\release\\ThemeStudio-0.3.1\\ThemeStudio.exe"
+}

@@ -6,6 +6,7 @@ import type { ThemeRecipe } from "../../vendor/Seelen-UI/src/ui/react/settings/m
 import cs from "./studio.module.css";
 
 export interface RuntimeState {
+  desktopMode: 'windows' | 'mac' | 'custom';
   seelen: { available: boolean; running: boolean; dock: boolean; toolbar: boolean; version: string };
   windhawk: { available: boolean; running: boolean; compiler: boolean; version: string; error?: string;
     mods: { id: string; name: string; enabled: boolean; loaded: boolean }[] };
@@ -22,19 +23,25 @@ export function RuntimePanel({ client, recipe, native, onState }:
   const alive = useRef(true);
   const refresh = async () => {
     const next = await client.call<RuntimeState>("runtime.state");
-    if (alive.current) { setState(next); onState(next); }
+    if (alive.current) { setState(next); onState(next); document.dispatchEvent(new CustomEvent('theme-studio-runtime-state',{detail:next})); }
   };
   useEffect(() => {
     alive.current = true;
     if (!native) return;
     void refresh().catch((failure) => setError(String(failure)));
-    const timer = setInterval(() => { if (!running.current) void refresh().catch(() => {}); }, 5000);
+    const timer = setInterval(() => {
+      const panel = document.getElementById("workbench-seelen");
+      const bounds = panel?.getBoundingClientRect();
+      if (!running.current && !document.hidden && bounds && bounds.top < innerHeight && bounds.bottom > 0) void refresh().catch(() => {});
+    }, 15000);
     const report = (event: Event) => {
       const detail = (event as CustomEvent<{ stage: string; name: string }>).detail;
       setProgress(rt(`progress.${detail.stage}`, { name: detail.name }));
     };
     document.addEventListener("theme-studio-runtime-progress", report);
-    return () => { alive.current = false; clearInterval(timer); document.removeEventListener("theme-studio-runtime-progress", report); };
+    const changed=(event:Event)=>{const next=(event as CustomEvent<RuntimeState>).detail;if(next){setState(next);onState(next);}};
+    document.addEventListener('theme-studio-runtime-state',changed);
+    return () => { alive.current = false; clearInterval(timer); document.removeEventListener("theme-studio-runtime-progress", report); document.removeEventListener('theme-studio-runtime-state',changed); };
   }, [client, native]);
   const run = async (operation: string, payload?: unknown) => {
     if (running.current) return;

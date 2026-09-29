@@ -27,6 +27,39 @@ import win32file
 import pywintypes
 from backend import atomic_json, canonical, com_session
 
+
+def desktop_profile(settings, mode):
+    """Settings from the pinned Seelen 2.8.6 schema, preserving unrelated fields."""
+    if mode not in {'windows', 'mac'}:
+        raise ValueError('请选择 Windows 或 Mac 桌面风格。')
+    result = copy.deepcopy(settings or {})
+    widgets = result.setdefault('byWidget', {})
+    dock = widgets.setdefault('@seelen/weg', {})
+    toolbar = widgets.setdefault('@seelen/fancy-toolbar', {})
+    dock['enabled'] = toolbar['enabled'] = mode == 'mac'
+    if mode == 'mac':
+        dock.update(mode='MinContent', position='Bottom', hideMode='Never', size=48,
+                    margin=8, padding=8, spaceBetweenItems=8, showWindowTitle=False)
+        toolbar.update(position='Top', hideMode='Never', height=28, margin=0)
+        for name in ('@seelen/window-manager', '@seelen/wallpaper-manager'):
+            widgets.setdefault(name, {})['enabled'] = False
+    return result
+
+
+def observed_desktop_mode(running, settings):
+    if not running:
+        return 'windows'
+    widgets = settings.get('byWidget', {})
+    dock, toolbar = widgets.get('@seelen/weg', {}), widgets.get('@seelen/fancy-toolbar', {})
+    if not dock.get('enabled', True) and not toolbar.get('enabled', True):
+        return 'windows'
+    if (dock.get('enabled', True) and toolbar.get('enabled', True)
+            and dock.get('position', 'Bottom') == 'Bottom'
+            and dock.get('mode', 'MinContent') in ('MinContent', 'Min-Content')
+            and toolbar.get('position', 'Top') == 'Top'):
+        return 'mac'
+    return 'custom'
+
 kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
 kernel32.OpenProcess.argtypes = [wt.DWORD, wt.BOOL, wt.DWORD]
 kernel32.OpenProcess.restype = wt.HANDLE
@@ -200,7 +233,8 @@ class RuntimeAdapter:
         for item in mods:
             library = str((item.get('config') or {}).get('libraryFileName', '')).casefold()
             item['loaded'] = bool(library and library in loaded)
-        return {'seelen': {'available': (self.seelen / 'seelen-ui.exe').is_file(), 'running': seelen_running,
+        return {'desktopMode': observed_desktop_mode(seelen_running, settings),
+                'seelen': {'available': (self.seelen / 'seelen-ui.exe').is_file(), 'running': seelen_running,
                            'version': '2.8.6', 'dock': seelen_running and by_widget.get('@seelen/weg', {}).get('enabled', True),
                            'toolbar': seelen_running and by_widget.get('@seelen/fancy-toolbar', {}).get('enabled', True),
                            'themes': settings.get('activeThemes', ['@default/theme'])},
@@ -259,7 +293,7 @@ class RuntimeAdapter:
         self._stop_seelen_processes()
         before = read_json(self.seelen_settings)
         record = self._journal('seelen', before)
-        settings = copy.deepcopy(before or {})
+        settings = desktop_profile(before, 'mac')
         widgets = settings.setdefault('byWidget', {})
         for widget, enabled in [('@seelen/weg', True), ('@seelen/fancy-toolbar', True),
                                 ('@seelen/window-manager', False), ('@seelen/wallpaper-manager', False)]:
@@ -316,11 +350,17 @@ class RuntimeAdapter:
         if not result['running'] or not result['dock'] or not result['toolbar']:
             raise RuntimeError('Seelen 尚未确认 Dock 和工具栏运行，请查看引擎状态。')
         self._record(record, result)
+        managed = self._managed(); managed['desktopMode'] = 'mac'; atomic_json(self.management, managed)
         return result
 
     def seelen_stop(self):
+        foreign = [image for _, image in process_images() if Path(image).name.casefold() == 'seelen-ui.exe' and canonical(image) != canonical(self.seelen / 'seelen-ui.exe')]
+        if foreign:
+            raise RuntimeError('另一个版本的 Seelen 正在运行，请先退出它再切换桌面风格。')
         self._stop_seelen_processes()
-        settings = read_json(self.seelen_settings, {})
+        before = read_json(self.seelen_settings, {})
+        record = self._journal('desktop-windows', before)
+        settings = desktop_profile(before, 'windows')
         managed = self._managed().get('seelen', {})
         baseline = managed.get('baseline') or {}
         widgets = settings.setdefault('byWidget', {})
@@ -330,7 +370,12 @@ class RuntimeAdapter:
             settings['activeThemes'] = baseline.get('activeThemes', ['@default/theme'])
         atomic_json(self.seelen_settings, settings)
         time.sleep(.4)
-        return self.state()['seelen']
+        result = self.state()
+        if result['desktopMode'] != 'windows':
+            raise RuntimeError('尚未确认已切换回 Windows 桌面，请刷新状态后重试。')
+        managed = self._managed(); managed['desktopMode'] = 'windows'; atomic_json(self.management, managed)
+        self._record(record, result)
+        return result['seelen']
 
     def _validate_mods(self, selections):
         if not isinstance(selections, list) or len(selections) > 30:
@@ -430,6 +475,32 @@ class RuntimeAdapter:
     def dispatch(self, operation, payload):
         if operation == 'runtime.state':
             return self.state()
+        if operation == 'runtime.desktop.apply':
+            mode = payload.get('mode')
+            if mode not in {'windows', 'mac'}:
+                raise ValueError('请选择 Windows 或 Mac 桌面风格。')
+            if mode == 'windows':
+                self.seelen_stop()
+            else:
+                settings = read_json(self.seelen_settings, {})
+                themes = [value for value in settings.get('activeThemes', []) if value in {'@default/theme', '@eythaann/bubbles'}]
+                # Preserve a rollback record before changing the shared profile.
+                # Preflight failures must not stop a running engine.
+                if not ctypes.windll.shell32.IsUserAnAdmin():
+                    raise RuntimeError('切换 Mac 风格需要管理员权限，请使用安装版或以管理员身份运行。')
+                record = self._journal('desktop-mac', settings)
+                try:
+                    result = self.seelen_apply({'activeThemes': themes or ['@default/theme'], 'activeIconPacks': ['@system/icon-pack']})
+                    self._record(record, result)
+                except Exception as failure:
+                    changed = read_json(self.seelen_settings, {}) != settings
+                    if changed:
+                        self._stop_seelen_processes()
+                        atomic_json(self.seelen_settings, settings)
+                    record.update(status='failed', error=str(failure), settingsRestored=changed)
+                    atomic_json(self.history / (record['id'] + '.json'), record)
+                    raise
+            return self.state()
         if operation == 'runtime.seelen.apply':
             return self.seelen_apply(payload.get('seelen', {}))
         if operation == 'runtime.seelen.stop':
@@ -441,7 +512,8 @@ class RuntimeAdapter:
         if operation == 'runtime.apply':
             recipe = payload.get('recipe', {})
             self._validate_mods(recipe.get('windhawk', []))
-            seelen = self.seelen_apply(recipe.get('seelen', {}))
+            seelen = (self.seelen_stop() if self._managed().get('desktopMode') == 'windows'
+                      else self.seelen_apply(recipe.get('seelen', {})))
             windhawk = self.windhawk_apply(recipe.get('windhawk', []))
             return {'seelen': seelen, 'windhawk': windhawk}
         raise ValueError('不支持的运行引擎操作。')

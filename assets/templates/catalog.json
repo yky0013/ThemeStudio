@@ -1,0 +1,932 @@
+[
+  {
+    "id": "wuthering-waves",
+    "name": "鸣潮",
+    "subtitle": "今汐 · 云海听潮",
+    "accent": "#377f84",
+    "pale": "#d9f3ed",
+    "wallpaper": "wuthering-waves/wallpaper.jpg",
+    "thumbnail": "wuthering-waves/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "wuthering-waves/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "punishing-gray-raven",
+    "name": "战双帕弥什",
+    "subtitle": "露西亚 · 绯色黎明",
+    "accent": "#be3d58",
+    "pale": "#ffd5db",
+    "wallpaper": "punishing-gray-raven/wallpaper.jpg",
+    "thumbnail": "punishing-gray-raven/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "punishing-gray-raven/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "genshin-impact",
+    "name": "原神",
+    "subtitle": "旅行者 · 风起之地",
+    "accent": "#3d99b9",
+    "pale": "#e4f8ec",
+    "wallpaper": "genshin-impact/wallpaper.jpg",
+    "thumbnail": "genshin-impact/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "genshin-impact/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "identity-v",
+    "name": "第五人格",
+    "subtitle": "园丁 · 月下庄园",
+    "accent": "#786399",
+    "pale": "#efe3fa",
+    "wallpaper": "identity-v/wallpaper.jpg",
+    "thumbnail": "identity-v/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "identity-v/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "milk-mocha-dogs",
+    "name": "线条小狗",
+    "subtitle": "小狗 · 奶油野餐",
+    "accent": "#bc8a58",
+    "pale": "#fff1d9",
+    "wallpaper": "milk-mocha-dogs/wallpaper.jpg",
+    "thumbnail": "milk-mocha-dogs/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "milk-mocha-dogs/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "honkai-star-rail",
+    "name": "崩坏：星穹铁道",
+    "subtitle": "三月七 · 星河列车",
+    "accent": "#9b6dba",
+    "pale": "#f3ddff",
+    "wallpaper": "honkai-star-rail/wallpaper.jpg",
+    "thumbnail": "honkai-star-rail/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "honkai-star-rail/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "zenless-zone-zero",
+    "name": "绝区零",
+    "subtitle": "妮可 · 新艾利都",
+    "accent": "#cf7149",
+    "pale": "#fff0d5",
+    "wallpaper": "zenless-zone-zero/wallpaper.jpg",
+    "thumbnail": "zenless-zone-zero/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "zenless-zone-zero/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "arknights",
+    "name": "明日方舟",
+    "subtitle": "阿米娅 · 破晓之城",
+    "accent": "#337d9d",
+    "pale": "#d3f3fa",
+    "wallpaper": "arknights/wallpaper.jpg",
+    "thumbnail": "arknights/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "arknights/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "blue-archive",
+    "name": "蔚蓝档案",
+    "subtitle": "阿洛娜 · 晴空海岸",
+    "accent": "#419dcc",
+    "pale": "#e4f9ff",
+    "wallpaper": "blue-archive/wallpaper.jpg",
+    "thumbnail": "blue-archive/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "blue-archive/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  },
+  {
+    "id": "chiikawa",
+    "name": "Chiikawa",
+    "subtitle": "吉伊卡哇 · 软糖草地",
+    "accent": "#b885a1",
+    "pale": "#ffedf5",
+    "wallpaper": "chiikawa/wallpaper.jpg",
+    "thumbnail": "chiikawa/thumbnail.webp",
+    "cursorSize": 48,
+    "iconMatches": {
+      "folder": [
+        "文件",
+        "资源管理",
+        "explorer",
+        "folder"
+      ],
+      "browser": [
+        "chrome",
+        "edge",
+        "firefox",
+        "浏览器"
+      ],
+      "chat": [
+        "微信",
+        "wechat",
+        "qq",
+        "聊天",
+        "腾讯会议"
+      ],
+      "notes": [
+        "notepad",
+        "notion",
+        "obsidian",
+        "记事",
+        "笔记"
+      ],
+      "code": [
+        "codex",
+        "code",
+        "编程",
+        "deepseek"
+      ],
+      "science": [
+        "comsol",
+        "vasp",
+        "origin",
+        "matlab",
+        "科研",
+        "计算"
+      ],
+      "books": [
+        "zotero",
+        "calibre",
+        "文献",
+        "论文"
+      ],
+      "music": [
+        "音乐",
+        "music",
+        "spotify"
+      ],
+      "cloud": [
+        "网盘",
+        "cloud",
+        "onedrive"
+      ],
+      "games": [
+        "steam",
+        "游戏",
+        "原神",
+        "鸣潮",
+        "战双",
+        "绝区",
+        "星穹"
+      ],
+      "office": [
+        "word",
+        "excel",
+        "powerpoint",
+        "wps"
+      ],
+      "tools": [
+        "工具",
+        "everything",
+        "bandizip",
+        "geek"
+      ]
+    },
+    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "animatedWallpaper": "chiikawa/wallpaper-motion.mp4",
+    "motionLabel": "缓慢运镜 · 柔光漂浮",
+    "motionDuration": 12
+  }
+]

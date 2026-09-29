@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "sourceVersion": "0.3.1",
+  "targetVersion": "0.4.0",
+  "realInstallerBytes": 167337062,
+  "sha256": "d40e3a281930cea430ece9d81b58328f2dc6fd7b34ae9320ed1f48ef539a2c32",
+  "restartPersistence": true,
+  "nativeMetadataAndUnicodeCommand": "passed",
+  "installerLaunched": false
+}

@@ -24,7 +24,7 @@
   } as WallpaperInstanceSettings;
 
   export function setOptions(next: ParallaxSettings) { settings = next; }
-  export function setPaused(next: boolean) { paused = next; }
+  export async function setPaused(next: boolean) { paused = next; await tick(); }
   export function setPointer(x: number, y: number, bounds: Rect) { pointer = [x, y]; sourceBounds = bounds; }
   export async function setMedia(nextKind: "image" | "video", nextSource: string) {
     kind = nextKind; source = nextSource; paused = false;
@@ -36,6 +36,6 @@
   {#if kind === "video"}
     <VideoWallpaper {definition} {config} {paused} muted sourceOverride={source} onLoad={onMediaLoad} onError={onMediaError} />
   {:else}
-    <ImageWallpaper {definition} {config} sourceOverride={source} onLoad={onMediaLoad} onError={onMediaError} />
+    <ImageWallpaper {definition} {config} {paused} sourceOverride={source} onLoad={onMediaLoad} onError={onMediaError} />
   {/if}
 </ParallaxLayer>

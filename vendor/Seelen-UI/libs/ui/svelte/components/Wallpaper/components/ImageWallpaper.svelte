@@ -3,9 +3,21 @@
   import type { DefinedWallProps } from "../types";
   import { getWallpaperStyles } from "../appearance.ts";
 
-  let { definition, config, onLoad, onError, sourceOverride }: DefinedWallProps = $props();
+  let { definition, config, onLoad, onError, sourceOverride, paused = false }: DefinedWallProps = $props();
+  let element = $state<HTMLImageElement>();
+  let still = $state<HTMLCanvasElement>();
+  let frozen = $state(false);
 
   const imageSrc = $derived(sourceOverride ?? convertFileSrc(definition.metadata.path + "\\" + definition.filename!));
+
+  function freezeFrame() {
+    if (!paused || !element?.complete || !element.naturalWidth || !still) { frozen = false; return; }
+    still.width = element.naturalWidth; still.height = element.naturalHeight;
+    const context = still.getContext('2d');
+    if (context) { context.drawImage(element, 0, 0); frozen = true; }
+  }
+  $effect(() => { imageSrc; paused; freezeFrame(); });
+  function loaded() { freezeFrame(); onLoad?.(); }
 
   function handleError(e: Event) {
     onError?.();
@@ -18,18 +30,20 @@
   }
 </script>
 
-<img
+<div class="image-surface"><img
+  bind:this={element}
   id={definition.id}
   class="wallpaper"
   style={getWallpaperStyles(config)}
+  style:visibility={frozen ? 'hidden' : 'visible'}
   src={imageSrc}
   crossOrigin="anonymous"
-  onload={onLoad}
+  onload={loaded}
   onerror={handleError}
   decoding="async"
   loading="eager"
   alt=""
-/>
+/><canvas bind:this={still} class="wallpaper frozen" style={getWallpaperStyles(config)} hidden={!frozen}></canvas></div>
 
 <style>
   .wallpaper {
@@ -37,4 +51,6 @@
     width: 100%;
     height: 100%;
   }
+  .image-surface { width: 100%; height: 100%; position: relative; }
+  .frozen { position: absolute; inset: 0; }
 </style>
