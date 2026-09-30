@@ -1,0 +1,38 @@
+[
+  {
+    "name": "明日方舟 · ArkPets",
+    "kind": "同人项目 · Windows 桌宠",
+    "url": "https://github.com/isHarryh/Ark-Pets",
+    "note": "安装后在 ArkPets 内下载或导入角色模型，再将桌宠主程序加入这里。不要选择 ArkPets-Setup 安装器。"
+  },
+  {
+    "name": "原神与多主题 · DyberPet",
+    "kind": "通用引擎 / 同人角色 · Windows EXE",
+    "url": "https://github.com/ChaozhongLiu/DyberPet",
+    "note": "旧原神版已合并到新版。先在 DyberPet 内导入角色文件夹，再将它的 EXE 加入桌宠库。"
+  },
+  {
+    "name": "Chiikawa · 三角色桌宠",
+    "kind": "同人项目 · 需自行构建",
+    "url": "https://github.com/frobel0520/chiikawa-desktop-pets",
+    "note": "提供 Windows Electron 源码和便携 EXE 构建步骤；构建完成后可导入 EXE。未核实可直接下载的成品。"
+  },
+  {
+    "name": "星穹铁道 · 饮月君",
+    "kind": "同人项目 · 脚本启动",
+    "url": "https://github.com/Morgan0425/hsr-yinyuejun-desktop-pet",
+    "note": "作者提供 Windows ZIP，以 BAT 启动。请按原页运行；本版桌宠库只登记 EXE，不能直接导入这个 BAT。"
+  },
+  {
+    "name": "绝区零风格 · 大肥鱼",
+    "kind": "同人项目 · 脚本启动",
+    "url": "https://github.com/xiyan1314/daifeiyu-desktop-pet",
+    "note": "Windows 绿色包以 VBS 启动，在原程序内可导入图片、GIF 和视频。本版不能直接登记 VBS。"
+  },
+  {
+    "name": "鸣潮 · 弗洛洛",
+    "kind": "同人源码 · 非官方桌宠",
+    "url": "https://github.com/KennyXiang/PhrolovaDeskPet",
+    "note": "提供 Python / PyQt5 源码运行方式，需准备环境。此入口不是鸣潮官方桌宠下载页。"
+  }
+]

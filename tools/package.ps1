@@ -32,6 +32,9 @@ try {
     Copy-Item -LiteralPath 'README.md' -Destination $studioRelease -Force
     New-Item -ItemType Directory -Path (Join-Path $studioRelease 'docs') -Force | Out-Null
     Copy-Item -LiteralPath 'docs\theme-pack-format.md' -Destination (Join-Path $studioRelease 'docs\theme-pack-format.md') -Force
+    Copy-Item -LiteralPath 'docs\development\0.6.0-changes.md' -Destination (Join-Path $studioRelease 'docs\0.6.0-changes.md') -Force
+    New-Item -ItemType Directory -Path (Join-Path $studioRelease 'docs\research') -Force | Out-Null
+    Copy-Item -LiteralPath 'docs\research\20261001' -Destination (Join-Path $studioRelease 'docs\research') -Recurse -Force
     $studioRuntimeOutput = Join-Path $studioRelease 'runtimes'
     New-Item -ItemType Directory -Path $studioRuntimeOutput -Force | Out-Null
     if (-not (Test-Path -LiteralPath '.cache\runtimes\seelen-engine\seelen-ui.exe') -or -not (Test-Path -LiteralPath '.cache\runtimes\windhawk\Compiler\bin\clang++.exe')) { throw 'Pinned upstream runtime payloads are missing; prepare-runtimes must complete before packaging.' }

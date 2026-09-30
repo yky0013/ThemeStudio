@@ -60,18 +60,26 @@ class PackageTests(unittest.TestCase):
         self.assertEqual(item['icons'], {})
         self.assertTrue(Path(reopened.templates.media(item['id'])['wallpaper']).is_file())
 
-    def test_export_complete_builtin_imports_all_accessories_and_motion(self):
+    def test_export_complete_builtin_imports_all_accessories_without_bundled_motion(self):
         exported = self.bridge.templates.export('wuthering-waves')
         imported = self.library.import_archive(exported['path'])
         item = self.bridge.templates.theme(imported['id'])
         self.assertEqual(len(item['cursors']), 17)
         self.assertEqual(len(item['icons']), 12)
         self.assertEqual(self.bridge.templates.asset(item, item['wallpaper']).read_bytes(), self.wallpaper.read_bytes())
-        self.assertTrue(Path(self.bridge.templates.media(imported['id'])['animatedWallpaper']).is_file())
+        self.assertIsNone(self.bridge.templates.media(imported['id'])['animatedWallpaper'])
         roundtrip = self.bridge.templates.export(imported['id'])
         with zipfile.ZipFile(roundtrip['path']) as archive:
             manifest = json.loads(archive.read('theme.json'))
         self.assertEqual(manifest['id'], 'wuthering-waves')
+
+    def test_user_imported_animation_survives_export_and_reimport(self):
+        video = (ROOT/'vendor/Seelen-UI/src/ui/react/settings/public/fixtures/parallax-motion.mp4').read_bytes()
+        imported = self.library.import_archive(self.archive({'animatedWallpaper':'motion.mp4'}, {'motion.mp4':video}))
+        exported = self.bridge.templates.export(imported['id'])
+        with zipfile.ZipFile(exported['path']) as archive:
+            self.assertEqual(archive.read('motion.mp4'), video)
+            self.assertEqual(json.loads(archive.read('theme.json'))['animatedWallpaper'], 'motion.mp4')
 
     def test_new_version_replaces_library_card_and_keeps_previous_assets(self):
         first = self.library.import_archive(self.archive())

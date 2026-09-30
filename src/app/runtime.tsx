@@ -39,7 +39,7 @@ export function RuntimePanel({ client, recipe, native, onState }:
       setProgress(rt(`progress.${detail.stage}`, { name: detail.name }));
     };
     document.addEventListener("theme-studio-runtime-progress", report);
-    const changed=(event:Event)=>{const next=(event as CustomEvent<RuntimeState>).detail;if(next){setState(next);onState(next);}};
+    const changed=(event:Event)=>{const next=(event as CustomEvent<RuntimeState>).detail;if(next){setState(next);onState(next);}else if(!running.current)void refresh().catch(failure=>setError(String(failure)));};
     document.addEventListener('theme-studio-runtime-state',changed);
     return () => { alive.current = false; clearInterval(timer); document.removeEventListener("theme-studio-runtime-progress", report); document.removeEventListener('theme-studio-runtime-state',changed); };
   }, [client, native]);

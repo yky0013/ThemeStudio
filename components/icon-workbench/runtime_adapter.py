@@ -431,7 +431,7 @@ class RuntimeAdapter:
             seen.add(identifier); result.append((clean, mod, source))
         return result
 
-    def windhawk_apply(self, selections):
+    def windhawk_apply(self, selections, preserve_others=False):
         validated = self._validate_mods(selections)
         if not (self.windhawk / 'Compiler' / 'bin' / 'clang++.exe').is_file():
             raise RuntimeError('Windhawk 离线开发工具缺失，请重新安装完整版本。')
@@ -440,7 +440,8 @@ class RuntimeAdapter:
         managed = self._managed(); managed.setdefault('mods', {})
         selected = {'local@' + item['id'] for item, _, _ in validated}
         for installed in current:
-            if installed['id'] in managed['mods'] and installed['id'] not in selected and installed.get('enabled'):
+            if (not preserve_others and installed['id'] != 'local@windows-11-file-explorer-styler'
+                    and installed['id'] in managed['mods'] and installed['id'] not in selected and installed.get('enabled')):
                 self._wh('mod', 'disable', installed['id'])
         for item, mod, source in validated:
             storage_id = 'local@' + item['id']

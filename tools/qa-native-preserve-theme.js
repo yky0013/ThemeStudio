@@ -14,13 +14,19 @@
   try {
     await delay(1800);
     const startup = await call('app.qa-trace');
-    const allowed = new Set(['state', 'runtime.state', 'templates.list', 'wallpaper.status', 'updates.state', 'app.ready', 'app.qa-trace']);
+    const allowed = new Set(['state', 'runtime.state', 'templates.list', 'wallpaper.status', 'updates.state', 'app.ready', 'app.qa-trace', 'explorer.state', 'pets.state']);
     const writes = startup.filter(operation => !allowed.has(operation));
     if (writes.length) throw new Error('Startup sent modifying operations: ' + writes.join(', '));
     result.checks.push({startupReadOnly: true, operations: startup});
     const accessories = [...document.querySelectorAll('#workbench-templates input[type=checkbox]')];
     if (accessories.length !== 2 || accessories.some(input => input.checked)) throw new Error('Accessories are not opt-in');
     result.checks.push({cursorsAndIconsUnchecked: true});
+    const explorer = await call('explorer.state');
+    const pets = await call('pets.state');
+    if (!document.getElementById('workbench-explorer') || !document.getElementById('workbench-pets')) throw new Error('New panels missing');
+    if (!explorer.choices.length || pets.pets.length) throw new Error('Unexpected fresh state');
+    if (![...document.querySelectorAll('#workbench-templates button')].some(button=>button.textContent.includes('导入图片'))) throw new Error('Direct media import missing');
+    result.checks.push({explorerPresets:explorer.choices.length, freshPetsEmpty:true, directMediaImport:true});
     const packs = await call('templates.list');
     if (packs.packs.length < 10) throw new Error('Bundled packs missing');
     const state = await call('state');
@@ -28,7 +34,8 @@
     if (factory && ![...document.querySelectorAll('#workbench-cursors button')].some(button => button.textContent.includes('恢复本机天选姬'))) throw new Error('Factory restore button is missing');
     result.checks.push({factoryRestoreVisible: !!factory});
     for (const pack of packs.packs.filter(pack => pack.source === 'builtin')) {
-      if (pack.version !== '2.0.0') throw new Error('Old accessories pack: ' + pack.id);
+      if (pack.animatedWallpaper) throw new Error('Bundled motion remains');
+      if (pack.version !== '2.1.0') throw new Error('Old accessories pack: ' + pack.id);
       const assets = ['accessories-preview.png', 'cursor-preview.png', ...Object.keys(pack.icons).map(key => 'icons/' + key + '.ico'), ...Object.keys(pack.cursors).map(key => 'cursor-previews/' + key + '.png')];
       await Promise.all(assets.map(asset => new Promise((resolve, reject) => { const image = new Image(); image.onload = resolve; image.onerror = () => reject(new Error('Asset preview failed: ' + pack.id + '/' + asset)); image.src = '/templates/' + pack.id + '/' + asset; })));
       result.checks.push({pack: pack.id, renderedAssets: assets.length});

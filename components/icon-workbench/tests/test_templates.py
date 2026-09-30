@@ -27,7 +27,8 @@ class TemplateTests(unittest.TestCase):
         catalog=self.adapter.catalog();self.assertEqual(len(catalog),10);self.assertEqual(len({x['id'] for x in catalog}),10)
         for item in catalog:
             folder=self.adapter.root/item['id']
-            self.assertTrue((self.adapter.root/item['animatedWallpaper']).is_file())
+            self.assertFalse(item.get('animatedWallpaper'))
+            self.assertFalse((folder/'wallpaper-motion.mp4').exists())
             with Image.open(folder/'wallpaper.jpg') as image:self.assertGreater(image.width,1500);image.verify()
             for role in ROLE_KEYS:
                 path=folder/'cursors'/(role+'.cur');validate_cursor(path)
@@ -65,7 +66,7 @@ class TemplateTests(unittest.TestCase):
                 self.adapter.restore()
 
     def test_animated_template_keeps_poster_and_restore_record(self):
-        video=ROOT/'assets/templates/wuthering-waves/wallpaper-motion.mp4'
+        video=ROOT/'vendor/Seelen-UI/src/ui/react/settings/public/fixtures/parallax-motion.mp4'
         motion_id=hashlib.sha256(video.read_bytes()).hexdigest()+'.mp4'
         shutil.copyfile(video,self.wallpapers/motion_id)
         applied=self.adapter.apply('wuthering-waves',self.media_id,False,False,'animated',motion_id)

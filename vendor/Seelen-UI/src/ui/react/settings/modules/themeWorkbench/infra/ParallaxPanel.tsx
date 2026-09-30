@@ -110,6 +110,11 @@ export function ParallaxPanel({ settings, onChange, desktopClient, desktopNative
     if (!desktopNative || !desktopClient) { fileInput.current?.click(); return; }
     void runDesktop(async () => { const resource = await desktopClient.call<WallpaperMedia | null>("wallpaper.pick"); if (!resource) return; setMedia(resource); await changeMedia(resource.kind, resource.url, resource.name); });
   };
+  useEffect(() => {
+    const importRequested = () => chooseLocal();
+    document.addEventListener('theme-studio-import-wallpaper', importRequested);
+    return () => document.removeEventListener('theme-studio-import-wallpaper', importRequested);
+  }, [desktopClient, desktopNative]);
 
   return <section id="workbench-parallax" className={styles.panel}>
     <div className={styles.heading}><div><h2>{p("title")}</h2><p>{p("description")}</p></div>

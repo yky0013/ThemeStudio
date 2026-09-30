@@ -2,6 +2,14 @@
 
 一个独立的 Windows 主题项目。主设置界面在 Seelen UI 的结构和组件上开发，模组区使用 Windhawk 的卡片、选择和标题组件，加入真实 Windows 桌面快捷方式与 17 状态鼠标设置。所有日常设置在同一页，通过左侧导航定位。
 
+## 0.6.0 资源管理器、桌宠与直接导入
+
+- 新增独立资源管理器入口：16 个本地源码预设，应用前记录设置，支持恢复；不会停用其他已启用模组。本版入口限定 Windows 11 build 22621+，实际效果依 Windows 控件树而异，不承诺角色壁纸铺满文件列表。
+- 新增桌宠库：导入已解压或已安装桌宠的 EXE 主程序，保存路径和文件校验值；用户点击后通过 Explorer 启动，不自动运行。保留整个原桌宠文件夹，模型包需由对应引擎导入。
+- 内置十套主题改为静态壁纸，移除十段配套 MP4；用户仍可直接导入 GIF、动态 WebP、图片和视频，或导入带动态版的主题数据包。套装素材版本升为 2.1.0。
+- 0.5.0 原文件完整保留；Git 标签 v0.5.0 对应从已验证增量源码恢复的累计改动。新版本另存为 0.6.0，不自动安装或启动。
+- 桌宠来源与外观范围调研：`docs/research/20261001/`；验证范围与限制：`docs/development/0.6.0-changes.md`。
+
 ## 0.5.0 角色套装与原厂指针
 
 - 按原有 10 套主题重制 120 款角色图标和 170 个鼠标状态；每个指针包含 32/48/64/96 像素版本及对应点击位置。
@@ -11,13 +19,13 @@
 
 ## 启动
 
-在其他电脑上运行 `installers/ThemeStudio-0.5.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.5.0/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
+在其他电脑上运行 `installers/ThemeStudio-0.6.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.6.0/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
 
 卸载会保留已应用的外观、素材和备份；要恢复原外观请先在程序内恢复。
 
 新项目数据保存在 `%LOCALAPPDATA%/ThemeStudio`；原工作台数据保持原位。关闭主窗口会关闭图标/指针后端；已经启用的桌面壁纸、Seelen 和 Windhawk 引擎继续运行，可在设置页停用。
 
-当前版本：0.4.1。支持导入完整主题数据包和应用更新；图文教程位于 `docs/guide/index.html`，离线随程序安装。该版本的实现与验证记录见 `docs/development/0.4.0-changes.md` 和 `docs/development/0.4.0-verification.json`。
+当前版本：0.6.0。支持导入完整主题数据包和应用更新；图文教程位于 `docs/guide/index.html`，离线随程序安装。该版本的实现与验证记录见 `docs/development/0.4.0-changes.md` 和 `docs/development/0.4.0-verification.json`。
 
 ## 0.4.1 修复
 
@@ -36,7 +44,7 @@
 
 ## 0.3.1 新增
 
-- 10 套默认主题均内置 1080p、12 秒静音循环 MP4，可选择静态或动态版本，预览支持播放/暂停。动态版由原插画生成缓慢运镜和柔光效果，并非角色动作视频。
+- 历史 0.3.1–0.5.0 的 10 套默认主题内置 1080p、12 秒静音循环 MP4（0.6.0 已移除这些配套视频），可选择静态或动态版本，预览支持播放/暂停。动态版由原插画生成缓慢运镜和柔光效果，并非角色动作视频。
 - Windows 原生任务栏与 Mac 风格（Seelen 悬浮 Dock + 顶部工具栏）可独立切换；记住用户选择，应用其他组合时继续遵守。
 - GIF、动态 WebP、APNG 在关闭视差时仍保持动画，支持暂停和继续。
 - 动态模板与静态模板之间可恢复，播放失败时回滚模板；变更记录保存在本机。
@@ -97,4 +105,4 @@ npm.cmd run build
 
 源码及安装包发布于 [yky0013/ThemeStudio](https://github.com/yky0013/ThemeStudio)。[v0.1.1 发布页](https://github.com/yky0013/ThemeStudio/releases/tag/v0.1.1) 保存与安装包匹配的源码、旧工作区源码和 Git 元数据、清理前项目数据，以及 SHA-256 校验记录。旧开发入口、运行环境和本机数据按用户要求清理，清理证据见 `docs/handoff/`。
 
-安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；0.3.0 精简安装包的官方引导安装器来源及哈希在 `config/webview2-bootstrapper.json`，运行 `tools/fetch-bootstrapper.ps1` 准备。`config/webview2-runtime.json` 保留历史完整离线运行库信息。分发时同时提供匹配源码压缩包，保留许可证及作者声明。本仓库保存 0.4.0 完整源码、素材、测试和验证记录；安装包仍为本地交付，尚未上传 GitHub Releases。
+安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；0.3.0 精简安装包的官方引导安装器来源及哈希在 `config/webview2-bootstrapper.json`，运行 `tools/fetch-bootstrapper.ps1` 准备。`config/webview2-runtime.json` 保留历史完整离线运行库信息。分发时同时提供匹配源码压缩包，保留许可证及作者声明。本仓库保存 0.6.0 完整源码、素材、测试和验证记录；安装包仍为本地交付，尚未上传 GitHub Releases。

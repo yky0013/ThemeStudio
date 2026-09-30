@@ -1,0 +1,76 @@
+{
+  "version": "0.6.0",
+  "sessionDate": "2026-10-01",
+  "typeScriptCheck": "passed",
+  "frontendTests": 23,
+  "backendTests": 87,
+  "nativeStartupPreview": {
+    "passed": true,
+    "diagnosticHost": "same sources; asInvoker manifest for read-only QA",
+    "checks": 15,
+    "appearanceRegistryAreasUnchanged": 10,
+    "appearanceFilesUnchanged": 22,
+    "packPreviewAssets": 310
+  },
+  "newPanels": {
+    "explorer": {
+      "passed": true,
+      "section": "explorer",
+      "overflows": [],
+      "buttons": [
+        {
+          "text": "应用到资源管理器",
+          "disabled": false
+        },
+        {
+          "text": "恢复上一次外观",
+          "disabled": true
+        },
+        {
+          "text": "刷新状态",
+          "disabled": false
+        }
+      ]
+    },
+    "pets": {
+      "passed": true,
+      "section": "pets",
+      "overflows": [],
+      "buttons": [
+        {
+          "text": "导入桌宠 EXE",
+          "disabled": false
+        },
+        {
+          "text": "刷新状态",
+          "disabled": false
+        }
+      ]
+    }
+  },
+  "explorerCLI": {
+    "compiledLocally": true,
+    "presets": 16,
+    "allPresetRoundtrips": true,
+    "restored": true,
+    "engineStarted": false,
+    "liveVisualEffectVerified": false
+  },
+  "primaryExecutableRequiresAdministrator": true,
+  "removedBundledMotionFiles": 10,
+  "removedBundledMotionBytes": 27672629,
+  "preserved050FilesSHA256Verified": 3,
+  "installer": {
+    "file": "ThemeStudio-0.6.0-Windows-x64-Setup.exe",
+    "bytes": 164356564,
+    "sha256": "66acb36043195f151fe9fc96ca1ed139e639f9891455bc500a9c57fad111d96b",
+    "built": true,
+    "installedThisRun": false
+  },
+  "limitations": [
+    "Explorer visual effect on live user windows was not activated or validated.",
+    "Third-party desktop-pet binaries were not executed; their own runtime remains required.",
+    "No installer install/uninstall lifecycle was performed during this run."
+  ],
+  "officialWuwaDesktopPet": "Product-name lead Wuwa Tappo found; first-party post body and download availability remain unverified."
+}

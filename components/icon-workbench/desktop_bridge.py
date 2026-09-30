@@ -25,6 +25,8 @@ from native_icons import ico_image, shortcut_image, cursor_image
 from runtime_adapter import RuntimeAdapter
 from template_adapter import TemplateAdapter, StaticWallpaper
 from app_updater import AppUpdater
+from explorer_adapter import ExplorerAdapter
+from pet_adapter import PetAdapter
 
 
 def identity(value):
@@ -48,6 +50,8 @@ class DesktopBridge:
         self.runtime = RuntimeAdapter(self.store.directory)
         self.templates = TemplateAdapter(self)
         self.updater = AppUpdater(self.store.directory)
+        self.explorer = ExplorerAdapter(self.runtime)
+        self.pets = PetAdapter(self.store.directory)
 
     def rows(self):
         extras = self.store.read_settings().get('extra_paths', [])
@@ -147,6 +151,21 @@ class DesktopBridge:
         return values
 
     def dispatch(self, operation, payload):
+        if operation == 'explorer.state':
+            return self.explorer.state()
+        if operation == 'pets.state':
+            return self.pets.state()
+        if operation in {'explorer.apply', 'explorer.restore', 'pets.import', 'pets.launch', 'pets.remove'}:
+            with self.store.lock():
+                if operation == 'explorer.apply':
+                    return self.explorer.apply(payload.get('theme'))
+                if operation == 'explorer.restore':
+                    return self.explorer.restore()
+                if operation == 'pets.import':
+                    return self.pets.import_executable(payload.get('path'))
+                if operation == 'pets.launch':
+                    return self.pets.launch(payload.get('id'))
+                return self.pets.remove(payload.get('id'))
         if operation.startswith('updates.'):
             return self.updater.dispatch(operation, payload)
         if operation == 'templates.list':

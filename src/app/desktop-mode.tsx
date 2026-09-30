@@ -36,7 +36,7 @@ export function DesktopModePicker({client,native}:{client:DesktopClient;native:b
     finally{running.current=false;setBusy(false);}
   };
   return <section id="workbench-desktop-mode" className={`${cs.library} ${cs.modeSection}`}>
-    <div className={cs.heading}><div><p className={cs.eyebrow}>YOUR DESKTOP, YOUR WAY</p><h2>{en?'Choose your desktop style':'先选一种桌面风格'}</h2><p>{en?'Pair either layout with any static or animated wallpaper.':'两种桌面都能搭配下面 10 套静态或动态壁纸。'}</p></div></div>
+    <div className={cs.heading}><div><p className={cs.eyebrow}>YOUR DESKTOP, YOUR WAY</p><h2>{en?'Choose your desktop style':'先选一种桌面风格'}</h2><p>{en?'Pair either layout with any static or animated wallpaper.':'两种桌面都能搭配内置静态套装，或导入自己的动态壁纸。'}</p></div></div>
     <div className={cs.modeGrid} role="group" aria-label={en?'Desktop style':'桌面风格'}>{(['windows','mac'] as const).map(mode=><button key={mode} className={cs.modeCard} aria-pressed={selected===mode} disabled={busy} onClick={()=>{touched.current=true;setSelected(mode);setMessage('');}}>
       <div className={`${cs.miniDesktop} ${mode==='mac'?cs.macDesktop:''}`} aria-hidden="true">{mode==='mac'&&<div className={cs.miniToolbar}><span>●　Finder　文件　编辑</span><span>◉　◔</span></div>}<div className={cs.miniWindow}><i/><i/><i/><div/><div/></div><div className={cs.miniTaskbar}>{['#6b9bdf','#86b6a7','#c19ed1','#ddb580','#7f97c9'].map(color=><i style={{background:color}}/>)}</div></div>
       <div className={cs.modeLabel}><strong>{mode==='mac'?(en?'Mac style':'Mac 风格'):'Windows'}</strong><span>{state?.desktopMode===mode?(en?'Active':'当前模式'):selected===mode?(en?'Selected':'已选择'):''}</span></div>
