@@ -29,7 +29,7 @@
     await wait(()=>document.querySelectorAll('#workbench-templates article').length===12);
     const updates=document.getElementById('workbench-updates');
     const state=await call('updates.state');
-    if(state.currentVersion!=='0.4.0')throw new Error('Packaged backend version mismatch');
+    if(state.currentVersion!=='0.4.1')throw new Error('Packaged backend version mismatch');
     updates.scrollIntoView();
     const check=[...updates.querySelectorAll('button')].find(button=>button.textContent==='检查更新');
     const offline=[...updates.querySelectorAll('button')].find(button=>button.textContent==='选择离线更新包');

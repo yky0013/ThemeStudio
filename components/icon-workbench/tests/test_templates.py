@@ -40,6 +40,30 @@ class TemplateTests(unittest.TestCase):
             with self.assertRaises(ValueError):self.adapter.plan(value)
         self.mock_set.assert_not_called()
 
+    def test_default_template_application_preserves_original_cursors_and_shortcuts(self):
+        before = self.shortcut.read_bytes()
+        with patch.object(self.bridge.cursors, 'apply') as cursors:
+            result = self.bridge.dispatch('templates.apply', {'id': 'wuthering-waves', 'mediaId': self.media_id})
+            self.assertEqual(result['iconsApplied'], 0)
+            self.assertEqual(result['cursorsApplied'], 0)
+            cursors.assert_not_called()
+        self.assertEqual(self.shortcut.read_bytes(), before)
+        self.assertEqual(Path(self.current[0]).name, self.media_id)
+        self.adapter.restore()
+        self.assertEqual(self.shortcut.read_bytes(), before)
+        self.assertEqual(self.current[0], '')
+
+    def test_only_explicit_boolean_true_can_opt_into_accessories(self):
+        before = self.shortcut.read_bytes()
+        for choice in (None, False, 'false', 'true', 1):
+            with self.subTest(choice=choice), patch.object(self.bridge.cursors, 'apply') as cursors:
+                result = self.bridge.dispatch('templates.apply', {'id': 'wuthering-waves', 'mediaId': self.media_id, 'icons': choice, 'cursors': choice})
+                self.assertEqual(result['iconsApplied'], 0)
+                self.assertEqual(result['cursorsApplied'], 0)
+                self.assertEqual(self.shortcut.read_bytes(), before)
+                cursors.assert_not_called()
+                self.adapter.restore()
+
     def test_animated_template_keeps_poster_and_restore_record(self):
         video=ROOT/'assets/templates/wuthering-waves/wallpaper-motion.mp4'
         motion_id=hashlib.sha256(video.read_bytes()).hexdigest()+'.mp4'

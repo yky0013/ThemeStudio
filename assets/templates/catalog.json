@@ -7,7 +7,7 @@
     "pale": "#d9f3ed",
     "wallpaper": "wuthering-waves/wallpaper.jpg",
     "thumbnail": "wuthering-waves/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -87,10 +87,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "wuthering-waves/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "punishing-gray-raven",
@@ -100,7 +102,7 @@
     "pale": "#ffd5db",
     "wallpaper": "punishing-gray-raven/wallpaper.jpg",
     "thumbnail": "punishing-gray-raven/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -180,10 +182,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "punishing-gray-raven/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "genshin-impact",
@@ -193,7 +197,7 @@
     "pale": "#e4f8ec",
     "wallpaper": "genshin-impact/wallpaper.jpg",
     "thumbnail": "genshin-impact/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -273,10 +277,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "genshin-impact/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "identity-v",
@@ -286,7 +292,7 @@
     "pale": "#efe3fa",
     "wallpaper": "identity-v/wallpaper.jpg",
     "thumbnail": "identity-v/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -366,10 +372,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "identity-v/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "milk-mocha-dogs",
@@ -379,7 +387,7 @@
     "pale": "#fff1d9",
     "wallpaper": "milk-mocha-dogs/wallpaper.jpg",
     "thumbnail": "milk-mocha-dogs/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -459,10 +467,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "milk-mocha-dogs/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "honkai-star-rail",
@@ -472,7 +482,7 @@
     "pale": "#f3ddff",
     "wallpaper": "honkai-star-rail/wallpaper.jpg",
     "thumbnail": "honkai-star-rail/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -552,10 +562,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "honkai-star-rail/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "zenless-zone-zero",
@@ -565,7 +577,7 @@
     "pale": "#fff0d5",
     "wallpaper": "zenless-zone-zero/wallpaper.jpg",
     "thumbnail": "zenless-zone-zero/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -645,10 +657,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "zenless-zone-zero/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "arknights",
@@ -658,7 +672,7 @@
     "pale": "#d3f3fa",
     "wallpaper": "arknights/wallpaper.jpg",
     "thumbnail": "arknights/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -738,10 +752,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "arknights/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "blue-archive",
@@ -751,7 +767,7 @@
     "pale": "#e4f9ff",
     "wallpaper": "blue-archive/wallpaper.jpg",
     "thumbnail": "blue-archive/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -831,10 +847,12 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "blue-archive/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   },
   {
     "id": "chiikawa",
@@ -844,7 +862,7 @@
     "pale": "#ffedf5",
     "wallpaper": "chiikawa/wallpaper.jpg",
     "thumbnail": "chiikawa/thumbnail.webp",
-    "cursorSize": 48,
+    "cursorSize": 64,
     "iconMatches": {
       "folder": [
         "文件",
@@ -924,9 +942,11 @@
         "geek"
       ]
     },
-    "artwork": "AI 生成同人插画；作品及角色名称属于各自权利人",
+    "artwork": "AI 生成同人插画与角色图标；指针布局参考本机原厂角色加功能符号；作品及角色名称属于各自权利人",
     "animatedWallpaper": "chiikawa/wallpaper-motion.mp4",
     "motionLabel": "缓慢运镜 · 柔光漂浮",
-    "motionDuration": 12
+    "motionDuration": 12,
+    "assetStyle": "character-functional-v2",
+    "version": "2.0.0"
   }
 ]

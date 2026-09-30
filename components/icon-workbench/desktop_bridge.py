@@ -94,7 +94,7 @@ class DesktopBridge:
         current = snapshot()
         version = identity(json.dumps(current, sort_keys=True))
         self.cursor_versions = {version: current}
-        cursor_schemes = [self.cursor_view(s, 'current' if i == 0 else 'default' if i == 1 else 'saved')
+        cursor_schemes = [self.cursor_view(s, 'current' if i == 0 else 'default' if i == 1 else s.get('kind', 'saved'))
                           for i, s in enumerate(schemes)]
         resources = {}
         for key, value in self.resources.items():
@@ -162,7 +162,7 @@ class DesktopBridge:
             item, matches = self.templates.plan(payload.get('id'))
             return {'id':item['id'],'matches':[row['name'] for row in matches]}
         if operation == 'templates.apply':
-            return self.templates.apply(payload.get('id'), payload.get('mediaId'), payload.get('icons', True), payload.get('cursors', True), payload.get('wallpaperMode', 'static'), payload.get('motionMediaId'))
+            return self.templates.apply(payload.get('id'), payload.get('mediaId'), payload.get('icons') is True, payload.get('cursors') is True, payload.get('wallpaperMode', 'static'), payload.get('motionMediaId'))
         if operation == 'templates.current':
             return self.templates.current()
         if operation == 'templates.restore':
@@ -280,6 +280,12 @@ class DesktopBridge:
             return self.cursor_view(scheme)
         if operation == 'cursors.restore':
             self.cursors.restore()
+            return {'ok': True}
+        if operation == 'cursors.factory':
+            expected = self.cursor_versions.get(payload.get('version'))
+            if expected is None:
+                raise ValueError('鼠标设置已更新，请重新读取后再恢复。')
+            self.cursors.restore_factory(expected)
             return {'ok': True}
         raise ValueError('不支持的桌面操作。')
 

@@ -177,6 +177,8 @@ theme_workbench:
     cursors_applied: 鼠标指针已应用到 Windows，已保存恢复记录。
     restore_cursors: 恢复上次鼠标设置
     cursors_restored: 已恢复上次应用前的鼠标设置。
+    restore_factory: 恢复本机天选姬指针
+    factory_restored: 已恢复本机天选姬原厂指针，应用前设置已备份。
     cursor_notice: 选择和导入只修改草稿；点击应用后生效。部分程序使用自己的光标，可能不跟随系统方案。
     roles:
       Arrow: 普通选择

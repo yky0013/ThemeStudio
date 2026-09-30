@@ -1,0 +1,62 @@
+{
+  "version": "0.4.1",
+  "baseCommit": "fba8d9ed3f08aea6f49c6cf7d66277f4fb05da0e",
+  "typescript": "passed",
+  "frontendTests": 23,
+  "backendTests": 65,
+  "nativeStartupAndPreview": {
+    "fresh-verified": {
+      "passed": true,
+      "registryAreas": 10,
+      "relatedFiles": 21,
+      "operationTrace": [
+        "runtime.state",
+        "templates.list",
+        "state",
+        "wallpaper.status",
+        "updates.state",
+        "app.ready",
+        "app.qa-trace",
+        "templates.list",
+        "templates.preview",
+        "templates.preview",
+        "runtime.state",
+        "state",
+        "wallpaper.status",
+        "app.qa-trace",
+        "app.qa-complete"
+      ]
+    },
+    "legacy": {
+      "passed": true,
+      "registryAreas": 10,
+      "relatedFiles": 21,
+      "operationTrace": [
+        "runtime.state",
+        "templates.list",
+        "state",
+        "wallpaper.status",
+        "updates.state",
+        "app.ready",
+        "app.qa-trace",
+        "templates.list",
+        "templates.preview",
+        "templates.preview",
+        "runtime.state",
+        "state",
+        "wallpaper.status",
+        "app.qa-trace",
+        "app.qa-complete"
+      ]
+    }
+  },
+  "actualInstallation": {
+    "status": "not_run",
+    "reason": "Windows administrator request was canceled; no isolated installation was started."
+  },
+  "installer": {
+    "bytes": 167433736,
+    "sha256": "d93078497fb30a594c65755682d2f763494788fab4d6c85a49c4cc8de704ba22"
+  },
+  "sourceRecovery": "Installed docs/source-fix-0.4.1.zip contains the 20 modified/new source files and base commit manifest."
+}

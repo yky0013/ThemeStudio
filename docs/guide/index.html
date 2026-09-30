@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>桌面主题工作室 · 图文使用教程</title><link rel="stylesheet" href="guide.css"></head>
 <body>
-<header class="cover"><p class="eyebrow">THEME STUDIO · 0.4.0</p><h1>桌面主题工作室<br><span>图文使用教程</span></h1><p>从安装开始，用自己的图片更换桌面快捷方式图标，配置鼠标指针，并随时恢复。</p><div class="badges"><span>Windows 10 / 11 · 64 位</span><span>离线可读</span><span>无需安装 Python 或 Node.js</span></div></header>
+<header class="cover"><p class="eyebrow">THEME STUDIO · 0.5.0</p><h1>桌面主题工作室<br><span>图文使用教程</span></h1><p>从安装开始，用自己的图片更换桌面快捷方式图标，配置鼠标指针，并随时恢复。</p><div class="badges"><span>Windows 10 / 11 · 64 位</span><span>离线可读</span><span>无需安装 Python 或 Node.js</span></div></header>
 <div class="layout"><nav aria-label="教程目录"><a href="#styles">桌面风格与动态模板</a><a href="#install">01 安装与路径选择</a><a href="#packages">主题数据包与更新</a><a href="#overview">02 认识主界面</a><a href="#icons">03 用图片更换图标</a><a href="#cursors">04 更换鼠标指针</a><a href="#restore">05 恢复原来的外观</a><a href="#wallpaper">06 壁纸与模组的范围</a><a href="#uninstall">07 卸载与重新安装</a><a href="#faq">08 常见问题</a></nav><main>
 <section id="install"><p class="number">01 / INSTALL</p><h2>安装到你选择的位置</h2>
-<p>将 <code>ThemeStudio-0.4.0-Windows-x64-Setup.exe</code> 复制到目标电脑，双击运行。使用 Windows 10（2004 / 19041 或更新版本）或 Windows 11，推荐 Intel / AMD 64 位电脑。安装程序会检查 .NET Framework 4.8；缺少 WebView2 时，使用包内的微软官方引导安装器联网补齐。</p>
+<p>将 <code>ThemeStudio-0.5.0-Windows-x64-Setup.exe</code> 复制到目标电脑，双击运行。使用 Windows 10（2004 / 19041 或更新版本）或 Windows 11，推荐 Intel / AMD 64 位电脑。安装程序会检查 .NET Framework 4.8；缺少 WebView2 时，使用包内的微软官方引导安装器联网补齐。</p>
 <ol class="steps"><li><strong>阅读安装说明。</strong> 点击“下一步”进入安装目录选择。</li><li><strong>选择安装路径。</strong> 可直接使用默认目录，也可点击“浏览”选择，例如 <code>D:\Apps\ThemeStudio</code>。安装与启动都会弹出 Windows 管理员授权窗口，请核对程序名称后选择“是”。</li><li><strong>选择快捷方式。</strong> 可按需要创建桌面快捷方式，开始菜单会包含程序、教程和卸载入口。</li><li><strong>点击“安装”。</strong> 首次补齐运行库时可能需要稍等。完成后可以启动程序或打开本教程。</li></ol>
 <figure><img src="images/install-path.jpg" alt="安装向导的目标位置页面，包含可编辑安装路径和浏览按钮"><figcaption>图 1　路径选择页。“浏览”用于更换安装目录；图中为示例路径。</figcaption></figure>
 <aside>程序目录与素材目录分开保存。修改安装路径不会改变素材和备份的位置：<code>%LOCALAPPDATA%\ThemeStudio</code>。</aside></section>
@@ -16,14 +16,14 @@
 <figure><img src="images/icon-pairs.png" alt="已勾选两个示例快捷方式，右侧显示选择的图片和替换按钮"><figcaption>图 3　勾选目标、选择图片后，即可应用；转换过程完全内置。</figcaption></figure>
 <p>动态图使用第一帧。默认等比保留图片并透明补齐，支持透明 PNG；单文件不超过 32 MB、图片不超过 4000 万像素。素材会复制到本机库，原图片移动或删除后，已应用图标仍能使用。</p>
 <aside>本版修改 <code>.lnk</code> 软件快捷方式和 <code>.url</code> 网页/游戏快捷方式。不修改“此电脑”“回收站”、文件夹或 EXE 内部图标。本版程序启动时会请求管理员授权，用于修改公共桌面项目；失败项会显示实际原因，成功和失败分别记录。</aside></section>
-<section id="cursors"><p class="number">04 / MOUSE POINTERS</p><h2>配置鼠标的 17 种状态</h2>
+<section id="characters"><h2>角色套装与天选姬恢复</h2><p>10 套内置主题已重制角色图标与鼠标指针。打开套装预览，可查看全部 12 款图标和 17 种鼠标状态；角色旁边的功能符号表示点击位置。安装、首次打开及预览保留原有外观。</p><p>在有 ASUS TX 原厂素材的电脑上，鼠标区域显示“恢复本机天选姬指针”。点击后先备份，再恢复本机原厂素材；可以用“恢复上次鼠标设置”撤销。没有原厂文件的电脑不会显示此入口。“Windows 默认”是 Windows 通用方案。</p></section><section id="cursors"><p class="number">04 / MOUSE POINTERS</p><h2>配置鼠标的 17 种状态</h2>
 <ol class="steps"><li><strong>选择方案。</strong> 可使用“当前系统指针”“Windows 默认”或已保存方案。</li><li><strong>替换一个状态。</strong> 点击“普通选择”“文本选择”等状态，再点“选择指针文件”，导入 <code>.cur</code> 或 <code>.ani</code>。</li><li><strong>或导入整套文件夹。</strong> 程序按文件名匹配角色，匹配不到的状态保留原值；应用前逐项查看。</li><li><strong>保存或应用。</strong> 输入方案名后可“保存指针方案”。准备好后点击“应用鼠标指针”，系统才会改变。</li></ol>
 <figure><img src="images/cursors.jpg" alt="鼠标指针区的方案选择、17个角色、大小设置、选择指针文件、应用和恢复按钮"><figcaption>图 4　静态 CUR 和动态 ANI 均可使用；页面显示动画首帧，应用后保留动画和热点。</figcaption></figure>
 <p>部分游戏、绘图软件和网页会使用自己的光标，不一定跟随 Windows 系统方案。</p></section>
 <section id="restore"><p class="number">05 / RESTORE</p><h2>不喜欢新效果，恢复即可</h2><div class="two"><article><h3>恢复图标</h3><p>展开“图标备份与恢复”，找到对应时间和数量，点击“恢复这次替换”。如果之后又替换过同一项目，先恢复较新的批次。</p></article><article><h3>恢复鼠标</h3><p>点击“恢复上次鼠标设置”，返回上一次应用前的方案。程序会核对当前设置，避免覆盖其他软件后来做的修改。</p></article></div>
 <figure><img src="images/icon-restore.jpg" alt="图标替换成功后，备份列表显示时间、数量及恢复这次替换按钮"><figcaption>图 5　应用成功后即可查看恢复记录。</figcaption></figure>
 <p>如果提示“已被其他操作修改”，先核对当前设置再操作。不要直接删除素材库来恢复外观；删除素材只会让 Windows 找不到正在引用的文件。</p></section>
-<section id="wallpaper"><p class="number">06 / FEATURE STATUS</p><h2>了解本版的可用范围</h2><table><thead><tr><th>区域</th><th>0.4.0 当前作用</th></tr></thead><tbody><tr><td>桌面图标</td><td>实际替换、备份和恢复 Windows 快捷方式图标。</td></tr><tr><td>鼠标指针</td><td>实际应用和恢复 17 状态系统鼠标方案。</td></tr><tr><td>壁纸与视差</td><td>选择图片或视频后点击“应用到真实桌面背景”；可暂停、继续和停止恢复。已开启的视差跟随全局鼠标。</td></tr><tr><td>Seelen 外观 / Windhawk 模组</td><td>在“运行组件与启用状态”中启用 Seelen Dock/工具栏或编译启用已选 Windhawk 模组，查看引擎及目标进程载入状态，并可停用。</td></tr></tbody></table>
+<section id="wallpaper"><p class="number">06 / FEATURE STATUS</p><h2>了解本版的可用范围</h2><table><thead><tr><th>区域</th><th>0.5.0 当前作用</th></tr></thead><tbody><tr><td>桌面图标</td><td>实际替换、备份和恢复 Windows 快捷方式图标。</td></tr><tr><td>鼠标指针</td><td>实际应用和恢复 17 状态系统鼠标方案。</td></tr><tr><td>壁纸与视差</td><td>选择图片或视频后点击“应用到真实桌面背景”；可暂停、继续和停止恢复。已开启的视差跟随全局鼠标。</td></tr><tr><td>Seelen 外观 / Windhawk 模组</td><td>在“运行组件与启用状态”中启用 Seelen Dock/工具栏或编译启用已选 Windhawk 模组，查看引擎及目标进程载入状态，并可停用。</td></tr></tbody></table>
 <p>“导出配置”生成主题参数 JSON；要分享完整素材，请在一键主题的预览中使用“导出完整套装”。换电脑时重新选择那台电脑的快捷方式和素材，不要直接拿旧电脑的快捷方式路径应用。任务栏已经选择 Seelen Dock 和工具栏，不会再叠加 Windhawk 任务栏模组。关闭设置窗口后已启用的背景和运行组件继续工作。</p></section>
 <section id="uninstall"><p class="number">07 / UNINSTALL</p><h2>卸载程序，保留素材与备份</h2>
 <ol class="steps"><li><strong>需要恢复原外观时，先恢复。</strong> 在图标与鼠标区域恢复，并在壁纸区域停止恢复、在运行组件区域停用 Dock/工具栏及模组。</li><li><strong>关闭主题工作室。</strong> 等待正在进行的应用或保存结束。</li><li><strong>选择任一卸载入口。</strong> 开始菜单 → 桌面主题工作室 → 卸载；或 Windows 设置 → 应用 → 已安装的应用，找到“桌面主题工作室”后卸载。</li><li><strong>确认卸载。</strong> 程序文件、开始菜单和安装器创建的快捷方式会被移除。</li></ol>
@@ -31,5 +31,5 @@
 <p><code>%LOCALAPPDATA%\ThemeStudio</code> 默认保留；重新安装后可继续使用其中的素材和备份。共享的 Microsoft WebView2 运行库也保留，其他应用可能仍在使用它。卸载程序不会自动撤销已应用的图标或鼠标。</p>
 <aside>本地备份针对当前电脑和账户。请先恢复再自行整理数据目录，不要把另一台电脑的备份覆盖过来。</aside></section>
 <section id="faq"><p class="number">08 / HELP</p><h2>常见问题</h2><dl><dt>其他电脑需要安装 Python、Node.js 或旧工作台吗？</dt><dd>不需要。安装包包含程序和后端。需要受支持的 64 位 Windows、.NET Framework 4.8；WebView2 缺失时由安装包补齐。</dd><dt>选择了图片，为什么桌面还没变？</dt><dd>选择图片只准备素材。请勾选目标并点击“替换已选 N 个图标”。如果 Explorer 尚未刷新，可在桌面按 F5。</dd><dt>找不到想改的图标？</dt><dd>先点“刷新桌面列表”，清除搜索框。本版只列出软件/网页快捷方式，系统特殊图标和普通文件夹不在范围内。</dd><dt>显示“没有写入权限”？</dt><dd>安装和启动程序时请接受 Windows 管理员授权。若仍失败，请核对该快捷方式的特殊文件权限与错误提示，保留备份，不要删除资源库。</dd><dt>导出文件保存在哪里？</dt><dd>页面成功提示会显示完整路径，默认在 <code>%LOCALAPPDATA%\ThemeStudio\exports</code>。</dd><dt>安装后启动失败或运行库安装失败？</dt><dd>保留错误提示和日志。程序启动日志位于 <code>%LOCALAPPDATA%\ThemeStudio\diagnostics</code>。安装日志位于 <code>%TEMP%</code>，文件名以 <code>Setup Log</code> 开头，会记录运行库执行结果；不要删除自己的素材和备份来排查。</dd></dl></section>
-<footer>桌面主题工作室 0.4.0 · 图示来自真实安装向导与示例数据界面。使用 Ctrl+P 可打印本教程或另存为 PDF。</footer>
+<footer>桌面主题工作室 0.5.0 · 图示来自真实安装向导与示例数据界面。使用 Ctrl+P 可打印本教程或另存为 PDF。</footer>
 </main></div></body></html>

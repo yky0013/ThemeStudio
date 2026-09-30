@@ -93,7 +93,8 @@ def cursor_image(path: Path | str, size=96) -> Image.Image:
     user32.LoadImageW.argtypes = [wt.HINSTANCE, wt.LPCWSTR, wt.UINT, ctypes.c_int, ctypes.c_int, wt.UINT]
     user32.LoadImageW.restype = wt.HANDLE
     user32.DestroyCursor.argtypes = [wt.HANDLE]
-    cursor = user32.LoadImageW(None, os.path.expandvars(str(path)), 2, 0, 0, 0x10)
+    # Select the matching embedded frame rather than stretching the 32px default.
+    cursor = user32.LoadImageW(None, os.path.expandvars(str(path)), 2, size, size, 0x10)
     if not cursor:
         return placeholder(size)
     bitmap = dc = previous = None

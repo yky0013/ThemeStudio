@@ -1,0 +1,47 @@
+{
+  "version": "0.5.0",
+  "date": "2026-09-30",
+  "frontendTests": 23,
+  "backendTests": 72,
+  "typeScriptCheck": "passed",
+  "characterPacks": 10,
+  "icons": 120,
+  "cursorFiles": 170,
+  "cursorSizes": [
+    32,
+    48,
+    64,
+    96
+  ],
+  "nativeCursorLoads": 680,
+  "hotspotsVerified": 680,
+  "factoryRestore": {
+    "factoryRestorePassed": true,
+    "exactUndoPassed": true,
+    "oemFilesMatched": 13,
+    "size": 32
+  },
+  "nativeStartupAndPreview": {
+    "passed": true,
+    "checks": 14,
+    "allPackPreviewAssets": 310,
+    "appearanceRegistryAreasUnchanged": 10,
+    "appearanceFilesUnchanged": 22
+  },
+  "review": {
+    "completed": true,
+    "addressed": [
+      "Native previews now load the matching embedded cursor resolution.",
+      "Factory detection requires a TX theme and does not misidentify a generic ASUS theme.",
+      "UTF-16 and UTF-8 OEM theme files are supported.",
+      "Installation and startup keep pointer and icon replacement opt-in."
+    ]
+  },
+  "artwork": {
+    "tool": "built-in image_gen",
+    "prompts": "assets/character-art/*/generation.json",
+    "sourceAtlases": "assets/character-art/*/atlas.png",
+    "oemArtworkRedistributed": false
+  },
+  "scope": "Source, native asset, factory transaction, startup and preview verification. Installer lifecycle is checked separately against the final installer."
+}

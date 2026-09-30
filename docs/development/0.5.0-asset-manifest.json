@@ -1,0 +1,5182 @@
+[
+  {
+    "id": "wuthering-waves",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\wuthering-waves\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "punishing-gray-raven",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\punishing-gray-raven\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "genshin-impact",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\genshin-impact\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "identity-v",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\identity-v\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "milk-mocha-dogs",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\milk-mocha-dogs\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "honkai-star-rail",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\honkai-star-rail\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "zenless-zone-zero",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\zenless-zone-zero\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "arknights",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\arknights\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "blue-archive",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\blue-archive\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "chiikawa",
+    "icons": 12,
+    "cursorRoles": 17,
+    "atlas": "assets\\character-art\\chiikawa\\atlas.png",
+    "cursorEntries": {
+      "Arrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Help": [
+        {
+          "size": 32,
+          "hotspot": [
+            6,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            9,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            12,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            17,
+            4
+          ]
+        }
+      ],
+      "AppStarting": [
+        {
+          "size": 32,
+          "hotspot": [
+            1,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            2,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            4,
+            4
+          ]
+        }
+      ],
+      "Wait": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "Crosshair": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "IBeam": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            9
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            13
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            18
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            23,
+            26
+          ]
+        }
+      ],
+      "NWPen": [
+        {
+          "size": 32,
+          "hotspot": [
+            2,
+            15
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            3,
+            22
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            4,
+            30
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            5,
+            45
+          ]
+        }
+      ],
+      "No": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNS": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeWE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNWSE": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeNESW": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "SizeAll": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            8
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            12
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            16
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            24
+          ]
+        }
+      ],
+      "UpArrow": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            2
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            3
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            4
+          ]
+        }
+      ],
+      "Hand": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            1
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            2
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            2
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            25,
+            4
+          ]
+        }
+      ],
+      "Person": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            4
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            6
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            8
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            12
+          ]
+        }
+      ],
+      "Pin": [
+        {
+          "size": 32,
+          "hotspot": [
+            8,
+            16
+          ]
+        },
+        {
+          "size": 48,
+          "hotspot": [
+            12,
+            23
+          ]
+        },
+        {
+          "size": 64,
+          "hotspot": [
+            16,
+            31
+          ]
+        },
+        {
+          "size": 96,
+          "hotspot": [
+            24,
+            46
+          ]
+        }
+      ]
+    }
+  }
+]

@@ -110,7 +110,7 @@ class TemplateAdapter:
         for original in read_json(self.root / 'catalog.json', []):
             item = dict(original)
             prefix = item['id'] + '/'
-            item.update(source='builtin', version='1.0.0', assetBase='/templates/',
+            item.update(source='builtin', version=item.get('version', '1.0.0'), assetBase='/templates/',
                         cursors={role: prefix + 'cursors/' + role + '.cur' for role in ROLE_KEYS},
                         icons={key: {'file': prefix + 'icons/' + key + '.ico', 'matches': words} for key, words in item['iconMatches'].items()},
                         cursorPreview=prefix + 'cursor-preview.png')
@@ -177,7 +177,7 @@ class TemplateAdapter:
                 return record
         return {}
 
-    def apply(self, ident, media_id, use_icons=True, use_cursors=True, wallpaper_mode='static', motion_media_id=None):
+    def apply(self, ident, media_id, use_icons=False, use_cursors=False, wallpaper_mode='static', motion_media_id=None):
         if wallpaper_mode not in {'static', 'animated'}:
             raise ValueError('壁纸模式无效。')
         if wallpaper_mode == 'animated':
@@ -187,8 +187,8 @@ class TemplateAdapter:
                 raise FileNotFoundError('动态壁纸素材不存在。')
         item, matches = self.plan(ident)
         self.asset(item, item['wallpaper'])
-        use_cursors = bool(use_cursors and item.get('cursors'))
-        use_icons = bool(use_icons and item.get('icons'))
+        use_cursors = use_cursors is True and bool(item.get('cursors'))
+        use_icons = use_icons is True and bool(item.get('icons'))
         # Preflight every cursor and icon before touching the desktop.
         roles = {role: self.bridge.cursors.import_file(self.asset(item, value)) for role, value in item['cursors'].items()} if use_cursors else {}
         icons = {key:self.bridge.store.import_icon(self.asset(item, value['file'])) for key, value in item['icons'].items()} if use_icons else {}

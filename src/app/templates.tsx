@@ -9,8 +9,8 @@ export function TemplateLibrary({client,native}:{client:DesktopClient;native:boo
   const [packs,setPacks]=useState<ThemePack[]>([]);
   const [selected,setSelected]=useState<ThemePack|null>(null);
   const [active,setActive]=useState(localStorage.getItem('theme-studio.template')||'');
-  const [icons,setIcons]=useState(true);
-  const [cursors,setCursors]=useState(true);
+  const [icons,setIcons]=useState(false);
+  const [cursors,setCursors]=useState(false);
   const [wallpaperMode,setWallpaperMode]=useState<'static'|'animated'>(localStorage.getItem('theme-studio.wallpaper-mode')==='static'?'static':'animated');
   const [busy,setBusy]=useState('');
   const [message,setMessage]=useState('');
@@ -76,13 +76,14 @@ export function TemplateLibrary({client,native}:{client:DesktopClient;native:boo
       <div className={cs.cardBody}><div><h3>{pack.name}</h3><p>{pack.subtitle}</p><p className={cs.packMeta}>{pack.source==='imported'?`已导入 · v${pack.version}`:'内置'} · {Object.keys(pack.icons).length} 款图标 · {Object.keys(pack.cursors).length} 状态指针</p></div><div className={cs.swatches}><i style={{background:pack.accent}}/><i style={{background:pack.pale}}/><i style={{background:'#faf8ff'}}/></div></div>
       <div className={cs.actions}><button disabled={!!busy} onClick={()=>setSelected(pack)}>查看预览</button><button className={cs.apply} disabled={!native||!!busy} onClick={()=>void apply(pack)}>{busy===pack.id?'正在应用…':'一键应用'}</button></div>
     </article>)}</div>
-    <p className={cs.footnote}>支持 .tspack / .zip 完整主题数据包。导入后保存在本机，重启和升级后仍可使用；预览中可导出完整套装。应用前自动备份。内置动态版为 AI 同人插画的缓慢运镜与柔光动效。</p>
+    <p className={cs.footnote}>安装、打开和预览保留当前桌面。默认只应用壁纸；鼠标指针和桌面图标需主动勾选。支持 .tspack / .zip 数据包导入与完整导出，应用前自动备份。内置动态版为 AI 同人插画的缓慢运镜与柔光动效。</p>
     {selected&&<div className={cs.scrim} onClick={e=>{if(e.target===e.currentTarget&&!busy)setSelected(null);}}><div className={cs.dialog} role="dialog" aria-modal="true" aria-label={`${selected.name}模板预览`}>
       <div className={cs.dialogHeading}><div><h2>{selected.name}</h2><p>{selected.subtitle}{selected.author?` · ${selected.author}`:''} · v{selected.version}</p></div><button aria-label="关闭预览" disabled={!!busy} onClick={()=>setSelected(null)}>✕</button></div>
       <div className={cs.previewModes} role="group" aria-label="预览壁纸模式">{(['static','animated'] as const).map(mode=><button key={mode} aria-pressed={previewMode===mode} disabled={!!busy||(mode==='animated'&&!selected.animatedWallpaper)} onClick={()=>{setWallpaperMode(mode);localStorage.setItem('theme-studio.wallpaper-mode',mode);setError('');}}>{mode==='animated'?'播放动态版':'查看静态版'}</button>)}<span>{previewMode==='animated'?selected.motionLabel:'静态壁纸'}</span></div>
       {previewMode==='animated'?<video key={selected.id} className={cs.wallpaper} src={packAsset(selected,selected.animatedWallpaper!)} poster={packAsset(selected,selected.wallpaper)} aria-label={`${selected.name}动态壁纸预览`} controls autoPlay={!matchMedia('(prefers-reduced-motion: reduce)').matches} loop muted playsInline preload="metadata" onError={()=>setError('动态壁纸加载失败，请检查数据包中的视频编码是否受支持。')}/>:<img className={cs.wallpaper} src={packAsset(selected,selected.wallpaper)} alt={selected.subtitle||selected.name} onError={()=>setError('预览图片加载失败，请重新导入数据包或检查程序目录。')}/>}
       {error&&<p role="alert" className={cs.error}>{error}</p>}{message&&<p role="status" className={cs.success}>{message}</p>}
-      <div className={cs.previewAccessories}><span>{Object.keys(selected.icons).length?'配套图标':'不含配套图标'}</span>{Object.entries(selected.icons).slice(0,6).map(([symbol,icon])=><img key={symbol} src={packAsset(selected,icon.file)} width="38" height="38" alt={symbol}/>)}<span>{Object.keys(selected.cursors).length?'17 状态指针':'不含配套指针'}</span>{selected.cursorPreview&&<img src={packAsset(selected,selected.cursorPreview)} width="44" height="44" alt="鼠标指针预览"/>}</div>
+      <div className={cs.previewAccessories}><span>{Object.keys(selected.icons).length?'配套图标':'不含配套图标'}</span>{Object.entries(selected.icons).slice(0,6).map(([symbol,icon])=><img key={symbol} src={packAsset(selected,icon.file)} width="38" height="38" alt={symbol}/>)}<span>{Object.keys(selected.cursors).length?`${Object.keys(selected.cursors).length} 状态指针`:'不含配套指针'}</span>{selected.cursorPreview&&<img src={packAsset(selected,selected.cursorPreview)} width="44" height="44" alt="鼠标指针预览"/>}</div>
+      {selected.source==='builtin'&&<details className={cs.allAccessories} open><summary>查看全部角色图标与 17 种指针状态</summary><img src={packAsset(selected,`${selected.id}/accessories-preview.png`)} alt={`${selected.name}全部图标与鼠标指针，点击位置位于左上方功能符号`} loading="lazy"/></details>}
       <div className={cs.dialogFooter}><span>{previewMode==='animated'?'动态循环播放':'静态省内存'} · 应用前自动备份</span><div className={cs.toolbar}><button disabled={!native||!!busy} onClick={()=>void exportPack(selected)}>{busy==='export'?'正在导出…':'导出完整套装'}</button><button className={cs.apply} disabled={!native||!!busy} onClick={()=>void apply(selected)}>{busy===selected.id?'正在应用…':`应用${previewMode==='animated'?'动态':'静态'}版套装`}</button></div></div>
     </div></div>}
   </section>;

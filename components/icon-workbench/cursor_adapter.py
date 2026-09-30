@@ -6,6 +6,7 @@ See licenses/Cursor-Palette.txt and THIRD_PARTY.md. Upstream preset files are re
 from __future__ import annotations
 
 import ctypes
+import configparser
 from ctypes import wintypes as wt
 from datetime import datetime
 import hashlib
@@ -130,6 +131,39 @@ def default_scheme():
     return {'name': 'Windows 默认', 'size': 32, 'roles': values}
 
 
+def factory_scheme(system_root=None):
+    """Discover this computer's OEM TX files without installing or applying them."""
+    root = Path(system_root or os.environ['SystemRoot']).resolve()
+    theme = root / 'Resources' / 'Themes' / '0ASUS.theme'
+    if not theme.is_file():
+        return None
+    parser = configparser.ConfigParser(interpolation=None, strict=False)
+    try:
+        data = theme.read_bytes()
+        parser.read_string(data.decode('utf-16' if data.startswith((b'\xff\xfe', b'\xfe\xff')) else 'utf-8-sig'))
+    except (OSError, UnicodeError, configparser.Error) as error:
+        raise ValueError('本机天选姬主题文件无法读取。') from error
+    if parser.get('Theme', 'DisplayName', fallback='').strip().casefold() not in {'tx', '天选', '天选姬'}:
+        return None
+    section = r'Control Panel\Cursors'
+    if not parser.has_section(section):
+        raise ValueError('本机天选姬主题未包含鼠标指针配置。')
+    roles = {role: '' for role in ROLE_KEYS}
+    required = set(ROLE_KEYS) - {'Crosshair', 'UpArrow', 'Pin', 'Person'}
+    for role in ROLE_KEYS:
+        value = parser.get(section, role, fallback='').strip().strip('"')
+        if not value:
+            if role in required:
+                raise ValueError(f'原厂指针配置不完整：{role}')
+            continue
+        path = Path(os.path.expandvars(value)).resolve()
+        if not path.is_relative_to(theme.parent.resolve()):
+            raise ValueError('原厂指针路径超出了本机系统主题目录。')
+        roles[role] = str(validate_cursor(path))
+    return {'name': '天选姬 · 本机原厂', 'kind': 'factory', 'size': 32,
+            'roles': roles, 'sourceTheme': str(theme)}
+
+
 def validate_cursor(path):
     path = Path(os.path.expandvars(str(path))).absolute()
     if path.suffix.lower() not in {'.cur', '.ani'} or not path.is_file():
@@ -171,6 +205,12 @@ class CursorAdapter:
     def schemes(self):
         result = [current_scheme(), default_scheme()]
         errors = []
+        try:
+            factory = factory_scheme()
+            if factory:
+                result.append(factory)
+        except ValueError as error:
+            errors.append(str(error))
         for path in self.presets.glob('*.json'):
             item = read_json(path)
             if isinstance(item, dict) and isinstance(item.get('roles'), dict):
@@ -194,6 +234,14 @@ class CursorAdapter:
             except (KeyError, TypeError, ValueError, OSError) as error:
                 errors.append(f'{manifest.parent.name}：{error}')
         return result, errors
+
+    def restore_factory(self, expected_state):
+        factory = factory_scheme()
+        if factory is None:
+            raise ValueError('此电脑没有可用的天选姬原厂指针文件。')
+        # apply() validates all files, makes a durable backup, checks conflicts,
+        # and rolls back failures; factory restore uses the same transaction.
+        return self.apply(factory['roles'], factory['size'], expected_state=expected_state)
 
     def import_file(self, path):
         path = validate_cursor(path)

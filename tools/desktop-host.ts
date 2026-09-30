@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { randomBytes } from "node:crypto";
 import type { IncomingMessage } from "node:http";
 
-export const operations = new Set(["state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.apply", "cursors.save", "cursors.restore", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop"]);
+export const operations = new Set(["state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.apply", "cursors.save", "cursors.restore", "cursors.factory", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop"]);
 export const sessionToken = randomBytes(32).toString("hex");
 operations.add('runtime.desktop.apply');
 // Browser development can read the library; native file pickers and updater

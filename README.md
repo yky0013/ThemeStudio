@@ -2,15 +2,29 @@
 
 一个独立的 Windows 主题项目。主设置界面在 Seelen UI 的结构和组件上开发，模组区使用 Windhawk 的卡片、选择和标题组件，加入真实 Windows 桌面快捷方式与 17 状态鼠标设置。所有日常设置在同一页，通过左侧导航定位。
 
+## 0.5.0 角色套装与原厂指针
+
+- 按原有 10 套主题重制 120 款角色图标和 170 个鼠标状态；每个指针包含 32/48/64/96 像素版本及对应点击位置。
+- 鼠标布局参考本机天选姬的角色加功能符号，预览可查看完整套装。角色素材由内置 imagegen 生成，原始提示词与图集保存在 assets/character-art。
+- 检测到本机 ASUS TX 原厂文件时，鼠标区域显示恢复按钮；恢复前备份，支持撤销。没有这些本机文件时不显示该按钮，也不会用 Windows 默认冒充原厂。
+- 原厂 OEM 美术文件不随安装包分发。安装、打开、预览保留原桌面；图标和鼠标仍需主动勾选后应用。
+
 ## 启动
 
-在其他电脑上运行 `installers/ThemeStudio-0.4.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.4.0/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
+在其他电脑上运行 `installers/ThemeStudio-0.5.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.5.0/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
 
 卸载会保留已应用的外观、素材和备份；要恢复原外观请先在程序内恢复。
 
 新项目数据保存在 `%LOCALAPPDATA%/ThemeStudio`；原工作台数据保持原位。关闭主窗口会关闭图标/指针后端；已经启用的桌面壁纸、Seelen 和 Windhawk 引擎继续运行，可在设置页停用。
 
-当前版本：0.4.0。支持导入完整主题数据包和应用更新；图文教程位于 `docs/guide/index.html`，离线随程序安装。该版本的实现与验证记录见 `docs/development/0.4.0-changes.md` 和 `docs/development/0.4.0-verification.json`。
+当前版本：0.4.1。支持导入完整主题数据包和应用更新；图文教程位于 `docs/guide/index.html`，离线随程序安装。该版本的实现与验证记录见 `docs/development/0.4.0-changes.md` 和 `docs/development/0.4.0-verification.json`。
+
+## 0.4.1 修复
+
+- 安装和升级只部署程序，不自动启动程序或启停桌面引擎，保留用户原主题。
+- 打开程序、刷新状态和预览只读取当前桌面；旧 Windhawk 配置不会因状态查询而被重新初始化。
+- 一键应用默认只更换壁纸，鼠标指针与桌面图标必须主动勾选。
+- 安装包使用明确的程序目录清单，不混入开发环境的演示数据或用户缓存。
 
 ## 0.4.0 新增
 

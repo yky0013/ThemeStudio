@@ -18,8 +18,8 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("Theme Studio")]
 [assembly: AssemblyProduct("桌面主题工作室")]
-[assembly: AssemblyVersion("0.4.0.0")]
-[assembly: AssemblyFileVersion("0.4.0.0")]
+[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyFileVersion("0.5.0.0")]
 
 internal static class Program
 {
@@ -71,7 +71,7 @@ internal sealed class StudioWindow : Form
     private readonly WebView2 view = new WebView2 { Dock = DockStyle.Fill };
     private readonly SemaphoreSlim bridgeLock = new SemaphoreSlim(1, 1);
     private readonly SemaphoreSlim appearanceLock = new SemaphoreSlim(1, 1);
-    private readonly HashSet<string> operations = new HashSet<string> { "state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.save", "cursors.apply", "cursors.restore", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop" };
+    private readonly HashSet<string> operations = new HashSet<string> { "state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.save", "cursors.apply", "cursors.restore", "cursors.factory", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop" };
     private Process backend;
     private StreamWriter backendInput;
     private int activeRequests;
@@ -83,6 +83,7 @@ internal sealed class StudioWindow : Form
     private bool suspendPending;
     private bool updateHandoff;
     private bool closeAfterRequests;
+    private readonly List<string> smokeOperations = new List<string>();
 
     internal StudioWindow(string smoke, string script)
     {
@@ -255,11 +256,17 @@ internal sealed class StudioWindow : Form
             var request = json.Deserialize<Dictionary<string, object>>(args.WebMessageAsJson);
             id = request["id"];
             var operation = request["operation"] as string;
+            if (smokeDirectory != null) smokeOperations.Add(operation);
             if (updateHandoff) throw new InvalidOperationException("正在启动更新安装程序，请稍候。");
             if (operation == "updates.install" || operation == "templates.apply" || operation == "templates.restore" || operation == "wallpaper.apply" || operation == "wallpaper.stop" || operation == "wallpaper.pause" || (operation != null && operation.StartsWith("runtime.") && operation != "runtime.state"))
             {
                 appearanceOwned = await appearanceLock.WaitAsync(0);
                 if (!appearanceOwned) throw new InvalidOperationException("正在应用桌面设置，请等待当前操作完成。");
+            }
+            if (operation == "app.qa-trace" && smokeDirectory != null && qaScript != null)
+            {
+                view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = smokeOperations.ToArray() }));
+                return;
             }
             if (operation == "app.qa-suspend" && smokeDirectory != null && qaScript != null)
             {
@@ -274,6 +281,7 @@ internal sealed class StudioWindow : Form
             if (operation == "app.qa-complete" && smokeDirectory != null && qaScript != null)
             {
                 File.WriteAllText(Path.Combine(smokeDirectory, "qa-result.json"), json.Serialize(request["payload"]), new UTF8Encoding(false));
+                File.WriteAllText(Path.Combine(smokeDirectory, "native-operations.json"), json.Serialize(smokeOperations), new UTF8Encoding(false));
                 using (var capture = File.Create(Path.Combine(smokeDirectory, "native-ui.png"))) await view.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, capture);
                 view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = new { ok = true } }));
                 smokeTimeout.Stop(); closeAfterRequests = true; return;
@@ -503,7 +511,7 @@ internal sealed class StudioWindow : Form
     {
         var destination = smokeDirectory ?? Path.Combine(dataDirectory, "diagnostics");
         Directory.CreateDirectory(destination);
-        var report = new { product = "Theme Studio", version = "0.4.0", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
+        var report = new { product = "Theme Studio", version = "0.5.0", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
             executable = Application.ExecutablePath, nativeWebView = true, backend = "bundled executable", ui = payload, error = error };
         File.WriteAllText(Path.Combine(destination, "native-runtime.json"), json.Serialize(report), new UTF8Encoding(false));
     }

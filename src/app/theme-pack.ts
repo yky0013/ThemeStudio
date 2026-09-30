@@ -11,7 +11,7 @@ export const packAsset = (pack: ThemePack, path: string) => pack.assetBase + pat
 export const packMode = (pack: ThemePack, requested: 'static' | 'animated') => requested === 'animated' && pack.animatedWallpaper ? 'animated' : 'static';
 
 export function bundledPack(item: ThemePack & { iconMatches: Record<string, string[]> }): ThemePack {
-  return { ...item, source: 'builtin', version: '1.0.0', assetBase: '/templates/',
+  return { ...item, source: 'builtin', version: item.version || '1.0.0', assetBase: '/templates/',
     icons: Object.fromEntries(Object.entries(item.iconMatches).map(([key, matches]) => [key, { file: `${item.id}/icons/${key}.ico`, matches }])),
     cursors: Object.fromEntries(['Arrow','Help','AppStarting','Wait','Crosshair','IBeam','NWPen','No','SizeNS','SizeWE','SizeNWSE','SizeNESW','SizeAll','UpArrow','Hand','Person','Pin'].map(role => [role, `${item.id}/cursors/${role}.cur`])),
     cursorPreview: `${item.id}/cursor-preview.png` };

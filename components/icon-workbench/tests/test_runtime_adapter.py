@@ -10,6 +10,49 @@ from runtime_adapter import RuntimeAdapter, desktop_profile, observed_desktop_mo
 
 
 class RuntimeAdapterTests(unittest.TestCase):
+    def test_fresh_startup_does_not_initialize_engines_or_write_profiles(self):
+        with tempfile.TemporaryDirectory() as folder:
+            adapter = RuntimeAdapter(folder)
+            adapter.seelen_settings = Path(folder) / 'seelen' / 'settings.json'
+            with patch.object(adapter, '_wh', side_effect=AssertionError('CLI on startup')), \
+                    patch.object(adapter, '_windhawk_root', side_effect=AssertionError('runtime initialized')), \
+                    patch('runtime_adapter.subprocess.Popen', side_effect=AssertionError('engine started')), \
+                    patch('runtime_adapter.atomic_json', side_effect=AssertionError('profile changed')):
+                state = adapter.state()
+            self.assertEqual(state['windhawk']['mods'], [])
+            self.assertEqual(list(Path(folder).iterdir()), [])
+
+    def test_legacy_status_reads_ini_without_rewriting_or_activating_runtime(self):
+        with tempfile.TemporaryDirectory() as folder:
+            adapter = RuntimeAdapter(folder)
+            adapter.seelen_settings = Path(folder) / 'seelen-settings.json'
+            adapter.seelen_settings.write_text('{"activeThemes":["@user/custom"]}', encoding='utf-8')
+            adapter.windhawk_user.mkdir()
+            (adapter.windhawk_user / 'windhawk.ini').write_text('[Storage]\nPortable=1\n', encoding='utf-16')
+            configs = adapter.windhawk_data / 'Engine' / 'Mods'
+            configs.mkdir(parents=True)
+            for identifier, disabled in [('local@mouse-trail', 0), ('local@accent-color-sync', 1)]:
+                (configs / (identifier + '.ini')).write_text('[Mod]\nLibraryFileName=' + identifier + '.dll\nDisabled=' + str(disabled) + '\nVersion=1.2\n', encoding='utf-16')
+            (configs / 'incomplete.ini').write_text('[Mod]\nDisabled=0\n', encoding='utf-16')
+            before = {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in Path(folder).rglob('*') if path.is_file()}
+            with patch.object(adapter, '_wh', side_effect=AssertionError('CLI on startup')), \
+                    patch.object(adapter, '_windhawk_root', side_effect=AssertionError('runtime initialized')), \
+                    patch('runtime_adapter.subprocess.Popen', side_effect=AssertionError('engine started')), \
+                    patch('runtime_adapter.atomic_json', side_effect=AssertionError('profile changed')), \
+                    patch('runtime_adapter.process_images', return_value=[(1, str(adapter.windhawk_user / 'windhawk.exe'))]), \
+                    patch('runtime_adapter.loaded_libraries', return_value={'local@mouse-trail.dll'}):
+                state = adapter.state()
+                self.assertEqual(state, adapter.state())
+            self.assertEqual(state['seelen']['themes'], ['@user/custom'])
+            mods = {item['id']: item for item in state['windhawk']['mods']}
+            self.assertEqual(len(mods), 2)
+            self.assertTrue(mods['local@mouse-trail']['enabled'])
+            self.assertTrue(mods['local@mouse-trail']['loaded'])
+            self.assertFalse(mods['local@accent-color-sync']['enabled'])
+            self.assertFalse(mods['local@accent-color-sync']['loaded'])
+            after = {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in Path(folder).rglob('*') if path.is_file()}
+            self.assertEqual(before, after)
+
     def test_desktop_modes_preserve_apps_and_unrelated_settings(self):
         before = {'language': 'zh-CN', 'byWidget': {'@seelen/weg': {'position': 'Left', 'size': 32, 'shortcuts': {'x': ['A']}}, 'notes': {'enabled': True}}}
         mac = desktop_profile(before, 'mac')

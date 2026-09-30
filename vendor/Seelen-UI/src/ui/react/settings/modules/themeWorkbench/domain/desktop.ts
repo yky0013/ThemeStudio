@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 export interface Artwork { id: string; name: string; preview: string }
 export interface Shortcut extends Artwork { origin: string; kind: string; sha256: string }
-export interface CursorScheme { id: string; name: string; kind: "current" | "default" | "saved"; size: number; roles: Record<string, string> }
+export interface CursorScheme { id: string; name: string; kind: "current" | "default" | "saved" | "factory"; size: number; roles: Record<string, string> }
 export interface DesktopState {
   shortcuts: Shortcut[];
   icons: Artwork[];

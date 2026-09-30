@@ -1,7 +1,7 @@
 ; Theme Studio offline installer. User data is owned by the application,
 ; outside {app}, and is intentionally retained on uninstall.
 #define AppName "桌面主题工作室"
-#define AppVersion "0.4.0"
+#define AppVersion "0.5.0"
 
 [Setup]
 AppId={{34717904-40BD-47C3-9AE5-4CA3B55820B5}
@@ -28,13 +28,14 @@ WizardStyle=modern
 Compression=lzma2/max
 LZMAUseSeparateProcess=yes
 SolidCompression=yes
-CloseApplications=yes
+; Installation must never stop or start a user's desktop/theme engines.
+CloseApplications=no
 RestartApplications=no
 SetupLogging=yes
 InfoBeforeFile=安装说明.txt
 VersionInfoDescription=桌面主题工作室精简安装程序
 VersionInfoProductName={#AppName}
-VersionInfoVersion=0.4.0.0
+VersionInfoVersion=0.5.0.0
 SetupIconFile=..\assets\brand\theme-studio.ico
 
 [Languages]
@@ -47,7 +48,19 @@ ConfirmUninstall=确定要卸载 %1 吗？%n%n卸载只删除程序文件，素�
 Name: "desktopicon"; Description: "创建桌面快捷方式"; GroupDescription: "快捷方式："; Flags: unchecked
 
 [Files]
-Source: "..\release\ThemeStudio-{#AppVersion}\*"; DestDir: "{app}"; Excludes: "ThemeStudio.Diagnostic.exe,ThemeStudio.Diagnostic.exe.config"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Explicit payload roots prevent demo profiles, QA data and cached user settings
+; from accidentally becoming installation defaults.
+Source: "..\release\ThemeStudio-{#AppVersion}\ThemeStudio.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\release\ThemeStudio-{#AppVersion}\ThemeStudio.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\release\ThemeStudio-{#AppVersion}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\release\ThemeStudio-{#AppVersion}\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\release\ThemeStudio-{#AppVersion}\README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\release\ThemeStudio-{#AppVersion}\backend\*"; DestDir: "{app}\backend"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\release\ThemeStudio-{#AppVersion}\wwwroot\*"; DestDir: "{app}\wwwroot"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\release\ThemeStudio-{#AppVersion}\resources\*"; DestDir: "{app}\resources"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\release\ThemeStudio-{#AppVersion}\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\release\ThemeStudio-{#AppVersion}\licenses\*"; DestDir: "{app}\licenses"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\release\ThemeStudio-{#AppVersion}\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\.cache\runtime\MicrosoftEdgeWebview2Setup.exe"; Flags: dontcopy nocompression
 
 [Icons]
@@ -57,7 +70,8 @@ Name: "{group}\卸载桌面主题工作室"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\ThemeStudio.exe"; Description: "启动桌面主题工作室"; Flags: nowait postinstall skipifsilent runascurrentuser
+; Open the application manually from Start. Installing or upgrading never
+; activates a wallpaper, cursor scheme, Seelen, or Windhawk.
 Filename: "{app}\wwwroot\help\index.html"; Description: "打开图文使用教程"; Flags: shellexec nowait postinstall skipifsilent unchecked runasoriginaluser
 
 [UninstallRun]

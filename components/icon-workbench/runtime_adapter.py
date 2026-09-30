@@ -66,6 +66,8 @@ kernel32.OpenProcess.restype = wt.HANDLE
 kernel32.QueryFullProcessImageNameW.argtypes = [wt.HANDLE, wt.DWORD, wt.LPWSTR, ctypes.POINTER(wt.DWORD)]
 kernel32.QueryFullProcessImageNameW.restype = wt.BOOL
 kernel32.CloseHandle.argtypes = [wt.HANDLE]
+kernel32.GetPrivateProfileStringW.argtypes = [wt.LPCWSTR, wt.LPCWSTR, wt.LPCWSTR, wt.LPWSTR, wt.DWORD, wt.LPCWSTR]
+kernel32.GetPrivateProfileStringW.restype = wt.DWORD
 
 
 def read_json(path, fallback=None):
@@ -215,6 +217,32 @@ class RuntimeAdapter:
     def _managed(self):
         return read_json(self.management, {'mods': {}, 'seelen': {}})
 
+    def _installed_mods_readonly(self):
+        """Read the pinned portable engine's [Mod] records without initializing it.
+
+        The upstream `mod list` CLI synchronizes its profile, and _wh also copies
+        runtime files and rewrites INIs. Neither belongs in startup/status reads.
+        GetPrivateProfileStringW matches the engine's UTF-16 INI reader.
+        """
+        mods = []
+        managed = self._managed().get('mods', {})
+        for path in sorted((self.windhawk_data / 'Engine' / 'Mods').glob('*.ini')):
+            def value(name, default=''):
+                buffer = ctypes.create_unicode_buffer(32768)
+                count = kernel32.GetPrivateProfileStringW('Mod', name, default, buffer, len(buffer), str(path.resolve()))
+                if count >= len(buffer) - 1:
+                    raise ValueError('Windhawk 模组状态过长，请检查：' + path.name)
+                return buffer.value
+            library = value('LibraryFileName')
+            if not library:
+                continue
+            disabled = value('Disabled', '0') != '0'
+            metadata = managed.get(path.stem, self.catalog.get(path.stem.removeprefix('local@'), {}))
+            mods.append({'id': path.stem, 'name': metadata.get('name', path.stem),
+                         'version': value('Version'), 'enabled': not disabled,
+                         'config': {'libraryFileName': library, 'disabled': disabled}})
+        return mods
+
     def state(self):
         images = process_images()
         seelen_running = any(canonical(image) == canonical(self.seelen / 'seelen-ui.exe') for _, image in images)
@@ -224,7 +252,7 @@ class RuntimeAdapter:
         mods, issue = [], ''
         if (self.windhawk_user / 'windhawk.ini').is_file():
             try:
-                mods = self._wh('mod', 'list').get('mods', [])
+                mods = self._installed_mods_readonly()
             except Exception as error:
                 issue = str(error)
         libraries = {str((item.get('config') or {}).get('libraryFileName', '')).casefold()

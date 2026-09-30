@@ -177,6 +177,8 @@ theme_workbench:
     cursors_applied: Mouse pointers applied to Windows. A recovery record was saved.
     restore_cursors: Undo last cursor change
     cursors_restored: Previous mouse settings restored.
+    restore_factory: Restore this PC's ASUS TX pointers
+    factory_restored: ASUS TX factory pointers restored. Previous settings were backed up.
     cursor_notice: Selections remain a draft until you apply them. Programs using their own cursors may ignore the system scheme.
     roles:
       Arrow: Normal select

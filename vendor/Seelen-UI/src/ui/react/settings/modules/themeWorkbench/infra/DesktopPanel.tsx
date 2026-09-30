@@ -210,6 +210,7 @@ export function DesktopPanel({ client }: { client: DesktopClient }) {
           }, "cursors")}>{tt("save_scheme")}</button>
           <button className={cs.primary} onClick={() => void run(async () => { await client.call("cursors.apply", { roles, size, version: cursorVersion }); await refresh(true); setMessage({ text: tt("cursors_applied"), error: false }); }, "cursors")}>{tt("apply_cursors")}</button>
           <button disabled={!state?.cursors.canRestore} onClick={() => void run(async () => { await client.call("cursors.restore"); await refresh(true); setMessage({ text: tt("cursors_restored"), error: false }); }, "cursors")}>{tt("restore_cursors")}</button>
+          {state?.cursors.schemes.some((item) => item.kind === "factory") && <button onClick={() => void run(async () => { await client.call("cursors.factory", { version: cursorVersion }); await refresh(true); setMessage({ text: tt("factory_restored"), error: false }); }, "cursors")}>{tt("restore_factory")}</button>}
         </div>
         <p className={cs.note}>{tt("cursor_notice")}</p>
       </fieldset>
