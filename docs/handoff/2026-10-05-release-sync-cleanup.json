@@ -1,13 +1,9 @@
 {
   "date": "2026-10-05",
-  "status": "remote_verified_cleanup_pending",
+  "status": "completed",
   "repository": "yky0013/ThemeStudio",
   "visibility": "private",
   "workspace": "E:/desktop/windows",
-  "sourceBranches": {
-    "main": "d38c0dabb75d7d63d0edf103478076b0ba98e633",
-    "maintenance/0.5": "1c5d4ab99a61746c40252cb9bf86d8c86d5cab6c"
-  },
   "releases": [
     {
       "repository": "yky0013/ThemeStudio",
@@ -313,7 +309,7 @@
   "cleanup": {
     "date": "2026-10-05",
     "workspace": "E:\\desktop\\windows",
-    "status": "awaiting_all_release_verification",
+    "status": "completed_to_recycle_bin",
     "keep": [
       {
         "name": "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
@@ -381,6 +377,56 @@
       "v0.6.0",
       "v0.5.1",
       "v0.6.1"
-    ]
+    ],
+    "actual": {
+      "installers": [
+        {
+          "name": "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+          "bytes": 168804642,
+          "sha256": "0db11fbb5343742839c804de9c54281ff3a6b69ff4225dfe452cfc0d04f24caa"
+        },
+        {
+          "name": "ThemeStudio-0.6.1-Windows-x64-Setup.exe",
+          "bytes": 149011565,
+          "sha256": "f0decca99757175f155fdc0f98261dd1755e39cd34b55e03d0f3d730de183239"
+        }
+      ],
+      "recycleConfirmed": [
+        ".release-sync",
+        "ThemeStudio-0.5.0-Windows-x64-Setup-Slim.exe",
+        "ThemeStudio-0.5.1",
+        "ThemeStudio-0.5.1-Source.zip",
+        "ThemeStudio-0.5.1-Windows-x64-Setup.exe.sha256",
+        "ThemeStudio-0.6.0-Windows-x64-Setup.exe",
+        "ThemeStudio-0.6.1",
+        "ThemeStudio-0.6.1-Source.zip",
+        "ThemeStudio-0.6.1-Windows-x64-Setup.exe.sha256",
+        "ThemeStudio-20261004-verification.json",
+        "ThemeStudio-Explorer-Preview.png"
+      ],
+      "remaining": [
+        {
+          "Name": "天选姬指针恢复",
+          "Mode": "d----",
+          "Length": null
+        },
+        {
+          "Name": "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+          "Mode": "-a---",
+          "Length": 168804642
+        },
+        {
+          "Name": "ThemeStudio-0.6.1-Windows-x64-Setup.exe",
+          "Mode": "-a---",
+          "Length": 149011565
+        }
+      ]
+    },
+    "permanentDelete": false,
+    "approvalReview": "Permanent deletion was rejected with blocked by policy; reversible recycling completed instead."
+  },
+  "releaseSourceCommits": {
+    "main": "d38c0dabb75d7d63d0edf103478076b0ba98e633",
+    "maintenance/0.5": "1c5d4ab99a61746c40252cb9bf86d8c86d5cab6c"
   }
 }
