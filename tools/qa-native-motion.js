@@ -16,7 +16,7 @@
   };
   try{
     const packs=await fetch('/templates/catalog.json').then(r=>r.json());
-    if(packs.length!==10)throw new Error('Expected 10 motion packs');
+    if(packs.length!==7)throw new Error('Expected 7 motion packs');
     for(const pack of packs){const media=await call('templates.preview',{id:pack.id,wallpaperMode:'animated'});await load(media.url);result.checks.push({clip:pack.id,decoded:true,advancing:true});}
     const first=await call('templates.apply',{id:packs[0].id,icons:false,cursors:false,wallpaperMode:'animated'});templates++;
     let status=await call('wallpaper.status');const motionId=status.media.id;

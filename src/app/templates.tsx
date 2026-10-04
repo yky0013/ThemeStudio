@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { DesktopClient } from '../../vendor/Seelen-UI/src/ui/react/settings/modules/themeWorkbench/domain/desktop.ts';
 import { bundledPack, packAsset, packMode, type ThemePack } from './theme-pack.ts';
 import cs from './templates.module.css';
+import { ExplorerPreview, defaultExplorerAppearance } from './explorer-preview.tsx';
 
-interface Applied { name: string; iconsApplied: number; cursorsApplied: number; mode: 'static' | 'animated' }
+interface Applied { name: string; iconsApplied: number; cursorsApplied: number; mode: 'static' | 'animated'; explorerApplied?: boolean }
 export function TemplateLibrary({client,native}:{client:DesktopClient;native:boolean}) {
   const [packs,setPacks]=useState<ThemePack[]>([]);
   const [selected,setSelected]=useState<ThemePack|null>(null);
@@ -12,6 +13,10 @@ export function TemplateLibrary({client,native}:{client:DesktopClient;native:boo
   const [icons,setIcons]=useState(false);
   const [cursors,setCursors]=useState(false);
   const [wallpaperMode,setWallpaperMode]=useState<'static'|'animated'>('static');
+  const [previewTab,setPreviewTab]=useState<'wallpaper'|'explorer'>('wallpaper');
+  const [explorerOpacity,setExplorerOpacity]=useState(defaultExplorerAppearance.imageOpacity);
+  const [explorer,setExplorer]=useState(true);
+  const [explorerSupported,setExplorerSupported]=useState<boolean|null>(null);
   const [busy,setBusy]=useState('');
   const [message,setMessage]=useState('');
   const [error,setError]=useState('');
@@ -20,6 +25,10 @@ export function TemplateLibrary({client,native}:{client:DesktopClient;native:boo
   const load=async()=>{
     const items=native?(await client.call<{packs:ThemePack[]}>('templates.list')).packs:
       await fetch('/templates/catalog.json').then(response=>{if(!response.ok)throw new Error('模板资源不完整，请重新安装。');return response.json();}).then(items=>items.map(bundledPack));
+    if(native){
+      const support=await client.call<{supported:boolean}>('explorer.state');
+      if(alive.current){setExplorerSupported(support.supported);if(!support.supported)setExplorer(false);}
+    }
     if(alive.current)setPacks(items);
     return items as ThemePack[];
   };
@@ -44,6 +53,7 @@ export function TemplateLibrary({client,native}:{client:DesktopClient;native:boo
     if(!result)return;
     if(result.updated&&active===result.id){setActive('');localStorage.removeItem('theme-studio.template');}
     const items=await load();
+    document.dispatchEvent(new CustomEvent('theme-studio-packs-changed'));
     setSelected(items.find(item=>item.id===result.id)||null);
     setMessage(result.duplicate?`${result.name} v${result.version} 已在套装库中。`:`已${result.updated?'更新':'导入'} ${result.name} v${result.version}。可以先预览，再一键应用。`);
   });
@@ -53,17 +63,17 @@ export function TemplateLibrary({client,native}:{client:DesktopClient;native:boo
   });
   const apply=(pack:ThemePack)=>run(pack.id,async()=>{
     const mode=packMode(pack,wallpaperMode);
-    const result=await client.call<Applied>('templates.apply',{id:pack.id,icons,cursors,wallpaperMode:mode});
+    const result=await client.call<Applied>('templates.apply',{id:pack.id,icons,cursors,wallpaperMode:mode,explorer:explorer&&explorerSupported!==false,explorerAppearance:{...defaultExplorerAppearance,imageOpacity:explorerOpacity}});
     localStorage.setItem('theme-studio.wallpaper-mode',mode);
     localStorage.setItem('theme-studio.template',pack.id);localStorage.setItem('theme-studio.accent',pack.accent);setActive(pack.id);
-    document.dispatchEvent(new CustomEvent('theme-studio-template-applied',{detail:{accent:pack.accent}}));
+    document.dispatchEvent(new CustomEvent('theme-studio-template-applied',{detail:{accent:pack.accent,packId:pack.id}}));
     document.dispatchEvent(new CustomEvent('theme-studio-wallpaper-changed'));
-    setMessage(`${result.name}已应用：${result.mode==='animated'?'动态':'静态'}壁纸${result.cursorsApplied?'、17 种鼠标状态':''}${result.iconsApplied?`、${result.iconsApplied} 个桌面快捷方式`:''}。${result.mode==='animated'?'可在壁纸与视差区域暂停或停止。':'静态壁纸无需后台播放。'}`);
+    setMessage(`${result.name}已应用：${result.mode==='animated'?'动态':'静态'}壁纸${result.explorerApplied?'、资源管理器背景':''}${result.cursorsApplied?'、17 种鼠标状态':''}${result.iconsApplied?`、${result.iconsApplied} 个桌面快捷方式`:''}。${result.mode==='animated'?'可在壁纸与视差区域暂停或停止。':'静态壁纸无需后台播放。'}`);
     setSelected(null);
   });
   const restore=()=>run('restore',async()=>{
     await client.call('templates.restore');setActive('');localStorage.removeItem('theme-studio.template');localStorage.removeItem('theme-studio.accent');
-    document.dispatchEvent(new CustomEvent('theme-studio-template-applied',{detail:{accent:'#7967c6'}}));setMessage('已恢复上一次模板应用前的壁纸、指针和快捷方式。');
+    document.dispatchEvent(new CustomEvent('theme-studio-template-applied',{detail:{accent:'#7967c6'}}));setMessage('已恢复上一次主题应用前的外观，包括本次联动的资源管理器。');
     document.dispatchEvent(new CustomEvent('theme-studio-wallpaper-changed'));
   });
   const previewMode=selected?packMode(selected,wallpaperMode):wallpaperMode;
@@ -76,14 +86,17 @@ export function TemplateLibrary({client,native}:{client:DesktopClient;native:boo
       <div className={cs.cardBody}><div><h3>{pack.name}</h3><p>{pack.subtitle}</p><p className={cs.packMeta}>{pack.source==='imported'?`已导入 · v${pack.version}`:'内置'} · {Object.keys(pack.icons).length} 款图标 · {Object.keys(pack.cursors).length} 状态指针</p></div><div className={cs.swatches}><i style={{background:pack.accent}}/><i style={{background:pack.pale}}/><i style={{background:'#faf8ff'}}/></div></div>
       <div className={cs.actions}><button disabled={!!busy} onClick={()=>setSelected(pack)}>查看预览</button><button className={cs.apply} disabled={!native||!!busy} onClick={()=>void apply(pack)}>{busy===pack.id?'正在应用…':'一键应用'}</button></div>
     </article>)}</div>
-    <p className={cs.footnote}>安装、打开和预览保留当前桌面。默认只应用壁纸；鼠标指针和桌面图标需主动勾选。支持 .tspack / .zip 数据包导入与完整导出，应用前自动备份。内置套装提供静态壁纸；动态壁纸请直接导入自己的 GIF、动态 WebP 或视频。</p>
+    <label className={cs.explorerChoice}><input type="checkbox" checked={explorer} disabled={!!busy||explorerSupported===false} onChange={e=>setExplorer(e.currentTarget.checked)}/> 同时应用主题到文件资源管理器{explorerSupported===false?'（需要 Windows 11 22H2）':''}</label>
+    <p className={cs.footnote}>安装、打开和预览保留当前桌面。点击应用时联动壁纸与资源管理器；鼠标指针和桌面图标按勾选应用。资源管理器使用静态背景。支持 .tspack / .zip 导入与完整导出，应用前自动备份。</p>
     {selected&&<div className={cs.scrim} onClick={e=>{if(e.target===e.currentTarget&&!busy)setSelected(null);}}><div className={cs.dialog} role="dialog" aria-modal="true" aria-label={`${selected.name}模板预览`}>
       <div className={cs.dialogHeading}><div><h2>{selected.name}</h2><p>{selected.subtitle}{selected.author?` · ${selected.author}`:''} · v{selected.version}</p></div><button aria-label="关闭预览" disabled={!!busy} onClick={()=>setSelected(null)}>✕</button></div>
-      {selected.animatedWallpaper&&<div className={cs.previewModes} role="group" aria-label="预览壁纸模式">{(['static','animated'] as const).map(mode=><button key={mode} aria-pressed={previewMode===mode} disabled={!!busy||(mode==='animated'&&!selected.animatedWallpaper)} onClick={()=>{setWallpaperMode(mode);localStorage.setItem('theme-studio.wallpaper-mode',mode);setError('');}}>{mode==='animated'?'播放动态版':'查看静态版'}</button>)}<span>{previewMode==='animated'?selected.motionLabel:'静态壁纸'}</span></div>}
-      {previewMode==='animated'?<video key={selected.id} className={cs.wallpaper} src={packAsset(selected,selected.animatedWallpaper!)} poster={packAsset(selected,selected.wallpaper)} aria-label={`${selected.name}动态壁纸预览`} controls autoPlay={!matchMedia('(prefers-reduced-motion: reduce)').matches} loop muted playsInline preload="metadata" onError={()=>setError('动态壁纸加载失败，请检查数据包中的视频编码是否受支持。')}/>:<img className={cs.wallpaper} src={packAsset(selected,selected.wallpaper)} alt={selected.subtitle||selected.name} onError={()=>setError('预览图片加载失败，请重新导入数据包或检查程序目录。')}/>}
+      <div className={cs.previewModes} role="group" aria-label="预览区域"><button aria-pressed={previewTab==='wallpaper'} onClick={()=>setPreviewTab('wallpaper')}>桌面壁纸</button><button aria-pressed={previewTab==='explorer'} onClick={()=>setPreviewTab('explorer')}>文件资源管理器</button><span>仅预览，点击应用后才改变系统</span></div>
+      {previewTab==='wallpaper'&&selected.animatedWallpaper&&<div className={cs.previewModes} role="group" aria-label="预览壁纸模式">{(['static','animated'] as const).map(mode=><button key={mode} aria-pressed={previewMode===mode} disabled={!!busy||(mode==='animated'&&!selected.animatedWallpaper)} onClick={()=>{setWallpaperMode(mode);localStorage.setItem('theme-studio.wallpaper-mode',mode);setError('');}}>{mode==='animated'?'播放动态版':'查看静态版'}</button>)}<span>{previewMode==='animated'?selected.motionLabel:'静态壁纸'}</span></div>}
+      {previewTab==='explorer'?<div className={cs.explorerInset}><label>背景图片可见度　<input aria-label="主题资源管理器背景可见度" type="range" min="10" max="70" value={explorerOpacity} disabled={!!busy} onInput={e=>setExplorerOpacity(Number(e.currentTarget.value))}/> {explorerOpacity}%</label><ExplorerPreview image={packAsset(selected,selected.wallpaper)} name={selected.name} appearance={{...defaultExplorerAppearance,imageOpacity:explorerOpacity}}/></div>:previewMode==='animated'?<video key={selected.id} className={cs.wallpaper} src={packAsset(selected,selected.animatedWallpaper!)} poster={packAsset(selected,selected.wallpaper)} aria-label={`${selected.name}动态壁纸预览`} controls autoPlay={!matchMedia('(prefers-reduced-motion: reduce)').matches} loop muted playsInline preload="metadata" onError={()=>setError('动态壁纸加载失败，请检查数据包中的视频编码是否受支持。')}/>:<img className={cs.wallpaper} src={packAsset(selected,selected.wallpaper)} alt={selected.subtitle||selected.name} onError={()=>setError('预览图片加载失败，请重新导入数据包或检查程序目录。')}/>}
+      <label className={cs.explorerInset}><input type="checkbox" checked={explorer} disabled={!!busy||explorerSupported===false} onChange={e=>setExplorer(e.currentTarget.checked)}/> 应用时同步资源管理器背景{explorerSupported===false?'（需要 Windows 11 22H2）':''}</label>
       {error&&<p role="alert" className={cs.error}>{error}</p>}{message&&<p role="status" className={cs.success}>{message}</p>}
-      <div className={cs.previewAccessories}><span>{Object.keys(selected.icons).length?'配套图标':'不含配套图标'}</span>{Object.entries(selected.icons).slice(0,6).map(([symbol,icon])=><img key={symbol} src={packAsset(selected,icon.file)} width="38" height="38" alt={symbol}/>)}<span>{Object.keys(selected.cursors).length?`${Object.keys(selected.cursors).length} 状态指针`:'不含配套指针'}</span>{selected.cursorPreview&&<img src={packAsset(selected,selected.cursorPreview)} width="44" height="44" alt="鼠标指针预览"/>}</div>
-      {selected.source==='builtin'&&<details className={cs.allAccessories} open><summary>查看全部角色图标与 17 种指针状态</summary><img src={packAsset(selected,`${selected.id}/accessories-preview.png`)} alt={`${selected.name}全部图标与鼠标指针，点击位置位于左上方功能符号`} loading="lazy"/></details>}
+      {previewTab==='wallpaper'&&<div className={cs.previewAccessories}><span>{Object.keys(selected.icons).length?'配套图标':'不含配套图标'}</span>{Object.entries(selected.icons).slice(0,6).map(([symbol,icon])=><img key={symbol} src={packAsset(selected,icon.file)} width="38" height="38" alt={symbol}/>)}<span>{Object.keys(selected.cursors).length?`${Object.keys(selected.cursors).length} 状态指针`:'不含配套指针'}</span>{selected.cursorPreview&&<img src={packAsset(selected,selected.cursorPreview)} width="44" height="44" alt="鼠标指针预览"/>}</div>}
+      {previewTab==='wallpaper'&&selected.source==='builtin'&&<details className={cs.allAccessories} open><summary>查看全部角色图标与 17 种指针状态</summary><img src={packAsset(selected,`${selected.id}/accessories-preview.png`)} alt={`${selected.name}全部图标与鼠标指针，点击位置位于左上方功能符号`} loading="lazy"/></details>}
       <div className={cs.dialogFooter}><span>{previewMode==='animated'?'动态循环播放':'静态省内存'} · 应用前自动备份</span><div className={cs.toolbar}><button disabled={!native||!!busy} onClick={()=>void exportPack(selected)}>{busy==='export'?'正在导出…':'导出完整套装'}</button><button className={cs.apply} disabled={!native||!!busy} onClick={()=>void apply(selected)}>{busy===selected.id?'正在应用…':`应用${previewMode==='animated'?'动态':'静态'}版套装`}</button></div></div>
     </div></div>}
   </section>;

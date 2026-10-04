@@ -158,6 +158,10 @@ class DesktopBridge:
         if operation in {'explorer.apply', 'explorer.restore', 'pets.import', 'pets.launch', 'pets.remove'}:
             with self.store.lock():
                 if operation == 'explorer.apply':
+                    if payload.get('mode') == 'image':
+                        item = self.templates.theme(payload.get('packId'))
+                        self.explorer.images.apply(self.templates.asset(item, item['wallpaper']), item['id'], payload.get('appearance'))
+                        return self.explorer.state()
                     return self.explorer.apply(payload.get('theme'))
                 if operation == 'explorer.restore':
                     return self.explorer.restore()
@@ -181,7 +185,7 @@ class DesktopBridge:
             item, matches = self.templates.plan(payload.get('id'))
             return {'id':item['id'],'matches':[row['name'] for row in matches]}
         if operation == 'templates.apply':
-            return self.templates.apply(payload.get('id'), payload.get('mediaId'), payload.get('icons') is True, payload.get('cursors') is True, payload.get('wallpaperMode', 'static'), payload.get('motionMediaId'))
+            return self.templates.apply(payload.get('id'), payload.get('mediaId'), payload.get('icons') is True, payload.get('cursors') is True, payload.get('wallpaperMode', 'static'), payload.get('motionMediaId'), payload.get('explorer') is True, payload.get('explorerAppearance'))
         if operation == 'templates.current':
             return self.templates.current()
         if operation == 'templates.restore':

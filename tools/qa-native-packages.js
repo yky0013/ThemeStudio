@@ -11,7 +11,7 @@
   const asset=(pack,file)=>pack.assetBase+file.split('/').map(encodeURIComponent).join('/');
   try{
     const {packs}=await call('templates.list');
-    if(packs.length!==12)throw new Error('Expected 10 builtins and 2 imported packs');
+    if(packs.length!==9)throw new Error('Expected 7 builtins and 2 imported packs');
     for(const pack of packs.filter(pack=>pack.source==='imported')){
       await loadImage(asset(pack,pack.wallpaper));
       await loadImage(asset(pack,pack.thumbnail));

@@ -18,8 +18,8 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("Theme Studio")]
 [assembly: AssemblyProduct("桌面主题工作室")]
-[assembly: AssemblyVersion("0.6.0.0")]
-[assembly: AssemblyFileVersion("0.6.0.0")]
+[assembly: AssemblyVersion("0.6.1.0")]
+[assembly: AssemblyFileVersion("0.6.1.0")]
 
 internal static class Program
 {
@@ -525,7 +525,7 @@ internal sealed class StudioWindow : Form
     {
         var destination = smokeDirectory ?? Path.Combine(dataDirectory, "diagnostics");
         Directory.CreateDirectory(destination);
-        var report = new { product = "Theme Studio", version = "0.6.0", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
+        var report = new { product = "Theme Studio", version = "0.6.1", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
             executable = Application.ExecutablePath, nativeWebView = true, backend = "bundled executable", ui = payload, error = error };
         File.WriteAllText(Path.Combine(destination, "native-runtime.json"), json.Serialize(report), new UTF8Encoding(false));
     }

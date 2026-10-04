@@ -12,9 +12,6 @@ THEMES = [
  ('identity-v','第五人格','园丁 · 月下庄园','#786399','#efe3fa','gothic'),
  ('milk-mocha-dogs','线条小狗','小狗 · 奶油野餐','#bc8a58','#fff1d9','cream'),
  ('honkai-star-rail','崩坏：星穹铁道','三月七 · 星河列车','#9b6dba','#f3ddff','galaxy'),
- ('zenless-zone-zero','绝区零','妮可 · 新艾利都','#cf7149','#fff0d5','urban'),
- ('arknights','明日方舟','阿米娅 · 破晓之城','#337d9d','#d3f3fa','rhodes'),
- ('blue-archive','蔚蓝档案','阿洛娜 · 晴空海岸','#419dcc','#e4f9ff','blue'),
  ('chiikawa','Chiikawa','吉伊卡哇 · 软糖草地','#b885a1','#ffedf5','pastel'),
 ]
 ROLES = ['Arrow','Help','AppStarting','Wait','Crosshair','IBeam','NWPen','No','SizeNS','SizeWE','SizeNWSE','SizeNESW','SizeAll','UpArrow','Hand','Person','Pin']

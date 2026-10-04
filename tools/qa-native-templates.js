@@ -10,7 +10,7 @@
   try{
     const before=await call('state');
     const packs=await fetch('/templates/catalog.json').then(response=>response.json());
-    if(packs.length!==10)throw new Error('Expected 10 packs');
+    if(packs.length!==7)throw new Error('Expected 7 packs');
     for(const pack of packs){
       const preview=await call('templates.preview',{id:pack.id});
       const size=await image(preview.url);await image('/templates/'+pack.thumbnail);

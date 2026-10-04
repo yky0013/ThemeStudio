@@ -1,5 +1,11 @@
 # 桌面主题工作室 · Theme Studio
 
+项目开发、调研、验证及交付同步见 [GitHub 同步流程](docs/development/github-sync-workflow.md)。[0.6.1 发布](https://github.com/yky0013/ThemeStudio/releases/tag/v0.6.1) · [0.5.1 发布](https://github.com/yky0013/ThemeStudio/releases/tag/v0.5.1)。
+
+## 0.6.1 资源管理器图片主题修订
+
+移除绝区零、明日方舟、蔚蓝档案三个内置套装；增加主题与资源管理器图片背景联动、实时预览及恢复功能。详见 `docs/development/explorer-image-update.md`。
+
 一个独立的 Windows 主题项目。主设置界面在 Seelen UI 的结构和组件上开发，模组区使用 Windhawk 的卡片、选择和标题组件，加入真实 Windows 桌面快捷方式与 17 状态鼠标设置。所有日常设置在同一页，通过左侧导航定位。
 
 ## 0.6.0 资源管理器、桌宠与直接导入
@@ -19,13 +25,13 @@
 
 ## 启动
 
-在其他电脑上运行 `installers/ThemeStudio-0.6.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.6.0/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
+在其他电脑上运行 `installers/ThemeStudio-0.6.1-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.6.1/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
 
 卸载会保留已应用的外观、素材和备份；要恢复原外观请先在程序内恢复。
 
 新项目数据保存在 `%LOCALAPPDATA%/ThemeStudio`；原工作台数据保持原位。关闭主窗口会关闭图标/指针后端；已经启用的桌面壁纸、Seelen 和 Windhawk 引擎继续运行，可在设置页停用。
 
-当前版本：0.6.0。支持导入完整主题数据包和应用更新；图文教程位于 `docs/guide/index.html`，离线随程序安装。该版本的实现与验证记录见 `docs/development/0.4.0-changes.md` 和 `docs/development/0.4.0-verification.json`。
+当前版本：0.6.1。支持导入完整主题数据包和应用更新；图文教程位于 `docs/guide/index.html`，离线随程序安装。该版本的实现与验证记录见 `docs/development/0.4.0-changes.md` 和 `docs/development/0.4.0-verification.json`。
 
 ## 0.4.1 修复
 
@@ -105,4 +111,4 @@ npm.cmd run build
 
 源码及安装包发布于 [yky0013/ThemeStudio](https://github.com/yky0013/ThemeStudio)。[v0.1.1 发布页](https://github.com/yky0013/ThemeStudio/releases/tag/v0.1.1) 保存与安装包匹配的源码、旧工作区源码和 Git 元数据、清理前项目数据，以及 SHA-256 校验记录。旧开发入口、运行环境和本机数据按用户要求清理，清理证据见 `docs/handoff/`。
 
-安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；0.3.0 精简安装包的官方引导安装器来源及哈希在 `config/webview2-bootstrapper.json`，运行 `tools/fetch-bootstrapper.ps1` 准备。`config/webview2-runtime.json` 保留历史完整离线运行库信息。分发时同时提供匹配源码压缩包，保留许可证及作者声明。本仓库保存 0.6.0 完整源码、素材、测试和验证记录；安装包仍为本地交付，尚未上传 GitHub Releases。
+安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；0.3.0 精简安装包的官方引导安装器来源及哈希在 `config/webview2-bootstrapper.json`，运行 `tools/fetch-bootstrapper.ps1` 准备。`config/webview2-runtime.json` 保留历史完整离线运行库信息。分发时同时提供匹配源码压缩包，保留许可证及作者声明。本仓库保存对应版本源码、素材、测试和验证记录；安装包、构建时源码归档与校验文件同步至 GitHub Releases。

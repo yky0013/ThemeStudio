@@ -419,6 +419,8 @@ class RuntimeAdapter:
             if 'taskbar' in identifier:
                 raise ValueError('任务栏已经选择 Seelen。请取消 Windhawk 任务栏模组。')
             source = self.mod_sources / (identifier + '.wh.cpp')
+            if not getattr(sys, 'frozen', False) and mod.get('sourceKind') == 'themestudio':
+                source = self.project / 'components' / 'explorer-skin' / (identifier + '.wh.cpp')
             canonical_source_hash = hashlib.sha256(source.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
             if item.get('sourceHash') != mod['sha256'] or canonical_source_hash != mod['sha256']:
                 raise ValueError(f'模组 {identifier} 的源码已变化，请重新选择。')
@@ -440,7 +442,7 @@ class RuntimeAdapter:
         managed = self._managed(); managed.setdefault('mods', {})
         selected = {'local@' + item['id'] for item, _, _ in validated}
         for installed in current:
-            if (not preserve_others and installed['id'] != 'local@windows-11-file-explorer-styler'
+            if (not preserve_others and installed['id'] not in {'local@windows-11-file-explorer-styler', 'local@themestudio-explorer-background'}
                     and installed['id'] in managed['mods'] and installed['id'] not in selected and installed.get('enabled')):
                 self._wh('mod', 'disable', installed['id'])
         for item, mod, source in validated:

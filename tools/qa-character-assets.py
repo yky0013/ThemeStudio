@@ -27,13 +27,13 @@ gdi32.DeleteObject.argtypes=[wt.HGDIOBJ]
 
 def main():
     catalog=json.loads((ROOT/'assets/templates/catalog.json').read_text(encoding='utf-8-sig'))
-    assert len(catalog)==10
+    assert len(catalog)==7
     before=ca.snapshot()
     result={'packs':[],'icons':0,'cursors':0,'nativeCursorLoads':0,'hotspotsVerified':0}
     overview=Image.new('RGB',(1400,1660),'#f5f7fb')
     d=ImageDraw.Draw(overview)
     font=ImageFont.truetype('C:/Windows/Fonts/msyh.ttc',22)
-    d.text((24,16),'Theme Studio 0.5.0 · 10 套角色图标与鼠标',font=font,fill='#293746')
+    d.text((24,16),'Theme Studio 0.5.0 · 7 套角色图标与鼠标',font=font,fill='#293746')
     for index,item in enumerate(catalog):
         folder=ROOT/'assets/templates'/item['id']
         assert item['version']=='2.0.0' and item['cursorSize']==64

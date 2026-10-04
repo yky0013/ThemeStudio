@@ -25,8 +25,8 @@ import { ExplorerPanel } from "./explorer.tsx";
 import { PetPanel } from "./pets.tsx";
 
 const messages = {
-  "zh-CN": { name: "桌面主题工作室", subtitle: "让桌面，成为你的样子", native: "桌面应用", local: "本机开发", collapse: "展开或收起导航", desktop: "桌面图标", cursors: "鼠标指针", parallax: "壁纸与视差", seelen: "Seelen 外观", windhawk: "Windhawk 模组", source: "查看源码", draft: "待启用", appearance: "外观", light: "浅色", dark: "深色", scope: "逐项对应图片与桌面图标；把图片和视频应用到桌面；启用 Seelen Dock、工具栏和已选 Windhawk 模组。", about: "基于 Seelen UI 与 Windhawk", version: "独立项目 · v0.6.0" },
-  en: { name: "Theme Studio", subtitle: "Make your desktop your own", native: "Desktop app", local: "Local development", collapse: "Expand or collapse navigation", desktop: "Desktop icons", cursors: "Mouse pointers", parallax: "Wallpaper & parallax", seelen: "Seelen appearance", windhawk: "Windhawk mods", source: "View source", draft: "Pending activation", appearance: "Appearance", light: "Light", dark: "Dark", scope: "Pair pictures with individual shortcuts, apply images and videos to the desktop, and activate Seelen Dock, toolbar and selected Windhawk mods.", about: "Based on Seelen UI and Windhawk", version: "Independent project · v0.6.0" },
+  "zh-CN": { name: "桌面主题工作室", subtitle: "让桌面，成为你的样子", native: "桌面应用", local: "本机开发", collapse: "展开或收起导航", desktop: "桌面图标", cursors: "鼠标指针", parallax: "壁纸与视差", seelen: "Seelen 外观", windhawk: "Windhawk 模组", source: "查看源码", draft: "待启用", appearance: "外观", light: "浅色", dark: "深色", scope: "逐项对应图片与桌面图标；把图片和视频应用到桌面；启用 Seelen Dock、工具栏和已选 Windhawk 模组。", about: "基于 Seelen UI 与 Windhawk", version: "独立项目 · v0.6.1" },
+  en: { name: "Theme Studio", subtitle: "Make your desktop your own", native: "Desktop app", local: "Local development", collapse: "Expand or collapse navigation", desktop: "Desktop icons", cursors: "Mouse pointers", parallax: "Wallpaper & parallax", seelen: "Seelen appearance", windhawk: "Windhawk mods", source: "View source", draft: "Pending activation", appearance: "Appearance", light: "Light", dark: "Dark", scope: "Pair pictures with individual shortcuts, apply images and videos to the desktop, and activate Seelen Dock, toolbar and selected Windhawk mods.", about: "Based on Seelen UI and Windhawk", version: "Independent project · v0.6.1" },
 };
 await i18n.use(initReactI18next).init({ lng: localStorage.getItem("theme-studio.language") || "zh-CN", fallbackLng: "en", interpolation: { escapeValue: false }, resources: {
   en: { translation: { ...(yaml.load(enYaml) as object), studio: messages.en } },
@@ -38,7 +38,7 @@ let initial: ThemeRecipe = { schemaVersion: 1, name: "我的桌面主题", seele
 const stored = localStorage.getItem("theme-studio.recipe.v1");
 if (stored) { try { initial = parseRecipe(stored); } catch { /* Keep unreadable storage untouched. */ } }
 // Explorer styling has its own apply/undo controls in 0.6.0.
-initial = {...initial, windhawk: initial.windhawk.filter(mod=>mod.id!=='windows-11-file-explorer-styler')};
+initial = {...initial, windhawk: initial.windhawk.filter(mod=>!['windows-11-file-explorer-styler','themestudio-explorer-background'].includes(mod.id))};
 
 function Studio() {
   const [language, setLanguage] = useState(i18n.language === "en" ? "en" : "zh-CN");
@@ -92,7 +92,7 @@ function Studio() {
           <TemplateLibrary client={studioClient} native={isDesktopApp} />
           <ExplorerPanel client={studioClient} native={isDesktopApp} />
           <PetPanel client={studioClient} native={isDesktopApp} />
-          <WorkbenchView embedded initial={initial} native={isDesktopApp} desktopClient={studioClient} mods={catalog.mods.filter(mod=>mod.id!=='windows-11-file-explorer-styler')}
+          <WorkbenchView embedded initial={initial} native={isDesktopApp} desktopClient={studioClient} mods={catalog.mods.filter(mod=>!['windows-11-file-explorer-styler','themestudio-explorer-background'].includes(mod.id))}
             themes={[{ id: "@default/theme", name: "Seelen Default" }, { id: "@eythaann/bubbles", name: "Bubbles" }, { id: "@workbench/wallpaper-parallax", name: text.parallax }]}
             icons={[{ id: "@system/icon-pack", name: language === "en" ? "System icons" : "系统图标" }]}
             onExport={async (recipe) => (await studioClient.call<{ path: string }>("recipe.export", recipe)).path}

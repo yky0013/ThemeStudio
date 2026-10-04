@@ -54,7 +54,7 @@ class PackageTests(unittest.TestCase):
         source.unlink()
         reopened = DesktopBridge(self.bridge.store.directory, [(self.desktop, 'fixture')])
         packs = reopened.dispatch('templates.list', {})['packs']
-        self.assertEqual(len(packs), 11)
+        self.assertEqual(len(packs), 8)
         item = next(item for item in packs if item['id'] == result['id'])
         self.assertEqual(item['source'], 'imported')
         self.assertEqual(item['icons'], {})

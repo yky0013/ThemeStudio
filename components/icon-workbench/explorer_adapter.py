@@ -4,6 +4,7 @@ import ctypes
 import sys
 from backend import atomic_json
 from runtime_adapter import read_json, kernel32
+from explorer_image import ExplorerImageAdapter, IMAGE_MOD
 
 MOD = 'windows-11-file-explorer-styler'
 STORAGE = 'local@' + MOD
@@ -13,6 +14,7 @@ class ExplorerAdapter:
     def __init__(self, runtime):
         self.runtime = runtime
         self.record = runtime.data / 'explorer-appearance.json'
+        self.images = ExplorerImageAdapter(runtime)
 
     def observed(self):
         installed = next((m for m in self.runtime._installed_mods_readonly() if m['id'] == STORAGE), None)
@@ -27,9 +29,12 @@ class ExplorerAdapter:
         runtime = self.runtime.state()['windhawk']
         mod = next((m for m in runtime['mods'] if m['id'] == STORAGE), {})
         record = read_json(self.record, {})
+        image = self.images.state()
+        image_mod = next((m for m in runtime['mods'] if m['id'] == 'local@' + IMAGE_MOD), {})
         return {**current, 'supported': build >= 22621, 'build': build,
                 'available': runtime['available'] and runtime['compiler'], 'loaded': mod.get('loaded', False),
-                'canRestore': record.get('status') in {'prepared', 'applied', 'needs_attention'},
+                'canRestore': image['canRestore'] or record.get('status') in {'prepared', 'applied', 'needs_attention'},
+                'image': {**image, 'enabled': image_mod.get('enabled', False), 'loaded': image_mod.get('loaded', False)},
                 'choices': self.runtime.catalog[MOD]['themeChoices']}
 
     def _restore_values(self, previous):
@@ -72,6 +77,9 @@ class ExplorerAdapter:
         return self.state()
 
     def restore(self):
+        if self.images.state()['canRestore']:
+            self.images.restore()
+            return self.state()
         record = read_json(self.record, {})
         if record.get('status') not in {'prepared', 'applied', 'needs_attention'}:
             raise ValueError('没有可恢复的资源管理器外观记录。')
