@@ -1,0 +1,6 @@
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          3D2F823216D27E846BAA182B007258AE7AEDCAC60BF1BE10DCAC739926E8717A       E:\desktop\windows\ThemeStudio-0…
+E:\desktop\windows\ThemeStudio-0.5.2\installers\ThemeStudio-0.5.2-Windows-x64-Setup.exe
+

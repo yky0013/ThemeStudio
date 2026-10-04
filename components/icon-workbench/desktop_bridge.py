@@ -26,6 +26,7 @@ from runtime_adapter import RuntimeAdapter
 from template_adapter import TemplateAdapter, StaticWallpaper
 from app_updater import AppUpdater
 from explorer_adapter import ExplorerAdapter
+from appearance_adapter import AppearanceAdapter
 
 
 def identity(value):
@@ -50,6 +51,7 @@ class DesktopBridge:
         self.templates = TemplateAdapter(self)
         self.updater = AppUpdater(self.store.directory)
         self.explorer = ExplorerAdapter(self.runtime)
+        self.appearance = AppearanceAdapter(self)
 
     def rows(self):
         extras = self.store.read_settings().get('extra_paths', [])
@@ -149,17 +151,29 @@ class DesktopBridge:
         return values
 
     def dispatch(self, operation, payload):
+        if operation == 'appearance.state':return self.appearance.state()
+        if operation == 'appearance.begin':
+            with self.store.lock():return self.appearance.begin(payload.get('operations'),payload.get('native'))
+        if operation == 'appearance.commit':
+            with self.store.lock():return self.appearance.commit(payload.get('id'),payload.get('native'))
+        if operation == 'appearance.rollback':return self.appearance.rollback(payload.get('id'))
+        if operation == 'appearance.recovered':
+            with self.store.lock():return self.appearance.recovered(payload.get('id'))
+        if operation == 'appearance.prepare-restore':
+            with self.store.lock():return self.appearance.prepare_restore(payload.get('kind'),payload.get('native'))
+        if operation == 'appearance.restore-core':return self.appearance.restore_target(payload.get('id'))
         if operation == 'explorer.state':
             return self.explorer.state()
         if operation in {'explorer.apply', 'explorer.restore'}:
             with self.store.lock():
+                if operation == 'explorer.apply':
+                    if payload.get('mode') == 'image':
+                        item = self.templates.theme(payload.get('packId'))
+                        self.explorer.images.apply(self.templates.asset(item, item['wallpaper']), item['id'], payload.get('appearance'))
+                        return self.explorer.state()
+                    return self.explorer.apply(payload.get('theme'))
                 if operation == 'explorer.restore':
                     return self.explorer.restore()
-                if payload.get('mode') == 'image':
-                    item = self.templates.theme(payload.get('packId'))
-                    self.explorer.images.apply(self.templates.asset(item, item['wallpaper']), item['id'], payload.get('appearance'))
-                    return self.explorer.state()
-                return self.explorer.apply(payload.get('theme'))
         if operation.startswith('updates.'):
             return self.updater.dispatch(operation, payload)
         if operation == 'templates.list':
@@ -255,6 +269,12 @@ class DesktopBridge:
                     raise ValueError(f"请为“{row['name']}”选择对应的图片。")
                 assignments.append(Assignment(row['path'], icons[icon_id]['path'], item.get('sha256', '')))
             result = self.store.apply(assignments)
+            if all(entry['status']=='applied' for entry in result['entries']):
+                from backend import atomic_json
+                with self.store.lock():
+                    settings=self.store.read_settings();saved=settings.setdefault('iconAssignments',{})
+                    for item in items:saved[item['id']]=item.get('icon',default_icon)
+                    atomic_json(self.store.directory/'settings.json',settings)
             return {'entries': [{k: e[k] for k in ('name', 'status', 'error')} for e in result['entries']],
                     'id': result['id']}
         if operation == 'icons.restore':

@@ -1,6 +1,6 @@
 {
   "name": "theme-studio",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Desktop Theme Studio based on Seelen UI and Windhawk source",
   "private": true,
   "type": "module",

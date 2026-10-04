@@ -11,8 +11,8 @@ export interface RuntimeState {
   windhawk: { available: boolean; running: boolean; compiler: boolean; version: string; error?: string;
     mods: { id: string; name: string; enabled: boolean; loaded: boolean }[] };
 }
-export function RuntimePanel({ client, recipe, native, onState }:
-  { client: DesktopClient; recipe: ThemeRecipe; native: boolean; onState: (state: RuntimeState) => void }) {
+export function RuntimePanel({ client, recipe, native, onState, unified }:
+  { client: DesktopClient; recipe: ThemeRecipe; native: boolean; onState: (state: RuntimeState) => void; unified?:boolean }) {
   const { t } = useTranslation();
   const rt = (key: string, values?: Record<string, unknown>) => t(`theme_workbench.runtime.${key}`, values);
   const [state, setState] = useState<RuntimeState | null>(null);
@@ -39,7 +39,7 @@ export function RuntimePanel({ client, recipe, native, onState }:
       setProgress(rt(`progress.${detail.stage}`, { name: detail.name }));
     };
     document.addEventListener("theme-studio-runtime-progress", report);
-    const changed=(event:Event)=>{const next=(event as CustomEvent<RuntimeState>).detail;if(next){setState(next);onState(next);}};
+    const changed=(event:Event)=>{const next=(event as CustomEvent<RuntimeState>).detail;if(next){setState(next);onState(next);}else if(!running.current)void refresh().catch(failure=>setError(String(failure)));};
     document.addEventListener('theme-studio-runtime-state',changed);
     return () => { alive.current = false; clearInterval(timer); document.removeEventListener("theme-studio-runtime-progress", report); document.removeEventListener('theme-studio-runtime-state',changed); };
   }, [client, native]);
@@ -58,13 +58,13 @@ export function RuntimePanel({ client, recipe, native, onState }:
     <div className={cs.engineCards}>
       <div><h4>Seelen Dock / Toolbar</h4><p>{rt("seelen_chosen")}</p>
         <p role="status">{rt(state?.seelen.dock && state?.seelen.toolbar ? "seelen_active" : state?.seelen.available ? "seelen_off" : "unavailable")}</p>
-        <div className={cs.engineActions}><button disabled={!native || busy || !state?.seelen.available} onClick={() => void run("runtime.seelen.apply", { seelen: recipe.seelen })}>{rt("seelen_enable")}</button>
-          <button disabled={!native || busy || (!state?.seelen.dock && !state?.seelen.toolbar)} onClick={() => void run("runtime.seelen.stop")}>{rt("seelen_disable")}</button></div>
+        {!unified&&<div className={cs.engineActions}><button disabled={!native || busy || !state?.seelen.available} onClick={() => void run("runtime.seelen.apply", { seelen: recipe.seelen })}>{rt("seelen_enable")}</button>
+          <button disabled={!native || busy || (!state?.seelen.dock && !state?.seelen.toolbar)} onClick={() => void run("runtime.seelen.stop")}>{rt("seelen_disable")}</button></div>}
       </div>
       <div><h4>Windhawk</h4><p>{rt("mod_selection", { count: recipe.windhawk.length })}</p>
         <p role="status">{rt(state?.windhawk.running ? "windhawk_active" : state?.windhawk.available ? "windhawk_off" : "unavailable")}</p>
-        <div className={cs.engineActions}><button disabled={!native || busy || !recipe.windhawk.length || !state?.windhawk.compiler} onClick={() => void run("runtime.windhawk.apply", { mods: recipe.windhawk })}>{rt("mods_enable")}</button>
-          <button disabled={!native || busy || !state?.windhawk.mods.some((item) => item.enabled)} onClick={() => void run("runtime.windhawk.stop")}>{rt("mods_disable")}</button></div>
+        {!unified&&<div className={cs.engineActions}><button disabled={!native || busy || !recipe.windhawk.length || !state?.windhawk.compiler} onClick={() => void run("runtime.windhawk.apply", { mods: recipe.windhawk })}>{rt("mods_enable")}</button>
+          <button disabled={!native || busy || !state?.windhawk.mods.some((item) => item.enabled)} onClick={() => void run("runtime.windhawk.stop")}>{rt("mods_disable")}</button></div>}
       </div>
     </div>
     {!!state?.windhawk.mods.length && <div className={cs.modStatus}>{state.windhawk.mods.map((mod) => <div key={mod.id}><span>{mod.name || mod.id.replace(/^local@/, "")}</span><strong>{rt(!mod.enabled ? "mod_disabled" : mod.loaded ? "mod_loaded" : "mod_waiting")}</strong></div>)}</div>}

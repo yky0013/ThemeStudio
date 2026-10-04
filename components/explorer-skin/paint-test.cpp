@@ -2,6 +2,14 @@
 #define THEMESTUDIO_PAINT_TEST
 #include "themestudio-explorer-background.wh.cpp"
 #include <cstdio>
+HRESULT WINAPI TestThemeClass(HTHEME,LPWSTR name,int count){lstrcpynW(name,L"Explorer::TreeView",count);return S_OK;}
+HRESULT WINAPI TestOriginalTheme(HTHEME,HDC dc,int,int,const RECT* rect,const RECT*){
+    HBRUSH brush=CreateSolidBrush(RGB(50,90,160));FillRect_Original(dc,rect,brush);DeleteObject(brush);return S_OK;
+}
+BOOL WINAPI TestOpaqueText(HDC dc,int,int,UINT flags,const RECT* rect,LPCWSTR,UINT,const INT*){
+    if((flags&ETO_OPAQUE)&&rect){HBRUSH brush=CreateSolidBrush(GetBkColor(dc));FillRect_Original(dc,rect,brush);DeleteObject(brush);}return TRUE;
+}
+LRESULT CALLBACK TestPreviewSubclass(HWND window,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR,DWORD_PTR ref){return SurfaceSubclass(window,msg,wp,lp,ref);}
 
 int main() {
     FillRect_Original=FillRect; CreateCompatibleDC_Original=CreateCompatibleDC;
@@ -30,6 +38,32 @@ int main() {
     // A partial dirty rectangle repaints the correct image instead of solid gray.
     RECT dirty{10,20,60,60}; FillRect_Hook(dst,&dirty,(HBRUSH)(COLOR_WINDOW+1));
     if(GetPixel(dst,20,30)!=RGB(30,180,70)) return 5;
+    INITCOMMONCONTROLSEX controls{sizeof(controls),ICC_TREEVIEW_CLASSES};InitCommonControlsEx(&controls);
+    HWND tree=CreateWindowW(L"SysTreeView32",L"",WS_CHILD,100,80,380,240,root,nullptr,cls.hInstance,nullptr);
+    if(!tree)return 10;
+    Track(dst,tree);GetThemeClass_Original=TestThemeClass;DrawThemeBackground_Original=TestOriginalTheme;
+    DrawThemeBackground_Hook((HTHEME)1,dst,TVP_TREEITEM,TREIS_NORMAL,&target,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 11;
+    for(int state:{TREIS_HOT,TREIS_SELECTED,TREIS_SELECTEDNOTFOCUS,TREIS_HOTSELECTED}){
+        DrawThemeBackground_Hook((HTHEME)1,dst,TVP_TREEITEM,state,&target,nullptr);
+        if(GetPixel(dst,20,30)!=RGB(50,90,160))return 12;
+    }
+    ExtTextOutW_Original=TestOpaqueText;SetBkColor(dst,RGB(255,255,255));
+    ExtTextOutW_Hook(dst,0,0,ETO_OPAQUE,&target,L"",0,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 17;
+    SetBkColor(dst,RGB(50,90,160));ExtTextOutW_Hook(dst,0,0,ETO_OPAQUE,&target,L"",0,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(50,90,160))return 18;
+    cls.lpszClassName=L"Shell Preview Extension Host";cls.hbrBackground=(HBRUSH)(COLOR_WINDOW+1);
+    if(!RegisterClassW(&cls))return 13;
+    HWND preview=CreateWindowW(cls.lpszClassName,L"",WS_CHILD,100,80,380,240,root,nullptr,cls.hInstance,nullptr);
+    if(!preview||!IsSurface(preview))return 14;
+    SetWindowSubclass(preview,TestPreviewSubclass,1,0);
+    SendMessageW(preview,WM_ERASEBKGND,(WPARAM)dst,0);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 15;
+    RemoveWindowSubclass(preview,TestPreviewSubclass,1);
+    SendMessageW(preview,WM_ERASEBKGND,(WPARAM)dst,0);
+    if(GetPixel(dst,20,30)!=GetSysColor(COLOR_WINDOW))return 16;
+    DestroyWindow(preview);DestroyWindow(tree);Track(dst,content);
     if(SetTextColor_Hook(dst,RGB(0,0,0))==CLR_INVALID||GetTextColor(dst)!=g_text) return 6;
     DWORD before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
     for(int i=0;i<500;i++) FillRect_Hook(dst,&target,(HBRUSH)(COLOR_WINDOW+1));
@@ -43,6 +77,6 @@ int main() {
     DeleteDC(src); DeleteObject(output); DeleteObject(g_bitmap); g_bitmap=nullptr;
     DeleteObject(red); DeleteObject(green); DeleteObject(blue); ReleaseDC(nullptr,screen);
     DestroyWindow(other); DestroyWindow(root);
-    std::puts("PASS: root-aligned image, partial repaint, native selection, text contrast, scoped HWNDs, 500-paint GDI lifetime");
+    std::puts("PASS: root-aligned image, partial repaint, tree normal background, preserved hover/selection states, preview erase/undo, text contrast, scoped HWNDs, 500-paint GDI lifetime");
     return 0;
 }

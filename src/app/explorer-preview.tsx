@@ -20,6 +20,7 @@ export function ExplorerPreview({image, name, appearance = defaultExplorerAppear
           {[['项目资料','文件夹'],['图片素材','文件夹'],['研究笔记','文件夹'],['演示文稿.pptx','PowerPoint 演示文稿'],['工作记录.docx','Word 文档']].map(([file,type],i)=><div key={file} className={cs.file}><span><b className={i<3?cs.folder:cs.document}>{i<3?'▰':'▤'}</b>{file}</span><span>2026/10/4</span><span>{type}</span></div>)}
           <div className={cs.caption}>{name}<small>背景与主题一起切换</small></div>
         </div>
+        <aside className={cs.previewPane}><strong>预览</strong><span>选择要预览的文件</span><small>窗格背景随主题变化</small></aside>
       </div><div className={cs.status}>5 个项目</div>
     </div><figcaption>效果预览 · 使用主题静态背景；真实工具栏和控件布局随 Windows 版本变化。</figcaption>
   </figure>;

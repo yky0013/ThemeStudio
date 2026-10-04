@@ -18,8 +18,8 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("Theme Studio")]
 [assembly: AssemblyProduct("桌面主题工作室")]
-[assembly: AssemblyVersion("0.5.1.0")]
-[assembly: AssemblyFileVersion("0.5.1.0")]
+[assembly: AssemblyVersion("0.5.2.0")]
+[assembly: AssemblyFileVersion("0.5.2.0")]
 
 internal static class Program
 {
@@ -88,6 +88,7 @@ internal sealed class StudioWindow : Form
     internal StudioWindow(string smoke, string script)
     {
         operations.Add("runtime.desktop.apply");
+        operations.Add("appearance.state");
         foreach (var op in new[] { "explorer.state", "explorer.apply", "explorer.restore" }) operations.Add(op);
         smokeDirectory = smoke;
         qaScript = script;
@@ -259,7 +260,19 @@ internal sealed class StudioWindow : Form
             var operation = request["operation"] as string;
             if (smokeDirectory != null) smokeOperations.Add(operation);
             if (updateHandoff) throw new InvalidOperationException("正在启动更新安装程序，请稍候。");
-            if (operation == "explorer.apply" || operation == "explorer.restore" || operation == "updates.install" || operation == "templates.apply" || operation == "templates.restore" || operation == "wallpaper.apply" || operation == "wallpaper.stop" || operation == "wallpaper.pause" || (operation != null && operation.StartsWith("runtime.") && operation != "runtime.state"))
+            if (operation == "explorer.apply" || operation == "explorer.restore" || operation == "appearance.apply" || operation == "appearance.restore")
+            {
+                appearanceOwned = await appearanceLock.WaitAsync(0);
+                if (!appearanceOwned) throw new InvalidOperationException("正在应用桌面设置，请等待当前操作完成。");
+            }
+            if (operation == "appearance.apply" || operation == "appearance.restore")
+            {
+                var appearancePayload = request.ContainsKey("payload") ? request["payload"] as Dictionary<string, object> : null;
+                var appearanceResult = await ExecuteAppearance(operation, appearancePayload);
+                if (!closing) view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = appearanceResult }));
+                return;
+            }
+            if (operation == "updates.install" || operation == "templates.apply" || operation == "templates.restore" || operation == "wallpaper.apply" || operation == "wallpaper.stop" || operation == "wallpaper.pause" || (operation != null && operation.StartsWith("runtime.") && operation != "runtime.state"))
             {
                 appearanceOwned = await appearanceLock.WaitAsync(0);
                 if (!appearanceOwned) throw new InvalidOperationException("正在应用桌面设置，请等待当前操作完成。");
@@ -290,101 +303,7 @@ internal sealed class StudioWindow : Form
             if (operation != null && operation.StartsWith("templates.", StringComparison.Ordinal))
             {
                 var payload = request.ContainsKey("payload") ? request["payload"] as Dictionary<string, object> : null;
-                object result;
-                if (operation == "templates.list") result = await BackendAction(operation, new { });
-                else if (operation == "templates.import")
-                {
-                    using (var dialog = new OpenFileDialog { Title = "导入主题数据包", Filter = "ThemeStudio 主题数据包|*.tspack;*.zip", CheckFileExists = true, Multiselect = false })
-                    {
-                        result = dialog.ShowDialog(this) == DialogResult.OK ? await BackendAction(operation, new { path = dialog.FileName }) : null;
-                    }
-                }
-                else if (operation == "templates.export")
-                {
-                    var templateId = WallpaperFiles.Text(payload, "id");
-                    await BackendAction("templates.plan", new { id = templateId });
-                    using (var dialog = new SaveFileDialog { Title = "导出完整主题数据包", Filter = "ThemeStudio 主题数据包|*.tspack", DefaultExt = "tspack", AddExtension = true, FileName = templateId + ".tspack", OverwritePrompt = true })
-                    {
-                        if (dialog.ShowDialog(this) != DialogResult.OK) result = null;
-                        else
-                        {
-                            var exported = await BackendAction(operation, new { id = templateId });
-                            var source = WallpaperFiles.Text(exported, "path");
-                            var destination = dialog.FileName;
-                            await Task.Run(delegate { File.Copy(source, destination, true); });
-                            result = new { path = destination };
-                        }
-                    }
-                }
-                else if (operation == "templates.restore")
-                {
-                    var current = await BackendAction("templates.current", new { });
-                    var active = WallpaperFiles.Running(dataDirectory) ? WallpaperFiles.Read(WallpaperFiles.ConfigPath(dataDirectory)) : null;
-                    if (active != null && WallpaperFiles.Text(active, "mediaId") != WallpaperFiles.Text(current, "motionMediaId"))
-                        throw new InvalidOperationException("当前动态壁纸已被其他操作修改，请先停止它再恢复模板。");
-                    if (active != null) await wallpaper.Stop();
-                    Dictionary<string, object> restored = null;
-                    Exception restoreFailure = null;
-                    try { restored = await BackendAction(operation, new { }); }
-                    catch (Exception failure) { restoreFailure = failure; }
-                    if (restoreFailure != null) { if (active != null) await wallpaper.Apply(active); throw restoreFailure; }
-                    var restoreId = WallpaperFiles.Text(restored, "id");
-                    if (restoreId != null && System.Text.RegularExpressions.Regex.IsMatch(restoreId, "^[a-f0-9]{32}$"))
-                    {
-                        var previous = WallpaperFiles.Read(Path.Combine(dataDirectory, "template-native-history", restoreId + ".json"));
-                        if (previous != null && previous.ContainsKey("previous")) previous = previous["previous"] as Dictionary<string, object>;
-                        if (previous != null && WallpaperFiles.Flag(previous, "enabled")) await wallpaper.Apply(previous);
-                    }
-                    result = restored;
-                }
-                else
-                {
-                    var templateId = WallpaperFiles.Text(payload, "id");
-                    if (templateId == null || !System.Text.RegularExpressions.Regex.IsMatch(templateId, "^[a-z0-9-]{1,64}$")) throw new InvalidDataException("模板编号无效。");
-                    var plan = await BackendAction("templates.plan", new { id = templateId });
-                    if (operation == "templates.plan") result = plan;
-                    else
-                    {
-                        var mode = WallpaperFiles.Text(payload, "wallpaperMode") ?? "static";
-                        if (mode != "static" && mode != "animated") throw new InvalidDataException("壁纸模式无效。");
-                        var sources = await BackendAction("templates.media", new { id = templateId });
-                        if (mode == "animated" && WallpaperFiles.Text(sources, "animatedWallpaper") == null) throw new InvalidDataException("这套主题只提供静态壁纸，请选择静态版。");
-                        var resource = await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, WallpaperFiles.Text(sources, "wallpaper")); });
-                        var media = json.Deserialize<Dictionary<string, object>>(json.Serialize(resource));
-                        var motion = mode == "animated" ? json.Deserialize<Dictionary<string, object>>(json.Serialize(await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, WallpaperFiles.Text(sources, "animatedWallpaper")); }))) : null;
-                        if (operation == "templates.preview") result = motion ?? media;
-                        else if (operation == "templates.apply")
-                        {
-                            var previous = WallpaperFiles.Running(dataDirectory) ? WallpaperFiles.Read(WallpaperFiles.ConfigPath(dataDirectory)) : null;
-                            await wallpaper.Stop();
-                            payload["mediaId"] = media["id"];
-                            payload["wallpaperMode"] = mode;
-                            payload["motionMediaId"] = motion == null ? null : motion["id"];
-                            Exception templateFailure = null;
-                            Dictionary<string, object> applied = null;
-                            try
-                            {
-                                applied = await BackendAction(operation, payload);
-                                WallpaperFiles.Write(Path.Combine(dataDirectory, "template-native-history", WallpaperFiles.Text(applied, "id") + ".json"), new { previous = previous, mode = mode });
-                                if (motion != null) await wallpaper.Apply(new Dictionary<string, object> {
-                                    { "mediaId", motion["id"] }, { "settings", new Dictionary<string, object> {
-                                        { "enabled", false }, { "preset", "elegance" }, { "strength", 1 }, { "perspective", false }, { "tilt", 0 }, { "opposite", true } } }
-                                });
-                            }
-                            catch (Exception failure) { templateFailure = failure; }
-                            if (templateFailure != null)
-                            {
-                                var failures = new List<string> { templateFailure.Message };
-                                try { await wallpaper.Stop(); } catch (Exception recovery) { failures.Add(recovery.Message); }
-                                if (applied != null) { try { await BackendAction("templates.restore", new { }); } catch (Exception recovery) { failures.Add(recovery.Message); } }
-                                if (previous != null) { try { await wallpaper.Apply(previous); } catch (Exception recovery) { failures.Add(recovery.Message); } }
-                                throw new InvalidOperationException(String.Join("；", failures.ToArray()));
-                            }
-                            result = applied;
-                        }
-                        else throw new InvalidDataException("不支持的模板操作。");
-                    }
-                }
+                var result = await ExecuteTemplates(operation, payload);
                 if (!closing) view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = result }));
                 return;
             }
@@ -431,44 +350,7 @@ internal sealed class StudioWindow : Form
             if (operation != null && operation.StartsWith("wallpaper.", StringComparison.Ordinal))
             {
                 var payload = request.ContainsKey("payload") ? request["payload"] as Dictionary<string, object> : null;
-                object result;
-                if (operation == "wallpaper.status")
-                {
-                    var still = await BackendAction("wallpaper.static.status", new { });
-                    result = WallpaperFiles.Flag(still, "active") && !WallpaperFiles.Running(dataDirectory) ? WithMedia(still) : wallpaper.Status();
-                }
-                else if (operation == "wallpaper.apply")
-                {
-                    var mediaId = WallpaperFiles.Text(payload, "mediaId");
-                    WallpaperFiles.Media(dataDirectory, mediaId);
-                    var settings = WallpaperFiles.Settings(payload["settings"]);
-                    if (!WallpaperFiles.Flag(settings, "enabled") && WallpaperFiles.CanUseStatic(dataDirectory, mediaId))
-                    {
-                        await wallpaper.Stop();
-                        result = WithMedia(await BackendAction("wallpaper.static.apply", payload));
-                    }
-                    else result = await wallpaper.Apply(payload);
-                }
-                else if (operation == "wallpaper.pause") result = await wallpaper.Pause(WallpaperFiles.Flag(payload, "paused"));
-                else if (operation == "wallpaper.stop")
-                {
-                    if (WallpaperFiles.Running(dataDirectory)) result = await wallpaper.Stop();
-                    else result = WithMedia(await BackendAction("wallpaper.static.restore", new { }));
-                }
-                else if (operation == "wallpaper.example")
-                {
-                    var name = WallpaperFiles.Text(payload, "kind") == "video" ? "parallax-motion.mp4" : "parallax-landscape.svg";
-                    result = await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, Path.Combine(Application.StartupPath, "wwwroot", "fixtures", name)); });
-                }
-                else if (operation == "wallpaper.pick")
-                {
-                    using (var dialog = new OpenFileDialog { Title = "选择桌面壁纸图片或视频", Filter = "图片和视频|*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.gif;*.svg;*.mp4;*.webm;*.m4v;*.mov;*.mkv;*.avi", CheckFileExists = true, Multiselect = false })
-                    {
-                        if (dialog.ShowDialog(this) != DialogResult.OK) result = null;
-                        else { var selected = dialog.FileName; result = await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, selected); }); }
-                    }
-                }
-                else throw new InvalidDataException("不支持的壁纸操作。");
+                var result = await ExecuteWallpaper(operation, payload);
                 if (!closing) view.CoreWebView2.PostWebMessageAsJson(json.Serialize(new { id = id, result = result }));
                 return;
             }
@@ -508,11 +390,230 @@ internal sealed class StudioWindow : Form
         }
     }
 
+    private async Task<object> ExecuteTemplates(string operation, Dictionary<string, object> payload)
+    {
+        object result;
+        if (operation == "templates.list") result = await BackendAction(operation, new { });
+        else if (operation == "templates.import")
+        {
+            using (var dialog = new OpenFileDialog { Title = "导入主题数据包", Filter = "ThemeStudio 主题数据包|*.tspack;*.zip", CheckFileExists = true, Multiselect = false })
+            {
+                result = dialog.ShowDialog(this) == DialogResult.OK ? await BackendAction(operation, new { path = dialog.FileName }) : null;
+            }
+        }
+        else if (operation == "templates.export")
+        {
+            var templateId = WallpaperFiles.Text(payload, "id");
+            await BackendAction("templates.plan", new { id = templateId });
+            using (var dialog = new SaveFileDialog { Title = "导出完整主题数据包", Filter = "ThemeStudio 主题数据包|*.tspack", DefaultExt = "tspack", AddExtension = true, FileName = templateId + ".tspack", OverwritePrompt = true })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK) result = null;
+                else
+                {
+                    var exported = await BackendAction(operation, new { id = templateId });
+                    var source = WallpaperFiles.Text(exported, "path");
+                    var destination = dialog.FileName;
+                    await Task.Run(delegate { File.Copy(source, destination, true); });
+                    result = new { path = destination };
+                }
+            }
+        }
+        else if (operation == "templates.restore")
+        {
+            var current = await BackendAction("templates.current", new { });
+            var active = WallpaperFiles.Running(dataDirectory) ? WallpaperFiles.Read(WallpaperFiles.ConfigPath(dataDirectory)) : null;
+            if (active != null && WallpaperFiles.Text(active, "mediaId") != WallpaperFiles.Text(current, "motionMediaId"))
+                throw new InvalidOperationException("当前动态壁纸已被其他操作修改，请先停止它再恢复模板。");
+            if (active != null) await wallpaper.Stop();
+            Dictionary<string, object> restored = null;
+            Exception restoreFailure = null;
+            try { restored = await BackendAction(operation, new { }); }
+            catch (Exception failure) { restoreFailure = failure; }
+            if (restoreFailure != null) { if (active != null) await wallpaper.Apply(active); throw restoreFailure; }
+            var restoreId = WallpaperFiles.Text(restored, "id");
+            if (restoreId != null && System.Text.RegularExpressions.Regex.IsMatch(restoreId, "^[a-f0-9]{32}$"))
+            {
+                var previous = WallpaperFiles.Read(Path.Combine(dataDirectory, "template-native-history", restoreId + ".json"));
+                if (previous != null && previous.ContainsKey("previous")) previous = previous["previous"] as Dictionary<string, object>;
+                if (previous != null && WallpaperFiles.Flag(previous, "enabled")) await wallpaper.Apply(previous);
+            }
+            result = restored;
+        }
+        else
+        {
+            var templateId = WallpaperFiles.Text(payload, "id");
+            if (templateId == null || !System.Text.RegularExpressions.Regex.IsMatch(templateId, "^[a-z0-9-]{1,64}$")) throw new InvalidDataException("模板编号无效。");
+            var plan = await BackendAction("templates.plan", new { id = templateId });
+            if (operation == "templates.plan") result = plan;
+            else
+            {
+                var mode = WallpaperFiles.Text(payload, "wallpaperMode") ?? "static";
+                if (mode != "static" && mode != "animated") throw new InvalidDataException("壁纸模式无效。");
+                var sources = await BackendAction("templates.media", new { id = templateId });
+                if (mode == "animated" && WallpaperFiles.Text(sources, "animatedWallpaper") == null) throw new InvalidDataException("这套主题只提供静态壁纸，请选择静态版。");
+                var resource = await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, WallpaperFiles.Text(sources, "wallpaper")); });
+                var media = json.Deserialize<Dictionary<string, object>>(json.Serialize(resource));
+                var motion = mode == "animated" ? json.Deserialize<Dictionary<string, object>>(json.Serialize(await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, WallpaperFiles.Text(sources, "animatedWallpaper")); }))) : null;
+                if (operation == "templates.preview") result = motion ?? media;
+                else if (operation == "templates.apply")
+                {
+                    var previous = WallpaperFiles.Running(dataDirectory) ? WallpaperFiles.Read(WallpaperFiles.ConfigPath(dataDirectory)) : null;
+                    await wallpaper.Stop();
+                    payload["mediaId"] = media["id"];
+                    payload["wallpaperMode"] = mode;
+                    payload["motionMediaId"] = motion == null ? null : motion["id"];
+                    Exception templateFailure = null;
+                    Dictionary<string, object> applied = null;
+                    try
+                    {
+                        applied = await BackendAction(operation, payload);
+                        WallpaperFiles.Write(Path.Combine(dataDirectory, "template-native-history", WallpaperFiles.Text(applied, "id") + ".json"), new { previous = previous, mode = mode });
+                        if (motion != null) await wallpaper.Apply(new Dictionary<string, object> {
+                            { "mediaId", motion["id"] }, { "settings", new Dictionary<string, object> {
+                                { "enabled", false }, { "preset", "elegance" }, { "strength", 1 }, { "perspective", false }, { "tilt", 0 }, { "opposite", true } } }
+                        });
+                    }
+                    catch (Exception failure) { templateFailure = failure; }
+                    if (templateFailure != null)
+                    {
+                        var failures = new List<string> { templateFailure.Message };
+                        try { await wallpaper.Stop(); } catch (Exception recovery) { failures.Add(recovery.Message); }
+                        if (applied != null) { try { await BackendAction("templates.restore", new { }); } catch (Exception recovery) { failures.Add(recovery.Message); } }
+                        if (previous != null) { try { await wallpaper.Apply(previous); } catch (Exception recovery) { failures.Add(recovery.Message); } }
+                        throw new InvalidOperationException(String.Join("；", failures.ToArray()));
+                    }
+                    result = applied;
+                }
+                else throw new InvalidDataException("不支持的模板操作。");
+            }
+        }
+        return result;
+    }
+
+    private async Task<object> ExecuteWallpaper(string operation, Dictionary<string, object> payload)
+    {
+        object result;
+        if (operation == "wallpaper.status")
+        {
+            var still = await BackendAction("wallpaper.static.status", new { });
+            result = WallpaperFiles.Flag(still, "active") && !WallpaperFiles.Running(dataDirectory) ? WithMedia(still) : wallpaper.Status();
+        }
+        else if (operation == "wallpaper.apply")
+        {
+            var mediaId = WallpaperFiles.Text(payload, "mediaId");
+                    if (mediaId == null && WallpaperFiles.Flag(payload, "useExample"))
+                    {
+                        var example = WallpaperFiles.Text(payload, "kind") == "video" ? "parallax-motion.mp4" : "parallax-landscape.svg";
+                        var imported = json.Deserialize<Dictionary<string, object>>(json.Serialize(await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, Path.Combine(Application.StartupPath, "wwwroot", "fixtures", example)); })));
+                        payload["mediaId"] = imported["id"]; mediaId = Convert.ToString(imported["id"]);
+                    }
+            WallpaperFiles.Media(dataDirectory, mediaId);
+            var settings = WallpaperFiles.Settings(payload["settings"]);
+            if (!WallpaperFiles.Flag(settings, "enabled") && WallpaperFiles.CanUseStatic(dataDirectory, mediaId))
+            {
+                await wallpaper.Stop();
+                result = WithMedia(await BackendAction("wallpaper.static.apply", payload));
+            }
+            else result = await wallpaper.Apply(payload);
+        }
+        else if (operation == "wallpaper.pause") result = await wallpaper.Pause(WallpaperFiles.Flag(payload, "paused"));
+        else if (operation == "wallpaper.stop")
+        {
+            if (WallpaperFiles.Running(dataDirectory)) result = await wallpaper.Stop();
+            else result = WithMedia(await BackendAction("wallpaper.static.restore", new { }));
+        }
+        else if (operation == "wallpaper.example")
+        {
+            var name = WallpaperFiles.Text(payload, "kind") == "video" ? "parallax-motion.mp4" : "parallax-landscape.svg";
+            result = await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, Path.Combine(Application.StartupPath, "wwwroot", "fixtures", name)); });
+        }
+        else if (operation == "wallpaper.pick")
+        {
+            using (var dialog = new OpenFileDialog { Title = "选择桌面壁纸图片或视频", Filter = "图片和视频|*.png;*.jpg;*.jpeg;*.webp;*.bmp;*.gif;*.svg;*.mp4;*.webm;*.m4v;*.mov;*.mkv;*.avi", CheckFileExists = true, Multiselect = false })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK) result = null;
+                else { var selected = dialog.FileName; result = await Task.Run(delegate { return WallpaperFiles.Import(dataDirectory, selected); }); }
+            }
+        }
+        else throw new InvalidDataException("不支持的壁纸操作。");
+        return result;
+    }
+
+    private Dictionary<string, object> NativeAppearanceSnapshot()
+    {
+        if (!WallpaperFiles.Running(dataDirectory)) return null;
+        var desired = WallpaperFiles.Read(WallpaperFiles.ConfigPath(dataDirectory));
+        if (desired == null || !WallpaperFiles.Flag(desired, "enabled")) return null;
+        return new Dictionary<string, object> { { "mediaId", desired["mediaId"] },
+            { "settings", desired["settings"] }, { "paused", WallpaperFiles.Flag(desired, "paused") } };
+    }
+
+    private async Task RestoreNativeAppearance(Dictionary<string, object> result)
+    {
+        if (!WallpaperFiles.Flag(result, "wallpaperIncluded")) return;
+        var target = result.ContainsKey("native") ? result["native"] as Dictionary<string, object> : null;
+        if (target != null) await wallpaper.Apply(target);
+    }
+
+    private async Task<object> ExecuteAppearance(string operation, Dictionary<string, object> payload)
+    {
+        if (payload == null) throw new InvalidDataException("外观设置无效。");
+        var beforeNative = NativeAppearanceSnapshot();
+        Dictionary<string, object> prepared;
+        if (operation == "appearance.apply")
+            prepared = await BackendAction("appearance.begin", new { operations = payload.ContainsKey("operations") ? payload["operations"] : null, native = beforeNative });
+        else
+            prepared = await BackendAction("appearance.prepare-restore", new { kind = WallpaperFiles.Text(payload, "kind"), native = beforeNative });
+        var transactionId = WallpaperFiles.Text(prepared, "id");
+        Exception appearanceFailure = null;
+        try
+        {
+            if (operation == "appearance.apply")
+            {
+                foreach (var raw in (System.Collections.IEnumerable)payload["operations"])
+                {
+                    var step = raw as Dictionary<string, object>;
+                    var name = WallpaperFiles.Text(step, "operation");
+                    var values = step["payload"] as Dictionary<string, object>;
+                    object applied;
+                    if (name == "templates.apply") applied = await ExecuteTemplates(name, values);
+                    else if (name == "wallpaper.apply" || name == "wallpaper.pause" || name == "wallpaper.stop") applied = await ExecuteWallpaper(name, values);
+                    else applied = await BackendAction(name, values);
+                    var result = applied as Dictionary<string, object>;
+                    if (name == "icons.apply" && result != null && result.ContainsKey("entries"))
+                    {
+                        foreach (var entry in (System.Collections.IEnumerable)result["entries"])
+                            if (WallpaperFiles.Text(entry as Dictionary<string, object>, "status") != "applied")
+                                throw new InvalidOperationException("部分图标应用失败，正在恢复本次整套修改。");
+                    }
+                }
+                return await BackendAction("appearance.commit", new { id = transactionId, native = NativeAppearanceSnapshot() });
+            }
+            if (WallpaperFiles.Flag(prepared, "wallpaperIncluded")) await wallpaper.Stop();
+            var restored = await BackendAction(WallpaperFiles.Flag(prepared, "recover") ? "appearance.rollback" : "appearance.restore-core", new { id = transactionId });
+            await RestoreNativeAppearance(restored);
+            if (WallpaperFiles.Flag(prepared, "recover"))
+                return await BackendAction("appearance.recovered", new { id = transactionId });
+            return await BackendAction("appearance.commit", new { id = transactionId, native = NativeAppearanceSnapshot() });
+        }
+        catch (Exception failure) { appearanceFailure = failure; }
+        var errors = new List<string> { appearanceFailure.Message };
+        try
+        {
+            if (WallpaperFiles.Flag(prepared, "wallpaperIncluded")) await wallpaper.Stop();
+            var restored = await BackendAction("appearance.rollback", new { id = transactionId });
+            await RestoreNativeAppearance(restored);
+            await BackendAction("appearance.recovered", new { id = transactionId });
+        }
+        catch (Exception recovery) { errors.Add("整套恢复未完成，备份已保留：" + recovery.Message); }
+        throw new InvalidOperationException(String.Join("；", errors.ToArray()));
+    }
+
     private void WriteReport(bool success, string error, object payload)
     {
         var destination = smokeDirectory ?? Path.Combine(dataDirectory, "diagnostics");
         Directory.CreateDirectory(destination);
-        var report = new { product = "Theme Studio", version = "0.5.1", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
+        var report = new { product = "Theme Studio", version = "0.5.2", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
             executable = Application.ExecutablePath, nativeWebView = true, backend = "bundled executable", ui = payload, error = error };
         File.WriteAllText(Path.Combine(destination, "native-runtime.json"), json.Serialize(report), new UTF8Encoding(false));
     }

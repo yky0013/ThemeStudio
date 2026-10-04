@@ -1,0 +1,38 @@
+
+> theme-studio@0.5.2 test
+> tsx --test tests/*.test.ts
+
+✔ an unresolved overlap cannot silently bind a Seelen component (3.5395ms)
+✔ the user's split wallpaper choice binds Seelen wallpaper without choosing a taskbar (0.4617ms)
+✔ custom cursor/icon choices replace theme accessories within one combined plan (3.1468ms)
+✔ Mac selection and its color selection produce one Seelen activation (0.4327ms)
+✔ locked drafts reject racing edits; completing an apply leaves no second apply pending (0.4355ms)
+✔ desktop writes require POST, JSON and the current private session token (1.1272ms)
+✔ desktop host permits only scoped personalization operations (0.225ms)
+✔ install and upgrade have no automatic desktop engine lifecycle action (1.4433ms)
+✔ installer only consumes explicit application payload directories (1.1773ms)
+✔ configuration round trip keeps Unicode names and mod version identity (1.2985ms)
+✔ adding or removing a mod never mutates the input and never adds duplicates (0.1228ms)
+✔ import rejects invalid versions, duplicates and prototype keys (0.403ms)
+✔ oversized and malformed input do not replace the input recipe (0.2443ms)
+✔ missing resources and changed mod source are reported before application (0.4298ms)
+✔ unknown preset fails validation (0.1685ms)
+✔ catalog search includes localized names and target process (1.3845ms)
+✔ catalog has unique ids, real source hashes and all three style modules (0.3763ms)
+✔ upstream spring reaches approximately 95% at its configured settling time (1.6278ms)
+✔ spring result is frame-rate independent for a constant target (1.3843ms)
+✔ long stalls are clamped and pointer dead zone filters small movement (1.4188ms)
+✔ global pointer normalization handles negative monitor origins and independent displays (0.7751ms)
+✔ constant auto-zoom covers viewport corners over all presets, sizes and tilt samples (5.0787ms)
+✔ matrix maps padded source center to viewport center and preserves finite homogeneous coordinates (0.8072ms)
+✔ source theme values round-trip with strict user configuration validation (1.0063ms)
+✔ recipe persists the combination and rejects contradictory enablement (1.2284ms)
+✔ an imported static-only pack never tries to apply a missing video (1.3018ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 604.6262
