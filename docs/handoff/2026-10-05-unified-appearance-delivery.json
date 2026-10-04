@@ -1,6 +1,6 @@
 {
   "date": "2026-10-05",
-  "status": "remote_verified_cleanup_pending",
+  "status": "completed",
   "repository": "yky0013/ThemeStudio",
   "releases": [
     {
@@ -147,7 +147,7 @@
         "remoteVerified": true
       }
     ],
-    "status": "remote_verified_cleanup_pending",
+    "status": "completed_to_recycle_bin",
     "keepEntries": [
       {
         "name": "ThemeStudio-0.5.2-Windows-x64-Setup.exe",
@@ -159,7 +159,50 @@
         "bytes": 149045468,
         "sha256": "59e53416bb7deec338b6131f8c0743409f024f8b3c46761443ba6b00a192ba5e"
       }
-    ]
+    ],
+    "actual": {
+      "installers": [
+        {
+          "name": "ThemeStudio-0.5.2-Windows-x64-Setup.exe",
+          "bytes": 168832304,
+          "sha256": "3d2f823216d27e846baa182b007258ae7aedcac60bf1be10dcac739926e8717a"
+        },
+        {
+          "name": "ThemeStudio-0.6.2-Windows-x64-Setup.exe",
+          "bytes": 149045468,
+          "sha256": "59e53416bb7deec338b6131f8c0743409f024f8b3c46761443ba6b00a192ba5e"
+        }
+      ],
+      "recycleConfirmed": [
+        ".release-sync-062",
+        "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+        "ThemeStudio-0.5.2",
+        "ThemeStudio-0.5.2-Source.zip",
+        "ThemeStudio-0.5.2-Windows-x64-Setup.exe.sha256",
+        "ThemeStudio-0.6.1-Windows-x64-Setup.exe",
+        "ThemeStudio-0.6.2",
+        "ThemeStudio-0.6.2-Source.zip",
+        "ThemeStudio-0.6.2-Windows-x64-Setup.exe.sha256"
+      ],
+      "remaining": [
+        {
+          "Name": "天选姬指针恢复",
+          "Mode": "d----",
+          "Length": null
+        },
+        {
+          "Name": "ThemeStudio-0.5.2-Windows-x64-Setup.exe",
+          "Mode": "-a---",
+          "Length": 168832304
+        },
+        {
+          "Name": "ThemeStudio-0.6.2-Windows-x64-Setup.exe",
+          "Mode": "-a---",
+          "Length": 149045468
+        }
+      ]
+    },
+    "permanentDelete": false
   },
   "verification": {
     "0.6.2": {
