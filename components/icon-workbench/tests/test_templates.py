@@ -24,7 +24,7 @@ class TemplateTests(unittest.TestCase):
         self.original_set=patch('template_adapter.set_wallpaper',side_effect=lambda value:self.current.__setitem__(0,str(value)));self.mock_set=self.original_set.start();self.addCleanup(self.original_set.stop)
 
     def test_every_pack_has_decodable_wallpaper_icons_and_all_native_cursor_roles(self):
-        catalog=self.adapter.catalog();self.assertEqual(len(catalog),10);self.assertEqual(len({x['id'] for x in catalog}),10)
+        catalog=self.adapter.catalog();self.assertEqual(len(catalog),7);self.assertEqual(len({x['id'] for x in catalog}),7)
         for item in catalog:
             folder=self.adapter.root/item['id']
             self.assertTrue((self.adapter.root/item['animatedWallpaper']).is_file())
@@ -122,5 +122,32 @@ class TemplateTests(unittest.TestCase):
         self.assertEqual(record['previous'],first['record']);self.assertIsInstance(record['previous'],str)
         restored=StaticWallpaper(self.bridge.store.directory).restore(second['record']);self.assertTrue(restored['active'])
         StaticWallpaper(self.bridge.store.directory).restore(first['record']);self.assertEqual(self.current[0],'')
+
+    def test_theme_and_explorer_use_the_same_pack_and_restore_record(self):
+        with patch.object(self.bridge.explorer.images,'apply',return_value={'recordId':'image-record'}) as apply, \
+             patch.object(self.bridge.explorer.images,'can_restore') as preflight, \
+             patch.object(self.bridge.explorer.images,'restore') as restore:
+            result=self.bridge.dispatch('templates.apply',{'id':'wuthering-waves','mediaId':self.media_id,'explorer':True,'explorerAppearance':{'imageOpacity':42,'tint':'#081b32'}})
+            self.assertTrue(result['explorerApplied'])
+            self.assertEqual(apply.call_args.args[1],'wuthering-waves')
+            self.assertEqual(apply.call_args.args[2]['imageOpacity'],42)
+            self.adapter.restore()
+            preflight.assert_called_once_with('image-record');restore.assert_called_once_with('image-record')
+
+    def test_wallpaper_failure_also_restores_the_linked_explorer_image(self):
+        with patch.object(self.bridge.explorer.images,'apply',return_value={'recordId':'image-record'}), \
+             patch.object(self.bridge.explorer.images,'restore') as restore, \
+             patch.object(self.adapter.wallpaper,'apply',side_effect=RuntimeError('wallpaper failed')):
+            with self.assertRaisesRegex(RuntimeError,'wallpaper failed'):
+                self.adapter.apply('wuthering-waves',self.media_id,use_explorer=True)
+            restore.assert_called_once_with('image-record')
+
+    def test_explorer_conflict_prevents_any_partial_theme_restore(self):
+        with patch.object(self.bridge.explorer.images,'apply',return_value={'recordId':'image-record'}):
+            self.adapter.apply('wuthering-waves',self.media_id,use_icons=True,use_explorer=True)
+        before=self.shortcut.read_bytes(); wallpaper=self.current[0]
+        with patch.object(self.bridge.explorer.images,'can_restore',side_effect=ValueError('explorer conflict')):
+            with self.assertRaisesRegex(ValueError,'explorer conflict'):self.adapter.restore()
+        self.assertEqual(self.shortcut.read_bytes(),before);self.assertEqual(self.current[0],wallpaper)
 
 if __name__=='__main__':unittest.main()

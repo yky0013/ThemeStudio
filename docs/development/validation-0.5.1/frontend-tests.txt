@@ -1,0 +1,35 @@
+
+> theme-studio@0.5.1 test
+> tsx --test tests/*.test.ts
+
+✔ an unresolved overlap cannot silently bind a Seelen component (2.7025ms)
+✔ the user's split wallpaper choice binds Seelen wallpaper without choosing a taskbar (0.4709ms)
+✔ desktop writes require POST, JSON and the current private session token (1.1967ms)
+✔ desktop host permits only scoped personalization operations (0.2935ms)
+✔ install and upgrade have no automatic desktop engine lifecycle action (1.6327ms)
+✔ installer only consumes explicit application payload directories (0.3906ms)
+✔ configuration round trip keeps Unicode names and mod version identity (1.4491ms)
+✔ adding or removing a mod never mutates the input and never adds duplicates (0.126ms)
+✔ import rejects invalid versions, duplicates and prototype keys (0.3712ms)
+✔ oversized and malformed input do not replace the input recipe (0.2377ms)
+✔ missing resources and changed mod source are reported before application (0.7884ms)
+✔ unknown preset fails validation (0.432ms)
+✔ catalog search includes localized names and target process (2.0108ms)
+✔ catalog has unique ids, real source hashes and all three style modules (0.4615ms)
+✔ upstream spring reaches approximately 95% at its configured settling time (1.8183ms)
+✔ spring result is frame-rate independent for a constant target (1.5078ms)
+✔ long stalls are clamped and pointer dead zone filters small movement (1.8172ms)
+✔ global pointer normalization handles negative monitor origins and independent displays (0.4153ms)
+✔ constant auto-zoom covers viewport corners over all presets, sizes and tilt samples (5.6082ms)
+✔ matrix maps padded source center to viewport center and preserves finite homogeneous coordinates (1.3208ms)
+✔ source theme values round-trip with strict user configuration validation (1.4383ms)
+✔ recipe persists the combination and rejects contradictory enablement (2.2997ms)
+✔ an imported static-only pack never tries to apply a missing video (1.1056ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 652.6719

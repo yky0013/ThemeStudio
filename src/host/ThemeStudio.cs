@@ -18,8 +18,8 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("Theme Studio")]
 [assembly: AssemblyProduct("桌面主题工作室")]
-[assembly: AssemblyVersion("0.5.0.0")]
-[assembly: AssemblyFileVersion("0.5.0.0")]
+[assembly: AssemblyVersion("0.5.1.0")]
+[assembly: AssemblyFileVersion("0.5.1.0")]
 
 internal static class Program
 {
@@ -88,6 +88,7 @@ internal sealed class StudioWindow : Form
     internal StudioWindow(string smoke, string script)
     {
         operations.Add("runtime.desktop.apply");
+        foreach (var op in new[] { "explorer.state", "explorer.apply", "explorer.restore" }) operations.Add(op);
         smokeDirectory = smoke;
         qaScript = script;
         dataDirectory = smoke == null ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ThemeStudio") : Path.Combine(smoke, "data");
@@ -258,7 +259,7 @@ internal sealed class StudioWindow : Form
             var operation = request["operation"] as string;
             if (smokeDirectory != null) smokeOperations.Add(operation);
             if (updateHandoff) throw new InvalidOperationException("正在启动更新安装程序，请稍候。");
-            if (operation == "updates.install" || operation == "templates.apply" || operation == "templates.restore" || operation == "wallpaper.apply" || operation == "wallpaper.stop" || operation == "wallpaper.pause" || (operation != null && operation.StartsWith("runtime.") && operation != "runtime.state"))
+            if (operation == "explorer.apply" || operation == "explorer.restore" || operation == "updates.install" || operation == "templates.apply" || operation == "templates.restore" || operation == "wallpaper.apply" || operation == "wallpaper.stop" || operation == "wallpaper.pause" || (operation != null && operation.StartsWith("runtime.") && operation != "runtime.state"))
             {
                 appearanceOwned = await appearanceLock.WaitAsync(0);
                 if (!appearanceOwned) throw new InvalidOperationException("正在应用桌面设置，请等待当前操作完成。");
@@ -511,7 +512,7 @@ internal sealed class StudioWindow : Form
     {
         var destination = smokeDirectory ?? Path.Combine(dataDirectory, "diagnostics");
         Directory.CreateDirectory(destination);
-        var report = new { product = "Theme Studio", version = "0.5.0", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
+        var report = new { product = "Theme Studio", version = "0.5.1", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
             executable = Application.ExecutablePath, nativeWebView = true, backend = "bundled executable", ui = payload, error = error };
         File.WriteAllText(Path.Combine(destination, "native-runtime.json"), json.Serialize(report), new UTF8Encoding(false));
     }

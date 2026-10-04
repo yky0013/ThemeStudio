@@ -177,7 +177,7 @@ class TemplateAdapter:
                 return record
         return {}
 
-    def apply(self, ident, media_id, use_icons=False, use_cursors=False, wallpaper_mode='static', motion_media_id=None):
+    def apply(self, ident, media_id, use_icons=False, use_cursors=False, wallpaper_mode='static', motion_media_id=None, use_explorer=False, explorer_appearance=None):
         if wallpaper_mode not in {'static', 'animated'}:
             raise ValueError('壁纸模式无效。')
         if wallpaper_mode == 'animated':
@@ -194,7 +194,7 @@ class TemplateAdapter:
         icons = {key:self.bridge.store.import_icon(self.asset(item, value['file'])) for key, value in item['icons'].items()} if use_icons else {}
         record={'id':uuid.uuid4().hex,'templateId':ident,'name':item['name'],'status':'prepared','created':datetime.now().isoformat(),
                 'icons':None,'cursors':False,'wallpaper':None,'beforeCursors':snapshot() if use_cursors else None,
-                'mode':wallpaper_mode,'motionMediaId':motion_media_id}
+                'mode':wallpaper_mode,'motionMediaId':motion_media_id,'explorer':None}
         path=self.history/(record['id']+'.json');atomic_json(path,record)
         try:
             if icons:
@@ -210,16 +210,20 @@ class TemplateAdapter:
             if use_cursors:
                 self.bridge.cursors.apply(roles,item.get('cursorSize',48),expected_state=record['beforeCursors'])
                 record['cursors']=True;record['afterCursors']=snapshot();atomic_json(path,record)
+            if use_explorer is True:
+                result = self.bridge.explorer.images.apply(self.asset(item, item['wallpaper']), ident, explorer_appearance)
+                record['explorer'] = result['recordId']; atomic_json(path, record)
             result=self.wallpaper.apply(media_id,{'enabled':False,'preset':'elegance','strength':1,'perspective':False,'tilt':0,'opposite':True})
             record['wallpaper']=result['record'];record['status']='applied';atomic_json(path,record)
-            return {'id':record['id'],'name':item['name'],'iconsApplied':len(matches) if use_icons else 0,'cursorsApplied':17 if use_cursors else 0,'mode':wallpaper_mode}
+            return {'id':record['id'],'name':item['name'],'iconsApplied':len(matches) if use_icons else 0,'cursorsApplied':17 if use_cursors else 0,'mode':wallpaper_mode,'explorerApplied':bool(record['explorer'])}
         except Exception as error:
             issues=[]
-            try:
-                if record['wallpaper']:self.wallpaper.restore(record['wallpaper'])
-                if record['cursors']:self.bridge.cursors.restore()
-                if record['icons']:self.bridge.store.restore(record['icons'])
-            except Exception as recovery:issues.append(str(recovery))
+            for undo in [lambda: self.wallpaper.restore(record['wallpaper']) if record['wallpaper'] else None,
+                         lambda: self.bridge.explorer.images.restore(record['explorer']) if record['explorer'] else None,
+                         lambda: self.bridge.cursors.restore() if record['cursors'] else None,
+                         lambda: self.bridge.store.restore(record['icons']) if record['icons'] else None]:
+                try: undo()
+                except Exception as recovery: issues.append(str(recovery))
             record['status']='needs_attention' if issues else 'rolled_back';record['errors']=[str(error),*issues];atomic_json(path,record)
             raise RuntimeError('；'.join(record['errors'])) from error
 
@@ -227,6 +231,8 @@ class TemplateAdapter:
         for path in sorted(self.history.glob('*.json'), key=lambda value:value.stat().st_mtime_ns,reverse=True):
             record=read_json(path,{})
             if record.get('status') not in {'applied','restoring','needs_attention'}:continue
+            if record.get('explorer'):
+                self.bridge.explorer.images.can_restore(record['explorer'])
             if record.get('cursors') and snapshot()!=record.get('afterCursors'):
                 raise ValueError('指针已在其他操作中修改，请先使用鼠标区域的恢复功能。')
             if record.get('wallpaper'):
@@ -234,6 +240,8 @@ class TemplateAdapter:
                 if current.get('id')!=record['wallpaper'] or not self.wallpaper.status()['active']:
                     raise ValueError('壁纸已被其他操作修改，已保留当前桌面。')
             record['status']='restoring';atomic_json(path,record)
+            if record.get('explorer'):
+                self.bridge.explorer.images.restore(record['explorer']);record['explorer']=None;atomic_json(path,record)
             if record.get('icons'):
                 result=self.bridge.store.restore(record['icons'])
                 if any(entry['status'] not in {'restored','skipped'} for entry in result['entries']):

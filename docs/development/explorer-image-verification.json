@@ -1,0 +1,64 @@
+{
+  "version": "0.5.1",
+  "installer": "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+  "bytes": 168804642,
+  "sha256": "0db11fbb5343742839c804de9c54281ff3a6b69ff4225dfe452cfc0d04f24caa",
+  "builtinPacks": [
+    "wuthering-waves",
+    "punishing-gray-raven",
+    "genshin-impact",
+    "identity-v",
+    "milk-mocha-dogs",
+    "honkai-star-rail",
+    "chiikawa"
+  ],
+  "animatedPacks": 7,
+  "nativeSourceSha256": "59937bd7d2ed5d953ca6330963b2c4273769f2dd65479489f322690c9006900b",
+  "frontendTests": 23,
+  "backendTests": 88,
+  "typeCheck": true,
+  "nativePreview": {
+    "checks": [
+      {
+        "sevenPacks": true,
+        "retiredPacksAbsent": true
+      },
+      {
+        "liveThemeSelection": true,
+        "liveOpacity": true
+      },
+      {
+        "themeModalPreview": true,
+        "themeDefaultLinksExplorer": true
+      },
+      {
+        "previewReadOnly": true,
+        "operations": [
+          "runtime.state",
+          "templates.list",
+          "templates.list",
+          "state",
+          "wallpaper.status",
+          "updates.state",
+          "explorer.state",
+          "explorer.state",
+          "app.ready",
+          "templates.list",
+          "explorer.state",
+          "app.qa-trace"
+        ]
+      }
+    ],
+    "errors": [],
+    "nativeSystemApplyTested": false,
+    "passed": true
+  },
+  "isolatedGdiPaintTest": true,
+  "windhawkBothModulesCompiled": true,
+  "windhawkSettingsRoundtrip": true,
+  "realExplorerVisualVerified": false,
+  "installerInstallUninstallTested": false,
+  "sourceArchive": "ThemeStudio-0.5.1-Source.zip",
+  "sourceFilesVerified": 7309,
+  "sourceArchiveSha256": "c14b8bf6be4d9b59019a7744828963f4b660a6566b894ac809134e53bd376942"
+}

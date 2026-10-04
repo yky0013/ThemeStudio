@@ -1,5 +1,11 @@
 # 桌面主题工作室 · Theme Studio
 
+项目开发、调研、验证及交付同步见 [GitHub 同步流程](docs/development/github-sync-workflow.md)。[0.6.1 发布](https://github.com/yky0013/ThemeStudio/releases/tag/v0.6.1) · [0.5.1 发布](https://github.com/yky0013/ThemeStudio/releases/tag/v0.5.1)。
+
+## 0.5.1 资源管理器图片主题修订
+
+移除绝区零、明日方舟、蔚蓝档案三个内置套装；增加主题与资源管理器图片背景联动、实时预览及恢复功能。详见 `docs/development/explorer-image-update.md`。
+
 一个独立的 Windows 主题项目。主设置界面在 Seelen UI 的结构和组件上开发，模组区使用 Windhawk 的卡片、选择和标题组件，加入真实 Windows 桌面快捷方式与 17 状态鼠标设置。所有日常设置在同一页，通过左侧导航定位。
 
 ## 0.5.0 角色套装与原厂指针
@@ -11,7 +17,7 @@
 
 ## 启动
 
-在其他电脑上运行 `installers/ThemeStudio-0.5.0-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.5.0/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
+在其他电脑上运行 `installers/ThemeStudio-0.5.1-Windows-x64-Setup.exe`，安装和程序启动都会请求管理员授权，用于公共桌面快捷方式修改及运行组件；安装路径可自行选择。开始菜单提供程序、图文教程和卸载入口，Windows“已安装的应用”也可卸载。开发目录仍可双击 `启动.cmd`，或运行 `release/ThemeStudio-0.5.1/ThemeStudio.exe`。程序自带图标/指针后端，无需先打开旧工作台，也不调用旧预览服务。运行需 Windows 的 .NET Framework 4.8 和 Microsoft Edge WebView2 Runtime；精简安装包内置微软官方 WebView2 引导安装器，仅在缺失运行库时联网下载；需要 Windows 10 2004 / 19041 或更新的 Intel / AMD 64 位系统，不面向 ARM。
 
 卸载会保留已应用的外观、素材和备份；要恢复原外观请先在程序内恢复。
 

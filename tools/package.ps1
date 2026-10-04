@@ -32,6 +32,7 @@ try {
     Copy-Item -LiteralPath 'README.md' -Destination $studioRelease -Force
     New-Item -ItemType Directory -Path (Join-Path $studioRelease 'docs') -Force | Out-Null
     Copy-Item -LiteralPath 'docs\theme-pack-format.md' -Destination (Join-Path $studioRelease 'docs\theme-pack-format.md') -Force
+    Copy-Item -LiteralPath 'docs\development\explorer-image-update.md' -Destination (Join-Path $studioRelease 'docs\explorer-image-update.md') -Force
     $studioRuntimeOutput = Join-Path $studioRelease 'runtimes'
     New-Item -ItemType Directory -Path $studioRuntimeOutput -Force | Out-Null
     if (-not (Test-Path -LiteralPath '.cache\runtimes\seelen-engine\seelen-ui.exe') -or -not (Test-Path -LiteralPath '.cache\runtimes\windhawk\Compiler\bin\clang++.exe')) { throw 'Pinned upstream runtime payloads are missing; prepare-runtimes must complete before packaging.' }
@@ -44,13 +45,8 @@ try {
     # Theme Studio owns the settings/editor UI. Keep the original compiler and both
     # x86/x64 targets; omit the separate VSCodium editor, language server and ARM64 target.
     $compilerSource = [IO.Path]::GetFullPath('.cache\runtimes\windhawk\Compiler')
-    foreach ($compilerFile in Get-ChildItem -LiteralPath $compilerSource -Recurse -File) {
-        $relative = [IO.Path]::GetRelativePath($compilerSource, $compilerFile.FullName)
-        if ($relative -like 'aarch64-w64-mingw32\*' -or $relative -eq 'bin\clangd.exe' -or $relative -eq 'bin\aarch64-w64-windows-gnu.cfg') { continue }
-        $target = Join-Path $windhawkOutput ('Compiler\' + $relative)
-        New-Item -ItemType Directory -Path (Split-Path -Parent $target) -Force | Out-Null
-        Copy-Item -LiteralPath $compilerFile.FullName -Destination $target -Force
-    }
+    & robocopy.exe $compilerSource (Join-Path $windhawkOutput 'Compiler') /E /MT:8 /R:1 /W:1 /NFL /NDL /NJH /NJS /NP /XD (Join-Path $compilerSource 'aarch64-w64-mingw32') /XF clangd.exe aarch64-w64-windows-gnu.cfg
+    if ($LASTEXITCODE -gt 7) { throw 'Compiler payload copy failed.' }
     New-Item -ItemType Directory -Path (Join-Path $windhawkOutput 'Engine') -Force | Out-Null
     Copy-Item -LiteralPath '.cache\runtimes\windhawk\Engine\2.0' -Destination (Join-Path $windhawkOutput 'Engine') -Recurse -Force
     New-Item -ItemType Directory -Path (Join-Path $windhawkOutput 'AppData\Engine\Mods') -Force | Out-Null
@@ -67,6 +63,7 @@ try {
     $modOutput = Join-Path $studioResources 'windhawk-mods'
     New-Item -ItemType Directory -Path $modOutput -Force | Out-Null
     Get-ChildItem -LiteralPath 'vendor\windhawk-mods\mods' -File | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $modOutput -Force }
+    Copy-Item -LiteralPath 'components\explorer-skin\themestudio-explorer-background.wh.cpp' -Destination $modOutput -Force
     $themeOutput = Join-Path $studioResources 'seelen-themes'
     New-Item -ItemType Directory -Path $themeOutput -Force | Out-Null
     Get-ChildItem -LiteralPath 'vendor\Seelen-UI\src\static\themes' -Force | ForEach-Object {
@@ -77,5 +74,6 @@ try {
         } else { Copy-Item -LiteralPath $_.FullName -Destination $destination -Force }
     }
     Copy-Item -LiteralPath 'vendor\runtime-sources\Seelen-UI-2.8.6\LICENSE' -Destination (Join-Path $studioRelease 'licenses\Seelen-Runtime-2.8.6-AGPL.txt') -Force
+    $global:LASTEXITCODE = 0 # Robocopy success includes exit codes 1 through 7.
     Write-Output (Join-Path $studioRelease 'ThemeStudio.exe')
 } finally { Pop-Location }
