@@ -1,0 +1,1 @@
+PASS: root-aligned image, partial repaint, tree normal background, preserved hover/selection states, preview erase/undo, text contrast, scoped HWNDs, 500-paint GDI lifetime

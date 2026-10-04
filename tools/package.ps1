@@ -36,6 +36,7 @@ try {
     New-Item -ItemType Directory -Path (Join-Path $studioRelease 'docs\research') -Force | Out-Null
     Copy-Item -LiteralPath 'docs\research\20261001' -Destination (Join-Path $studioRelease 'docs\research') -Recurse -Force
     Copy-Item -LiteralPath 'docs\development\explorer-image-update.md' -Destination (Join-Path $studioRelease 'docs\explorer-image-update.md') -Force
+    Copy-Item -LiteralPath 'docs\development\unified-appearance-update.md' -Destination (Join-Path $studioRelease 'docs\unified-appearance-update.md') -Force
     $studioRuntimeOutput = Join-Path $studioRelease 'runtimes'
     New-Item -ItemType Directory -Path $studioRuntimeOutput -Force | Out-Null
     if (-not (Test-Path -LiteralPath '.cache\runtimes\seelen-engine\seelen-ui.exe') -or -not (Test-Path -LiteralPath '.cache\runtimes\windhawk\Compiler\bin\clang++.exe')) { throw 'Pinned upstream runtime payloads are missing; prepare-runtimes must complete before packaging.' }

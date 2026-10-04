@@ -1,5 +1,9 @@
 # 桌面主题工作室 · Theme Studio
 
+## 0.6.2 统一应用与两级恢复
+
+修正 Explorer 导航栏普通背景和预览窗格白色填充；整套外观集中到一个应用入口，增加独立初始外观恢复，保留恢复上一次。实现与验证见 [修订说明](docs/development/unified-appearance-update.md) 和 [验证记录](docs/development/verification-0.6.2.json)。Explorer 现场注入验收仍待完成，发布标为测试版。
+
 项目开发、调研、验证及交付同步见 [GitHub 同步流程](docs/development/github-sync-workflow.md)。[0.6.1 发布](https://github.com/yky0013/ThemeStudio/releases/tag/v0.6.1) · [0.5.1 发布](https://github.com/yky0013/ThemeStudio/releases/tag/v0.5.1)。
 
 ## 0.6.1 资源管理器图片主题修订

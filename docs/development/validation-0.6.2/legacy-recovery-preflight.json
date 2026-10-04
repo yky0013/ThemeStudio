@@ -1,0 +1,12 @@
+{
+  "systemWrites": false,
+  "legacyUndoPreflight": true,
+  "domains": [
+    "cursors",
+    "icons",
+    "wallpaper",
+    "windhawk",
+    "explorer"
+  ],
+  "shortcutCount": 20
+}

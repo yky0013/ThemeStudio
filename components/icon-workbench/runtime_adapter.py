@@ -304,6 +304,35 @@ class RuntimeAdapter:
         record.update(status='applied', result=result)
         atomic_json(self.history / (record['id'] + '.json'), record)
 
+    def _start_seelen(self):
+        self.progress('seelen_start')
+        images = process_images()
+        if not any(canonical(image) == canonical(self.seelen / 'seelen-ui.exe') for _, image in images):
+            # Same de-elevated Explorer launch used by upstream app_management.rs.
+            link_path = self.data / 'seelen-silent-start.lnk'
+            with com_session():
+                shortcut = win32com.client.Dispatch('WScript.Shell').CreateShortcut(str(link_path))
+                shortcut.TargetPath = str(self.seelen / 'seelen-ui.exe')
+                shortcut.Arguments = '--silent'; shortcut.WorkingDirectory = str(self.seelen); shortcut.Save()
+            subprocess.Popen([str(Path(os.environ['WINDIR']) / 'explorer.exe'), str(link_path)])
+        service_path = self.seelen / 'slu-service.exe'
+        if not any(canonical(image) == canonical(service_path) for _, image in images):
+            subprocess.Popen([str(service_path)], creationflags=subprocess.CREATE_NO_WINDOW, cwd=self.seelen)
+        session = wt.DWORD()
+        kernel32.ProcessIdToSessionId(os.getpid(), ctypes.byref(session))
+        app_pipe = rf'\\.\pipe\seelen-ui-{session.value}'
+        last = ''
+        for _ in range(60):
+            try:
+                pipe = win32file.CreateFile(app_pipe, 0xC0000000, 0, None, 3, 0, None)
+                pipe.Close()
+                break
+            except Exception as error:
+                last = str(error); time.sleep(.3)
+        else:
+            raise RuntimeError('Seelen 启动或加载主题失败：' + last)
+        time.sleep(2)
+
     def seelen_apply(self, selection):
         self._check('seelen', ['seelen-ui.exe', 'slu.exe', 'slu-service.exe'])
         if not ctypes.windll.shell32.IsUserAnAdmin():
@@ -342,33 +371,7 @@ class RuntimeAdapter:
         if not managed.get('seelen', {}).get('baselineRecorded'):
             managed['seelen'] = {'baselineRecorded': True, 'baseline': before, 'runtime': str(self.seelen), 'startedByStudio': True}
             atomic_json(self.management, managed)
-        self.progress('seelen_start')
-        images = process_images()
-        if not any(canonical(image) == canonical(self.seelen / 'seelen-ui.exe') for _, image in images):
-            # Same de-elevated Explorer launch used by upstream app_management.rs.
-            link_path = self.data / 'seelen-silent-start.lnk'
-            with com_session():
-                shortcut = win32com.client.Dispatch('WScript.Shell').CreateShortcut(str(link_path))
-                shortcut.TargetPath = str(self.seelen / 'seelen-ui.exe')
-                shortcut.Arguments = '--silent'; shortcut.WorkingDirectory = str(self.seelen); shortcut.Save()
-            subprocess.Popen([str(Path(os.environ['WINDIR']) / 'explorer.exe'), str(link_path)])
-        service_path = self.seelen / 'slu-service.exe'
-        if not any(canonical(image) == canonical(service_path) for _, image in images):
-            subprocess.Popen([str(service_path)], creationflags=subprocess.CREATE_NO_WINDOW, cwd=self.seelen)
-        session = wt.DWORD()
-        kernel32.ProcessIdToSessionId(os.getpid(), ctypes.byref(session))
-        app_pipe = rf'\\.\pipe\seelen-ui-{session.value}'
-        last = ''
-        for _ in range(60):
-            try:
-                pipe = win32file.CreateFile(app_pipe, 0xC0000000, 0, None, 3, 0, None)
-                pipe.Close()
-                break
-            except Exception as error:
-                last = str(error); time.sleep(.3)
-        else:
-            raise RuntimeError('Seelen 启动或加载主题失败：' + last)
-        time.sleep(2)
+        self._start_seelen()
         current = read_json(self.seelen_settings, settings)
         current['activeThemes'] = ['@default/theme'] + (['@eythaann/bubbles'] if '@eythaann/bubbles' in themes else [])
         current['activeIconPacks'] = ['@system/icon-pack']

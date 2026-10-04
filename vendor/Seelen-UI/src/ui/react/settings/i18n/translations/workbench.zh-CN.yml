@@ -77,6 +77,7 @@ theme_workbench:
   widget_settings: 组件设置
   widget_description: 在下方配置已有 Seelen 组件，使用 Seelen 顶部保存按钮应用这些设置。
   parallax:
+    use_desktop_draft: 作为桌面背景（在底部统一应用）
     title: 壁纸＋视差
     description: 同一层图片或视频，随鼠标平滑移动和倾斜。
     enabled: 开启组合视差
@@ -113,6 +114,11 @@ theme_workbench:
     load_failed: 素材无法播放或读取，请换用有效的图片或浏览器支持的视频格式。
 
   desktop_settings:
+    reset_role_draft: 选择此状态的默认指针
+    include_icons_draft: 本次应用包含已选图标
+    include_cursors_draft: 本次应用包含指针设置
+    shared_apply_notice: 这里只选择和预览；通过底部“应用当前主题”统一应用。
+    choose_factory: 选择天选姬方案
     icons_title: 桌面图标
     icons_description: 每个项目单独对应一张图片，核对箭头两端的对应关系后应用。
     administrator_ready: 管理员权限已就绪

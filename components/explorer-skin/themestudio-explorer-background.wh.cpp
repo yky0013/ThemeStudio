@@ -2,12 +2,12 @@
 // @id themestudio-explorer-background
 // @name ThemeStudio Explorer background
 // @description Theme image in the native Explorer file list and navigation pane
-// @version 1.0.0
+// @version 1.1.0
 // @author ThemeStudio contributors
 // @license MIT
 // @include explorer.exe
 // @architecture x86-64
-// @compilerOptions -luser32 -lgdi32 -luxtheme -ldwmapi
+// @compilerOptions -luser32 -lgdi32 -luxtheme -ldwmapi -lcomctl32
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==
@@ -35,6 +35,8 @@ Hold Escape while enabling to skip loading; disable this mod to restore painting
 #include <windows.h>
 #include <uxtheme.h>
 #include <dwmapi.h>
+#include <commctrl.h>
+#include <vssym32.h>
 #ifndef THEMESTUDIO_PAINT_TEST
 #include <windhawk_utils.h>
 #endif
@@ -43,6 +45,7 @@ Hold Escape while enabling to skip loading; disable this mod to restore painting
 #include <array>
 #include <mutex>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 // Immutable while hooks are active. A setting change requests a Windhawk reload.
@@ -50,6 +53,7 @@ HBITMAP g_bitmap = nullptr;
 BITMAP g_info{};
 COLORREF g_text = RGB(228, 237, 250);
 COLORREF g_caption = RGB(8, 27, 50);
+HBRUSH g_panelBrush = nullptr;
 std::atomic<bool> g_stopping{false};
 std::mutex g_mutex;
 std::mutex g_renderMutex;
@@ -57,6 +61,7 @@ std::unordered_map<HDC, HWND> g_dcWindows;
 std::unordered_map<HWND, std::array<int,4>> g_layouts;
 struct CaptionState { DWORD dark, background, text; bool hasDark, hasBackground, hasText; };
 std::unordered_map<HWND, CaptionState> g_captions;
+std::unordered_set<HWND> g_subclassed;
 thread_local bool g_drawing = false;
 
 bool ClassIs(HWND window, PCWSTR expected) {
@@ -66,12 +71,27 @@ bool ClassIs(HWND window, PCWSTR expected) {
 bool IsExplorer(HWND window) {
     return window && ClassIs(GetAncestor(window, GA_ROOT), L"CabinetWClass");
 }
+bool IsPreviewHost(HWND window) {
+    return ClassIs(window,L"Shell Preview Extension Host") || ClassIs(window,L"Shell Preview Extension Host Previewer");
+}
+bool IsPreviewSurface(HWND window) {
+    if (IsPreviewHost(window)) return true;
+    // Paint the empty host/placeholder, never a document viewer or RichEdit content.
+    if (!ClassIs(window,L"DirectUIHWND") && !ClassIs(window,L"Static")) return false;
+    for (HWND parent=GetParent(window);parent;parent=GetParent(parent)) {
+        if (IsPreviewHost(parent)) return true;
+        if (ClassIs(parent,L"CabinetWClass")) break;
+    }
+    return false;
+}
 bool IsSurface(HWND window) {
     if (!IsExplorer(window)) return false;
     // Do not touch desktop icons, dialogs, menus or other processes.
     return (ClassIs(window, L"DirectUIHWND") && ClassIs(GetParent(window), L"SHELLDLL_DefView")) ||
-           ClassIs(window, L"SysTreeView32");
+           ClassIs(window,L"SysTreeView32") || ClassIs(window,L"SysHeader32") ||
+           ClassIs(window,L"msctls_statusbar32") || IsPreviewSurface(window);
 }
+void InstallSurfaceSubclass(HWND window);
 void StyleCaption(HWND window) {
     if (g_stopping || !IsExplorer(window)) return;
     HWND root = GetAncestor(window, GA_ROOT);
@@ -112,6 +132,7 @@ void Track(HDC dc, HWND window) {
 decltype(&BeginPaint) BeginPaint_Original;
 HDC WINAPI BeginPaint_Hook(HWND window, LPPAINTSTRUCT paint) {
     if(IsSurface(window)) StyleCaption(window);
+    InstallSurfaceSubclass(window);
     HDC dc = BeginPaint_Original(window, paint);
     Track(dc, window);
     return dc;
@@ -120,6 +141,7 @@ decltype(&DestroyWindow) DestroyWindow_Original;
 BOOL WINAPI DestroyWindow_Hook(HWND window) {
     { std::lock_guard<std::mutex> guard(g_mutex);
       g_captions.erase(window);
+      g_subclassed.erase(window);
       for(auto it=g_dcWindows.begin();it!=g_dcWindows.end();) {
           if(it->second==window) it=g_dcWindows.erase(it); else ++it;
       }
@@ -177,6 +199,68 @@ void PaintImage(HDC dc, HWND window, const RECT* clip) {
     }
     g_drawing = false;
 }
+
+LRESULT CALLBACK SurfaceSubclass(HWND window, UINT message, WPARAM wParam, LPARAM lParam, DWORD_PTR) {
+    if (!g_stopping) {
+        if (message==WM_ERASEBKGND && IsSurface(window)) {
+            RECT rect{}; GetClientRect(window,&rect);
+            PaintImage((HDC)wParam,window,&rect);
+            return 1;
+        }
+        if (message==WM_CTLCOLORSTATIC && IsPreviewSurface((HWND)lParam)) {
+            ::SetTextColor((HDC)wParam,g_text); SetBkMode((HDC)wParam,TRANSPARENT);
+            return (LRESULT)g_panelBrush;
+        }
+    }
+    return DefSubclassProc(window,message,wParam,lParam);
+}
+void InstallSurfaceSubclass(HWND window) {
+    if (g_stopping || !IsExplorer(window) ||
+        (!IsPreviewSurface(window) && !ClassIs(window,L"msctls_statusbar32"))) return;
+    { std::lock_guard<std::mutex> guard(g_mutex); if(g_subclassed.count(window)) return; }
+#ifndef THEMESTUDIO_PAINT_TEST
+    if (WindhawkUtils::SetWindowSubclassFromAnyThread(window,SurfaceSubclass,0)) {
+        std::lock_guard<std::mutex> guard(g_mutex); g_subclassed.insert(window);
+    }
+#endif
+}
+using GetThemeClass_t=HRESULT(WINAPI*)(HTHEME,LPWSTR,int);
+GetThemeClass_t GetThemeClass_Original=nullptr;
+bool ThemeClassIs(HTHEME theme, PCWSTR wanted) {
+    WCHAR name[128]{};
+    if (!GetThemeClass_Original || FAILED(GetThemeClass_Original(theme,name,ARRAYSIZE(name)))) return false;
+    size_t length=wcslen(name), match=wcslen(wanted);
+    return length>=match && !_wcsicmp(name+length-match,wanted) &&
+        (length==match || (length>=match+2 && name[length-match-1]==L':' && name[length-match-2]==L':'));
+}
+bool ReplaceNormalBackground(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const RECT* clip) {
+    if(g_stopping || g_drawing || !rect) return false;
+    HWND window=WindowForDC(dc);
+    if(!window) return false;
+    const bool normalTree=ClassIs(window,L"SysTreeView32") && ThemeClassIs(theme,L"TreeView") &&
+        part==TVP_TREEITEM && state==TREIS_NORMAL;
+    const bool normalHeader=ClassIs(window,L"SysHeader32") && ThemeClassIs(theme,L"Header") &&
+        part==HP_HEADERITEM && state==HIS_NORMAL;
+    const bool pane=IsPreviewSurface(window) && ThemeClassIs(theme,L"ReadingPane") && part==1;
+    const bool status=ClassIs(window,L"msctls_statusbar32") && ThemeClassIs(theme,L"Status");
+    if(!normalTree && !normalHeader && !pane && !status) return false;
+    RECT area=*rect;
+    if(clip && !IntersectRect(&area,rect,clip)) return true;
+    PaintImage(dc,window,&area);
+    return true;
+}
+decltype(&DrawThemeBackground) DrawThemeBackground_Original;
+HRESULT WINAPI DrawThemeBackground_Hook(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const RECT* clip) {
+    if(ReplaceNormalBackground(theme,dc,part,state,rect,clip)) return S_OK;
+    // HOT / SELECTED / SELECTEDNOTFOCUS / HOTSELECTED keep their existing rendering.
+    return DrawThemeBackground_Original(theme,dc,part,state,rect,clip);
+}
+decltype(&DrawThemeBackgroundEx) DrawThemeBackgroundEx_Original;
+HRESULT WINAPI DrawThemeBackgroundEx_Hook(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const DTBGOPTS* options) {
+    const RECT* clip=options && options->dwSize==sizeof(DTBGOPTS) && (options->dwFlags&DTBG_CLIPRECT) ? &options->rcClip : nullptr;
+    if(ReplaceNormalBackground(theme,dc,part,state,rect,clip)) return S_OK;
+    return DrawThemeBackgroundEx_Original(theme,dc,part,state,rect,options);
+}
 decltype(&FillRect) FillRect_Original;
 int WINAPI FillRect_Hook(HDC dc, const RECT* rect, HBRUSH brush) {
     int result = FillRect_Original(dc, rect, brush);
@@ -189,7 +273,7 @@ int WINAPI FillRect_Hook(HDC dc, const RECT* rect, HBRUSH brush) {
     if (GetObjectW(brush, sizeof(info), &info) && info.lbStyle == BS_SOLID) {
         auto color = info.lbColor;
         background = background || color == GetSysColor(COLOR_WINDOW) || color == RGB(255,255,255) ||
-            color == RGB(25,25,25) || color == RGB(30,30,30) || color == RGB(32,32,32);
+            color == RGB(25,25,25) || color == RGB(30,30,30) || color == RGB(32,32,32) || color==g_caption;
     }
     if (window && rect && background)
         PaintImage(dc, window, rect);
@@ -198,6 +282,30 @@ int WINAPI FillRect_Hook(HDC dc, const RECT* rect, HBRUSH brush) {
 decltype(&SetTextColor) SetTextColor_Original;
 COLORREF WINAPI SetTextColor_Hook(HDC dc, COLORREF color) {
     return SetTextColor_Original(dc, !g_stopping && WindowForDC(dc) ? g_text : color);
+}
+bool IsSelectedTreeRow(HWND window,const RECT* rect) {
+    if(!rect || !ClassIs(window,L"SysTreeView32"))return false;
+    int rowHeight=TreeView_GetItemHeight(window);
+    if(rowHeight<=0 || rect->bottom-rect->top>rowHeight*2)return false;
+    TVHITTESTINFO hit{};hit.pt={rect->left+4,(rect->top+rect->bottom)/2};
+    HTREEITEM item=TreeView_HitTest(window,&hit);
+    return item && (TreeView_GetItemState(window,item,TVIS_SELECTED|TVIS_DROPHILITED)&(TVIS_SELECTED|TVIS_DROPHILITED));
+}
+decltype(&ExtTextOutW) ExtTextOutW_Original;
+BOOL WINAPI ExtTextOutW_Hook(HDC dc,int x,int y,UINT flags,const RECT* rect,LPCWSTR text,UINT length,const INT* spacing) {
+    HWND window=!g_stopping&&!g_drawing?WindowForDC(dc):nullptr;
+    COLORREF background=GetBkColor(dc);
+    bool neutral=background==GetSysColor(COLOR_WINDOW)||background==RGB(255,255,255)||
+        background==RGB(25,25,25)||background==RGB(30,30,30)||background==RGB(32,32,32)||background==g_caption;
+    // Common-controls can clear an unselected row through ETO_OPAQUE without
+    // calling FillRect or DrawThemeBackground. Keep selected row painting intact.
+    if(window&&(ClassIs(window,L"SysTreeView32")||IsPreviewSurface(window))&&neutral&&!IsSelectedTreeRow(window,rect)) {
+        if((flags&ETO_OPAQUE)&&rect)PaintImage(dc,window,rect);
+        int mode=SetBkMode(dc,TRANSPARENT);
+        BOOL result=ExtTextOutW_Original(dc,x,y,flags&~ETO_OPAQUE,rect,text,length,spacing);
+        SetBkMode(dc,mode);return result;
+    }
+    return ExtTextOutW_Original(dc,x,y,flags,rect,text,length,spacing);
 }
 decltype(&DrawThemeTextEx) DrawThemeTextEx_Original;
 HRESULT WINAPI DrawThemeTextEx_Hook(HTHEME theme, HDC dc, int part, int state, LPCWSTR text,
@@ -211,7 +319,7 @@ HRESULT WINAPI DrawThemeTextEx_Hook(HTHEME theme, HDC dc, int part, int state, L
     return DrawThemeTextEx_Original(theme, dc, part, state, text, length, flags, rect, opts);
 }
 
-BOOL CALLBACK RedrawChild(HWND window, LPARAM) { InvalidateRect(window, nullptr, TRUE); return TRUE; }
+BOOL CALLBACK RedrawChild(HWND window, LPARAM) { InstallSurfaceSubclass(window); InvalidateRect(window,nullptr,TRUE); return TRUE; }
 BOOL CALLBACK RedrawExplorer(HWND window, LPARAM) {
     DWORD pid{}; GetWindowThreadProcessId(window, &pid);
     if (pid == GetCurrentProcessId() && ClassIs(window, L"CabinetWClass")) {
@@ -245,6 +353,8 @@ BOOL Wh_ModInit() {
         if (end && !*end) g_caption = RGB((rgb>>16)&255, (rgb>>8)&255, rgb&255);
     }
     Wh_FreeStringSetting(color);
+    g_panelBrush=CreateSolidBrush(g_caption);
+    GetThemeClass_Original=(GetThemeClass_t)GetProcAddress(GetModuleHandleW(L"uxtheme.dll"),MAKEINTRESOURCEA(74));
     bool ok = WindhawkUtils::SetFunctionHook(BeginPaint, BeginPaint_Hook, &BeginPaint_Original) &&
         WindhawkUtils::SetFunctionHook(EndPaint, EndPaint_Hook, &EndPaint_Original) &&
         WindhawkUtils::SetFunctionHook(DestroyWindow, DestroyWindow_Hook, &DestroyWindow_Original) &&
@@ -252,12 +362,15 @@ BOOL Wh_ModInit() {
         WindhawkUtils::SetFunctionHook(DeleteDC, DeleteDC_Hook, &DeleteDC_Original) &&
         WindhawkUtils::SetFunctionHook(FillRect, FillRect_Hook, &FillRect_Original) &&
         WindhawkUtils::SetFunctionHook(SetTextColor, SetTextColor_Hook, &SetTextColor_Original) &&
+        WindhawkUtils::SetFunctionHook(ExtTextOutW,ExtTextOutW_Hook,&ExtTextOutW_Original) &&
+        WindhawkUtils::SetFunctionHook(DrawThemeBackground,DrawThemeBackground_Hook,&DrawThemeBackground_Original) &&
+        WindhawkUtils::SetFunctionHook(DrawThemeBackgroundEx,DrawThemeBackgroundEx_Hook,&DrawThemeBackgroundEx_Original) &&
         WindhawkUtils::SetFunctionHook(DrawThemeTextEx, DrawThemeTextEx_Hook, &DrawThemeTextEx_Original);
-    if (!ok) { DeleteObject(g_bitmap); g_bitmap = nullptr; return FALSE; }
+    if (!ok) { DeleteObject(g_bitmap); g_bitmap=nullptr; if(g_panelBrush)DeleteObject(g_panelBrush); return FALSE; }
     return TRUE;
 }
 void Wh_ModAfterInit() { EnumWindows(RedrawExplorer, 0); }
-void Wh_ModBeforeUninit() { g_stopping = true; RestoreCaptions(); EnumWindows(RedrawExplorer, 0); }
-void Wh_ModUninit() { if (g_bitmap) DeleteObject(g_bitmap); g_bitmap = nullptr; EnumWindows(RedrawExplorer, 0); }
+void Wh_ModBeforeUninit() { g_stopping=true; WindhawkUtils::RemoveAllWindowSubclasses(); RestoreCaptions(); EnumWindows(RedrawExplorer,0); }
+void Wh_ModUninit() { if(g_bitmap)DeleteObject(g_bitmap);g_bitmap=nullptr;if(g_panelBrush)DeleteObject(g_panelBrush);g_panelBrush=nullptr;EnumWindows(RedrawExplorer,0); }
 BOOL Wh_ModSettingsChanged(BOOL* reload) { *reload = TRUE; return TRUE; }
 #endif

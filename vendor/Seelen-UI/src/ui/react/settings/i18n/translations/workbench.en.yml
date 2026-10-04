@@ -77,6 +77,7 @@ theme_workbench:
   widget_settings: Component settings
   widget_description: Configure the existing Seelen components below; use the Seelen header to save these settings.
   parallax:
+    use_desktop_draft: Use as desktop wallpaper (apply with the shared button below)
     title: Wallpaper + Parallax
     description: Move and tilt the same image or video layer smoothly with the pointer.
     enabled: Enable combined parallax
@@ -113,6 +114,11 @@ theme_workbench:
     load_failed: Media could not be decoded. Choose a valid image or a video format supported by the browser.
 
   desktop_settings:
+    reset_role_draft: Choose the default cursor for this role
+    include_icons_draft: Include selected icons in this application
+    include_cursors_draft: Include cursor settings in this application
+    shared_apply_notice: Choose and preview here, then apply all pending settings with the shared button below.
+    choose_factory: Choose ASUS factory scheme
     icons_title: Desktop icons
     icons_description: Assign a picture to each shortcut, check the two ends of each arrow, then apply.
     administrator_ready: Administrator access ready

@@ -1,0 +1,51 @@
+{
+  "version": "0.6.2",
+  "date": "2026-10-05",
+  "frontendTests": 26,
+  "backendTests": 106,
+  "typeCheck": true,
+  "nativeUi": {
+    "checks": [
+      {
+        "singleApplyEntry": true,
+        "twoRecoveryLevels": true
+      },
+      {
+        "selectionPreviewOnly": true
+      },
+      {
+        "nativeCombinedApply": true,
+        "nativeUndo": true,
+        "nativeInitialRestore": true
+      },
+      {
+        "recoveryState": {
+          "baselineLabel": "已保存首次应用前的初始外观",
+          "canRestoreInitial": true,
+          "canUndo": true,
+          "lastLabel": "恢复使用前外观",
+          "pending": false
+        }
+      }
+    ],
+    "errors": [],
+    "explorerLiveApplyTested": false,
+    "cursorRoundtripTested": true,
+    "passed": true
+  },
+  "systemRestoration": {
+    "cursorRegistryRestoredExactly": true,
+    "wallpaperPathUnchanged": true,
+    "independentRecoveryGuardUsed": false
+  },
+  "explorerVisualLiveVerified": false,
+  "isolatedExplorerPaintVerified": true,
+  "nativeModVersion": "1.1.0",
+  "nativeModSourceSha256": "3e8caf7b8d9989597993c4e9acbe756c0b8e7943e616f57e8653ffabe850e816",
+  "installer": "ThemeStudio-0.6.2-Windows-x64-Setup.exe",
+  "installerBytes": 149045468,
+  "installerSha256": "59e53416bb7deec338b6131f8c0743409f024f8b3c46761443ba6b00a192ba5e",
+  "shippedThemes": 7,
+  "shippedAnimatedThemes": 0,
+  "packagedFrontendMatchesBuild": true
+}

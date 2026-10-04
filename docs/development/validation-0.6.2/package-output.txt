@@ -1,0 +1,96 @@
+
+> theme-studio@0.6.2 build
+> tsx tools/build.ts
+
+Theme Studio built with Seelen navigation/media and Windhawk card components; 645 source-backed mods.
+{"components": 87, "missingNotices": []}
+----------------------------------------------------------------------
+Ran 106 tests in 10.312s
+
+OK
+176 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.8
+176 INFO: Python: 3.14.0
+207 INFO: Platform: Windows-11-10.0.26200-SP0
+208 INFO: Python environment: PROJECT_ROOT\.venv
+208 INFO: wrote build\spec\ThemeStudio.Backend.spec
+213 INFO: Module search paths (PYTHONPATH):
+['PROJECT_ROOT',
+ 'C:\\Program Files\\PerkinElmerInformatics\\ChemOffice2018\\ChemScript\\Lib',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314\\python314.zip',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314\\DLLs',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314\\Lib',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314',
+ 'PROJECT_ROOT\\.venv',
+ 'PROJECT_ROOT\\.venv\\Lib\\site-packages',
+ 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\win32',
+ 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\win32\\lib',
+ 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\pythonwin',
+ 'PROJECT_ROOT\\components\\icon-workbench',
+ 'PROJECT_ROOT\\components\\image-to-ico']
+571 INFO: checking Analysis
+585 INFO: Building because PROJECT_ROOT\components\icon-workbench\desktop_bridge.py changed
+585 INFO: Looking for Python shared library...
+585 INFO: Using Python shared library: USERPROFILE\AppData\Local\Programs\Python\Python314\python314.dll
+585 INFO: Running Analysis Analysis-00.toc
+585 INFO: Target bytecode optimization level: 0
+585 INFO: Initializing module dependency graph...
+587 INFO: Initializing module graph hook caches...
+596 INFO: Analyzing modules for base_library.zip ...
+2156 INFO: Processing standard module hook 'hook-encodings.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+2644 INFO: Processing standard module hook 'hook-pickle.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+2820 INFO: Processing standard module hook 'hook-math.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+2971 INFO: Processing standard module hook 'hook-difflib.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+2991 INFO: Processing standard module hook 'hook-heapq.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6124 INFO: Caching module dependency graph...
+6151 INFO: Analyzing PROJECT_ROOT\components\icon-workbench\desktop_bridge.py
+6203 INFO: Processing standard module hook 'hook-_ctypes.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6277 INFO: Processing standard module hook 'hook-platform.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6321 INFO: Processing standard module hook 'hook-PIL.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6475 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6921 INFO: Processing standard module hook 'hook-xml.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6950 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+7216 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+7576 INFO: Processing standard module hook 'hook-pythoncom.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+7715 INFO: Processing standard module hook 'hook-pywintypes.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+7837 INFO: Processing pre-safe-import-module hook 'hook-win32com.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\pre_safe_import_module'
+7974 INFO: Processing standard module hook 'hook-win32com.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+9209 INFO: Analyzing hidden import 'win32timezone'
+9242 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+9244 INFO: SetuptoolsInfo: initializing cached setuptools info...
+9832 INFO: Processing module hooks (post-graph stage)...
+10298 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+10438 INFO: Performing binary vs. data reclassification (3 entries)
+10441 INFO: Looking for ctypes DLLs
+10499 INFO: Analyzing run-time hooks ...
+10501 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+10506 INFO: Including run-time hook 'pyi_rth_pywintypes.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+10507 INFO: Including run-time hook 'pyi_rth_pythoncom.py' from 'PROJECT_ROOT\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+10515 INFO: Creating base_library.zip...
+10542 INFO: Looking for dynamic libraries
+10753 INFO: Extra DLL search directories (AddDllDirectory): []
+10753 INFO: Extra DLL search directories (PATH): []
+11503 INFO: Warnings written to PROJECT_ROOT\build\pyinstaller\ThemeStudio.Backend\warn-ThemeStudio.Backend.txt
+11531 INFO: Graph cross-reference written to PROJECT_ROOT\build\pyinstaller\ThemeStudio.Backend\xref-ThemeStudio.Backend.html
+11556 INFO: checking PYZ
+11596 INFO: checking PKG
+11599 INFO: Building because PROJECT_ROOT\components\icon-workbench\desktop_bridge.py changed
+11599 INFO: Building PKG (CArchive) ThemeStudio.Backend.pkg
+11620 INFO: Building PKG (CArchive) ThemeStudio.Backend.pkg completed successfully.
+11621 INFO: Bootloader PROJECT_ROOT\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\run.exe
+11622 INFO: checking EXE
+11634 INFO: Rebuilding EXE-00.toc because pkg is more recent
+11634 INFO: Building EXE from EXE-00.toc
+11635 INFO: Copying bootloader EXE to PROJECT_ROOT\build\pyinstaller\ThemeStudio.Backend\ThemeStudio.Backend.exe
+11681 INFO: Copying icon to EXE
+11720 INFO: Copying 0 resources to EXE
+11720 INFO: Embedding manifest in EXE
+11754 INFO: Appending PKG archive to EXE
+11805 INFO: Fixing EXE headers
+12060 INFO: Building EXE from EXE-00.toc completed successfully.
+12062 INFO: checking COLLECT
+12074 INFO: Removing dir PROJECT_ROOT\build\backend\ThemeStudio.Backend
+12102 INFO: Building COLLECT COLLECT-00.toc
+12371 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+12374 INFO: Build complete! The results are available in: PROJECT_ROOT\build\backend
+
+PROJECT_ROOT\release\ThemeStudio-0.6.2\ThemeStudio.exe

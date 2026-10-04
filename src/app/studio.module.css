@@ -40,3 +40,5 @@
 .mod :global(.ant-card) { background: light-dark(#fff,#ffffff06); }
 @media(max-width:1000px) { .shell > nav { width: 175px; } .content { padding: 14px 14px 0; } .header { padding: 12px 16px; } }
 @media(max-width:720px) { .shell > nav { width: 44px; } .shell > nav h1, .shell > nav a > span, .sourceNote, .version { display: none; } .header h1 { font-size: 16px; } .runtime { display: none; } }
+
+.content{flex:1;min-height:0}
