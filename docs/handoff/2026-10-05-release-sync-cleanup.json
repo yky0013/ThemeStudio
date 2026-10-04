@@ -1,0 +1,386 @@
+{
+  "date": "2026-10-05",
+  "status": "remote_verified_cleanup_pending",
+  "repository": "yky0013/ThemeStudio",
+  "visibility": "private",
+  "workspace": "E:/desktop/windows",
+  "sourceBranches": {
+    "main": "d38c0dabb75d7d63d0edf103478076b0ba98e633",
+    "maintenance/0.5": "1c5d4ab99a61746c40252cb9bf86d8c86d5cab6c"
+  },
+  "releases": [
+    {
+      "repository": "yky0013/ThemeStudio",
+      "tag": "v0.5.0",
+      "commit": "fa71e8ca26b7df65428509e25003f5cd0becfd6a",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/tag/v0.5.0",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "name": "ThemeStudio-0.5.0-Windows-x64-Setup-Slim.exe",
+          "sha256": "2634f939e12f55c75c9ee9ea96dec0e7fe9d1b454320d3aa53987d9845e70c73",
+          "bytes": 185790928,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-8a9a912893618640df92/ThemeStudio-0.5.0-Windows-x64-Setup-Slim.exe",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "ThemeStudio-0.5.0-Windows-x64-Setup-Slim.exe.sha256",
+          "sha256": "5432fbb331cdaa98a06e307aa00aad7c49ca5a7b153e32c986ffdc7a6e9791d9",
+          "bytes": 111,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-8a9a912893618640df92/ThemeStudio-0.5.0-Windows-x64-Setup-Slim.exe.sha256",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "release.json",
+          "sha256": "f234e3f37a210fd0f856dbd20c927a27a8142cbfe26b963dc12c984df5a87f4f",
+          "bytes": 316,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-8a9a912893618640df92/release.json",
+          "remoteDigestVerified": true
+        }
+      ]
+    },
+    {
+      "repository": "yky0013/ThemeStudio",
+      "tag": "v0.6.0",
+      "commit": "6df6e431ff545b4bfcb0aa1b29cf45af39ca6b58",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/tag/v0.6.0",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "name": "ThemeStudio-0.6.0-Windows-x64-Setup.exe",
+          "sha256": "66acb36043195f151fe9fc96ca1ed139e639f9891455bc500a9c57fad111d96b",
+          "bytes": 164356564,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-be526be107a50d977672/ThemeStudio-0.6.0-Windows-x64-Setup.exe",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "ThemeStudio-0.6.0-Windows-x64-Setup.exe.sha256",
+          "sha256": "a7964dcfb57639db7366368278497e9d3d9b165b8ce9d6d7ebdf5ab228e7e663",
+          "bytes": 106,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-be526be107a50d977672/ThemeStudio-0.6.0-Windows-x64-Setup.exe.sha256",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "release.json",
+          "sha256": "e6cdc9d2de795e26f1c8859f651d95bdaa7686f3569343bbd76930cf7869b615",
+          "bytes": 316,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-be526be107a50d977672/release.json",
+          "remoteDigestVerified": true
+        }
+      ]
+    },
+    {
+      "repository": "yky0013/ThemeStudio",
+      "tag": "v0.5.1",
+      "commit": "1c5d4ab99a61746c40252cb9bf86d8c86d5cab6c",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/tag/v0.5.1",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "name": "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+          "sha256": "0db11fbb5343742839c804de9c54281ff3a6b69ff4225dfe452cfc0d04f24caa",
+          "bytes": 168804642,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-979f784a91ab79fa2ce4/ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "ThemeStudio-0.5.1-Windows-x64-Setup.exe.sha256",
+          "sha256": "06ac8da98c9f8bf97475c7b27169d28fcc6ce35b46b87c9bf4e061e7867bfb92",
+          "bytes": 106,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-979f784a91ab79fa2ce4/ThemeStudio-0.5.1-Windows-x64-Setup.exe.sha256",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "ThemeStudio-0.5.1-Source.zip",
+          "sha256": "c14b8bf6be4d9b59019a7744828963f4b660a6566b894ac809134e53bd376942",
+          "bytes": 192805719,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-979f784a91ab79fa2ce4/ThemeStudio-0.5.1-Source.zip",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "release.json",
+          "sha256": "a3642c1b6cf200f957962eeed15948dadbaf655d50f5421c4786eb997416768e",
+          "bytes": 1808,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-979f784a91ab79fa2ce4/release.json",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "verification.json",
+          "sha256": "cd9a96c7e51cbb65dcd2125abfb7cada6655f5e9e5cf16fad353e94913fdbfad",
+          "bytes": 1754,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-979f784a91ab79fa2ce4/verification.json",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "application-preview.png",
+          "sha256": "f2ed87ec566dc2554305149ea74963ea210e621b03db88f19af2b3344d8edcaa",
+          "bytes": 1264574,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-979f784a91ab79fa2ce4/application-preview.png",
+          "remoteDigestVerified": true
+        }
+      ]
+    },
+    {
+      "repository": "yky0013/ThemeStudio",
+      "tag": "v0.6.1",
+      "commit": "d38c0dabb75d7d63d0edf103478076b0ba98e633",
+      "url": "https://github.com/yky0013/ThemeStudio/releases/tag/v0.6.1",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "name": "ThemeStudio-0.6.1-Windows-x64-Setup.exe",
+          "sha256": "f0decca99757175f155fdc0f98261dd1755e39cd34b55e03d0f3d730de183239",
+          "bytes": 149011565,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-d129ba466f0a7f62c073/ThemeStudio-0.6.1-Windows-x64-Setup.exe",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "ThemeStudio-0.6.1-Windows-x64-Setup.exe.sha256",
+          "sha256": "935ab20d75332b2b140acea0afe5fbbdb14e9381d46e1395c6b8d3627f41207d",
+          "bytes": 106,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-d129ba466f0a7f62c073/ThemeStudio-0.6.1-Windows-x64-Setup.exe.sha256",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "ThemeStudio-0.6.1-Source.zip",
+          "sha256": "c1a3609d40e33eac8a89cd0a996e43d6d0b0eaa7a6d6e8c74d6cbb8133867e43",
+          "bytes": 173483130,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-d129ba466f0a7f62c073/ThemeStudio-0.6.1-Source.zip",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "release.json",
+          "sha256": "52b3574ad15373005c81edbdda8627e0ab0d885aa9ad098324e1e49fcafb66c0",
+          "bytes": 1832,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-d129ba466f0a7f62c073/release.json",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "verification.json",
+          "sha256": "979ef993dda3a1bbc51e0d90951a30cc8d65c609c705ab4053d173f7d7170d47",
+          "bytes": 1779,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-d129ba466f0a7f62c073/verification.json",
+          "remoteDigestVerified": true
+        },
+        {
+          "name": "application-preview.png",
+          "sha256": "5c531f9408ee2b9cd7ad7b45e26792a6177527b6c8d048e663a0a43662cee410",
+          "bytes": 1264504,
+          "url": "https://github.com/yky0013/ThemeStudio/releases/download/untagged-d129ba466f0a7f62c073/application-preview.png",
+          "remoteDigestVerified": true
+        }
+      ]
+    }
+  ],
+  "buildVerification": {
+    "date": "2026-10-04",
+    "versions": [
+      {
+        "version": "0.6.1",
+        "installer": "ThemeStudio-0.6.1-Windows-x64-Setup.exe",
+        "bytes": 149011565,
+        "sha256": "f0decca99757175f155fdc0f98261dd1755e39cd34b55e03d0f3d730de183239",
+        "builtinPacks": [
+          "wuthering-waves",
+          "punishing-gray-raven",
+          "genshin-impact",
+          "identity-v",
+          "milk-mocha-dogs",
+          "honkai-star-rail",
+          "chiikawa"
+        ],
+        "animatedPacks": 0,
+        "nativeSourceSha256": "59937bd7d2ed5d953ca6330963b2c4273769f2dd65479489f322690c9006900b",
+        "frontendTests": 23,
+        "backendTests": 96,
+        "typeCheck": true,
+        "nativePreview": {
+          "checks": [
+            {
+              "sevenPacks": true,
+              "retiredPacksAbsent": true
+            },
+            {
+              "liveThemeSelection": true,
+              "liveOpacity": true
+            },
+            {
+              "themeModalPreview": true,
+              "themeDefaultLinksExplorer": true
+            },
+            {
+              "previewReadOnly": true,
+              "operations": [
+                "runtime.state",
+                "templates.list",
+                "templates.list",
+                "pets.state",
+                "state",
+                "wallpaper.status",
+                "updates.state",
+                "explorer.state",
+                "explorer.state",
+                "app.ready",
+                "templates.list",
+                "explorer.state",
+                "app.qa-trace"
+              ]
+            }
+          ],
+          "errors": [],
+          "nativeSystemApplyTested": false,
+          "passed": true
+        },
+        "isolatedGdiPaintTest": true,
+        "windhawkBothModulesCompiled": true,
+        "windhawkSettingsRoundtrip": true,
+        "realExplorerVisualVerified": false,
+        "installerInstallUninstallTested": false,
+        "sourceArchive": "ThemeStudio-0.6.1-Source.zip",
+        "sourceFilesVerified": 7324,
+        "sourceArchiveSha256": "c1a3609d40e33eac8a89cd0a996e43d6d0b0eaa7a6d6e8c74d6cbb8133867e43"
+      },
+      {
+        "version": "0.5.1",
+        "installer": "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+        "bytes": 168804642,
+        "sha256": "0db11fbb5343742839c804de9c54281ff3a6b69ff4225dfe452cfc0d04f24caa",
+        "builtinPacks": [
+          "wuthering-waves",
+          "punishing-gray-raven",
+          "genshin-impact",
+          "identity-v",
+          "milk-mocha-dogs",
+          "honkai-star-rail",
+          "chiikawa"
+        ],
+        "animatedPacks": 7,
+        "nativeSourceSha256": "59937bd7d2ed5d953ca6330963b2c4273769f2dd65479489f322690c9006900b",
+        "frontendTests": 23,
+        "backendTests": 88,
+        "typeCheck": true,
+        "nativePreview": {
+          "checks": [
+            {
+              "sevenPacks": true,
+              "retiredPacksAbsent": true
+            },
+            {
+              "liveThemeSelection": true,
+              "liveOpacity": true
+            },
+            {
+              "themeModalPreview": true,
+              "themeDefaultLinksExplorer": true
+            },
+            {
+              "previewReadOnly": true,
+              "operations": [
+                "runtime.state",
+                "templates.list",
+                "templates.list",
+                "state",
+                "wallpaper.status",
+                "updates.state",
+                "explorer.state",
+                "explorer.state",
+                "app.ready",
+                "templates.list",
+                "explorer.state",
+                "app.qa-trace"
+              ]
+            }
+          ],
+          "errors": [],
+          "nativeSystemApplyTested": false,
+          "passed": true
+        },
+        "isolatedGdiPaintTest": true,
+        "windhawkBothModulesCompiled": true,
+        "windhawkSettingsRoundtrip": true,
+        "realExplorerVisualVerified": false,
+        "installerInstallUninstallTested": false,
+        "sourceArchive": "ThemeStudio-0.5.1-Source.zip",
+        "sourceFilesVerified": 7309,
+        "sourceArchiveSha256": "c14b8bf6be4d9b59019a7744828963f4b660a6566b894ac809134e53bd376942"
+      }
+    ]
+  },
+  "cleanup": {
+    "date": "2026-10-05",
+    "workspace": "E:\\desktop\\windows",
+    "status": "awaiting_all_release_verification",
+    "keep": [
+      {
+        "name": "ThemeStudio-0.5.1-Windows-x64-Setup.exe",
+        "bytes": 168804642,
+        "sha256": "0db11fbb5343742839c804de9c54281ff3a6b69ff4225dfe452cfc0d04f24caa"
+      },
+      {
+        "name": "ThemeStudio-0.6.1-Windows-x64-Setup.exe",
+        "bytes": 149011565,
+        "sha256": "f0decca99757175f155fdc0f98261dd1755e39cd34b55e03d0f3d730de183239"
+      }
+    ],
+    "removeFiles": [
+      {
+        "name": "ThemeStudio-0.5.0-Windows-x64-Setup-Slim.exe",
+        "bytes": 185790928,
+        "sha256": "2634f939e12f55c75c9ee9ea96dec0e7fe9d1b454320d3aa53987d9845e70c73"
+      },
+      {
+        "name": "ThemeStudio-0.6.0-Windows-x64-Setup.exe",
+        "bytes": 164356564,
+        "sha256": "66acb36043195f151fe9fc96ca1ed139e639f9891455bc500a9c57fad111d96b"
+      },
+      {
+        "name": "ThemeStudio-0.5.1-Source.zip",
+        "bytes": 192805719,
+        "sha256": "c14b8bf6be4d9b59019a7744828963f4b660a6566b894ac809134e53bd376942"
+      },
+      {
+        "name": "ThemeStudio-0.6.1-Source.zip",
+        "bytes": 173483130,
+        "sha256": "c1a3609d40e33eac8a89cd0a996e43d6d0b0eaa7a6d6e8c74d6cbb8133867e43"
+      },
+      {
+        "name": "ThemeStudio-0.5.1-Windows-x64-Setup.exe.sha256",
+        "bytes": 106,
+        "sha256": "06ac8da98c9f8bf97475c7b27169d28fcc6ce35b46b87c9bf4e061e7867bfb92"
+      },
+      {
+        "name": "ThemeStudio-0.6.1-Windows-x64-Setup.exe.sha256",
+        "bytes": 106,
+        "sha256": "935ab20d75332b2b140acea0afe5fbbdb14e9381d46e1395c6b8d3627f41207d"
+      },
+      {
+        "name": "ThemeStudio-20261004-verification.json",
+        "bytes": 4191,
+        "sha256": "2c0751371d06d48a19d2ccbe62723bf0107904982f3403ef1c09da76f09a3bf6"
+      },
+      {
+        "name": "ThemeStudio-Explorer-Preview.png",
+        "bytes": 1264504,
+        "sha256": "5c531f9408ee2b9cd7ad7b45e26792a6177527b6c8d048e663a0a43662cee410"
+      }
+    ],
+    "removeDirectories": [
+      "ThemeStudio-0.5.1",
+      "ThemeStudio-0.6.1",
+      ".release-sync"
+    ],
+    "outOfScope": [
+      "天选姬指针恢复"
+    ],
+    "requiredPublishedTags": [
+      "v0.5.0",
+      "v0.6.0",
+      "v0.5.1",
+      "v0.6.1"
+    ]
+  }
+}
