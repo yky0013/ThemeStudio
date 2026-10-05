@@ -2,7 +2,14 @@
 #define THEMESTUDIO_PAINT_TEST
 #include "themestudio-explorer-background.wh.cpp"
 #include <cstdio>
-HRESULT WINAPI TestThemeClass(HTHEME,LPWSTR name,int count){lstrcpynW(name,L"Explorer::TreeView",count);return S_OK;}
+PCWSTR testTheme=L"Explorer::TreeView";
+HRESULT WINAPI TestThemeClass(HTHEME,LPWSTR name,int count){lstrcpynW(name,testTheme,count);return S_OK;}
+HRESULT WINAPI TestNestedWhiteTheme(HTHEME,HDC dc,int,int,const RECT* rect,const RECT*) {
+    return FillRect_Hook(dc,rect,(HBRUSH)(COLOR_WINDOW+1)) ? S_OK : E_FAIL;
+}
+HRESULT WINAPI TestTextEx(HTHEME,HDC,int,int,LPCWSTR,int,DWORD,LPRECT,const DTTOPTS* options) {
+    return options && (options->dwFlags&DTT_TEXTCOLOR) && options->crText==g_text ? S_OK : E_FAIL;
+}
 HRESULT WINAPI TestOriginalTheme(HTHEME,HDC dc,int,int,const RECT* rect,const RECT*){
     HBRUSH brush=CreateSolidBrush(RGB(50,90,160));FillRect_Original(dc,rect,brush);DeleteObject(brush);return S_OK;
 }
@@ -15,7 +22,7 @@ int main() {
     FillRect_Original=FillRect; CreateCompatibleDC_Original=CreateCompatibleDC;
     DeleteDC_Original=DeleteDC; SetTextColor_Original=SetTextColor;
     WNDCLASSW cls{}; cls.lpfnWndProc=DefWindowProcW; cls.hInstance=GetModuleHandleW(nullptr);
-    for (auto name:{L"CabinetWClass", L"SHELLDLL_DefView", L"DirectUIHWND", L"ThemeStudioTestOther"}) {
+    for (auto name:{L"CabinetWClass", L"SHELLDLL_DefView", L"DirectUIHWND", L"DUIViewWndClassName", L"ThemeStudioTestOther"}) {
         cls.lpszClassName=name; if (!RegisterClassW(&cls)) return 1;
     }
     HWND root=CreateWindowW(L"CabinetWClass",L"",WS_POPUP,0,0,480,320,nullptr,nullptr,cls.hInstance,nullptr);
@@ -63,6 +70,80 @@ int main() {
     RemoveWindowSubclass(preview,TestPreviewSubclass,1);
     SendMessageW(preview,WM_ERASEBKGND,(WPARAM)dst,0);
     if(GetPixel(dst,20,30)!=GetSysColor(COLOR_WINDOW))return 16;
+    // Regression: the no-selection preview and columns belong to OUTER DUI,
+    // not to the Shell Preview Extension Host used for a selected document.
+    HWND duiHost=CreateWindowW(L"DUIViewWndClassName",L"",WS_CHILD,100,80,380,240,root,nullptr,cls.hInstance,nullptr);
+    HWND outer=CreateWindowW(L"DirectUIHWND",L"",WS_CHILD,0,0,380,240,duiHost,nullptr,cls.hInstance,nullptr);
+    HWND document=CreateWindowW(L"ThemeStudioTestOther",L"",WS_CHILD,0,0,380,240,preview,nullptr,cls.hInstance,nullptr);
+    HWND documentDui=CreateWindowW(L"DirectUIHWND",L"",WS_CHILD,0,0,380,240,document,nullptr,cls.hInstance,nullptr);
+    if(!outer||!IsSurface(outer)||IsSurface(document))return 20;
+    // Document handler descendants must never be classified as shell chrome.
+    if(IsSurface(documentDui))return 21;
+    Track(dst,outer);testTheme=L"Explorer::ReadingPane";
+    DrawThemeBackground_Hook((HTHEME)1,dst,1,0,&target,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 22;
+    testTheme=L"Explorer::Header";
+    for(int part:{HP_HEADERITEM,HP_HEADERITEMLEFT,HP_HEADERITEMRIGHT}) {
+        DrawThemeBackground_Hook((HTHEME)1,dst,part,HIS_NORMAL,&target,nullptr);
+        if(GetPixel(dst,20,30)!=RGB(30,180,70))return 23;
+    }
+    DrawThemeBackground_Original=TestNestedWhiteTheme;
+    DrawThemeBackground_Hook((HTHEME)1,dst,HP_HEADERITEM,HIS_PRESSED,&target,nullptr);
+    if(GetPixel(dst,20,30)!=GetSysColor(COLOR_WINDOW))return 24;
+    DrawThemeBackground_Original=TestOriginalTheme;
+    testTheme=L"Explorer::Status";
+    DrawThemeBackground_Hook((HTHEME)1,dst,SP_PANE,0,&target,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 42;
+    testTheme=L"Explorer::ScrollBar";
+    DrawThemeBackground_Hook((HTHEME)1,dst,SBP_UPPERTRACKVERT,SCRBS_NORMAL,&target,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 25;
+    DrawThemeBackground_Hook((HTHEME)1,dst,SBP_UPPERTRACKVERT,SCRBS_HOT,&target,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(50,90,160))return 26;
+    SetBkColor(dst,RGB(255,255,255));ExtTextOutW_Hook(dst,0,0,ETO_OPAQUE,&target,L"",0,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 27;
+    DrawThemeTextEx_Original=TestTextEx;
+    if(FAILED(DrawThemeText_Hook((HTHEME)1,dst,1,0,L"preview",7,0,0,&target)))return 28;
+    // The static's CTLCOLOR response must not repaint it with a solid brush.
+    HWND label=CreateWindowW(L"Static",L"Choose a file",WS_CHILD,0,0,380,240,preview,nullptr,cls.hInstance,nullptr);
+    SetWindowSubclass(preview,TestPreviewSubclass,1,0);
+    auto brush=(HBRUSH)SendMessageW(preview,WM_CTLCOLORSTATIC,(WPARAM)dst,(LPARAM)label);
+    LOGBRUSH labelBrush{};GetObjectW(brush,sizeof(labelBrush),&labelBrush);
+    if(labelBrush.lbStyle!=BS_HOLLOW || GetBkMode(dst)!=TRANSPARENT || GetTextColor(dst)!=g_text)return 29;
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 30;
+    RemoveWindowSubclass(preview,TestPreviewSubclass,1);
+    // Real uxtheme buffer, including non-zero clipping origin and DC disposal.
+    BeginBufferedPaint_Original=BeginBufferedPaint;EndBufferedPaint_Original=EndBufferedPaint;
+    BufferedPaintInit();Track(dst,outer);
+    RECT bufferedArea{10,20,100,90};HDC bufferedDC{};
+    HPAINTBUFFER buffer=BeginBufferedPaint_Hook(dst,&bufferedArea,BPBF_TOPDOWNDIB,nullptr,&bufferedDC);
+    if(!buffer||WindowForDC(bufferedDC)!=outer)return 31;
+    FillRect_Hook(bufferedDC,&bufferedArea,(HBRUSH)(COLOR_WINDOW+1));
+    if(GetPixel(bufferedDC,20,30)!=RGB(30,180,70))return 32;
+    if(FAILED(EndBufferedPaint_Hook(buffer,TRUE))||WindowForDC(bufferedDC)||!g_paintBuffers.empty())return 33;
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 34;
+    // Alpha-composited buffers must retain the image even after GDI clears alpha.
+    BLENDFUNCTION blend{AC_SRC_OVER,0,255,AC_SRC_ALPHA};
+    BP_PAINTPARAMS alphaParams{sizeof(alphaParams),0,nullptr,&blend};
+    FillRect_Original(dst,&target,blue);
+    buffer=BeginBufferedPaint_Hook(dst,&bufferedArea,BPBF_TOPDOWNDIB,&alphaParams,&bufferedDC);
+    if(!buffer)return 37;
+    FillRect_Hook(bufferedDC,&bufferedArea,(HBRUSH)(COLOR_WINDOW+1));
+    BufferedPaintSetAlpha(buffer,&bufferedArea,0);
+    if(FAILED(EndBufferedPaint_Hook(buffer,TRUE))||GetPixel(dst,20,30)!=RGB(30,180,70))return 38;
+    buffer=BeginBufferedPaint_Hook(dst,&bufferedArea,BPBF_TOPDOWNDIB,&alphaParams,&bufferedDC);
+    if(!buffer)return 39;
+    FillRect_Hook(bufferedDC,&bufferedArea,(HBRUSH)(COLOR_WINDOW+1));
+    FillRect_Original(dst,&target,blue);EndBufferedPaint_Hook(buffer,FALSE);
+    if(GetPixel(dst,20,30)!=RGB(50,90,160))return 40;
+    BufferedPaintUnInit();
+    GetDC_Original=GetDC;GetDCEx_Original=GetDCEx;ReleaseDC_Original=ReleaseDC;
+    HDC direct=GetDC_Hook(outer);if(WindowForDC(direct)!=outer)return 35;
+    ReleaseDC_Hook(outer,direct);
+    {std::lock_guard<std::mutex> guard(g_mutex);if(g_dcWindows.count(direct))return 36;}
+    // Automatic child destruction also clears our HWND bookkeeping.
+    SetWindowSubclass(outer,TestPreviewSubclass,1,0);g_subclassed.insert(outer);
+    DestroyWindow(duiHost);
+    if(g_subclassed.count(outer)||WindowForDC(dst))return 41;
     DestroyWindow(preview);DestroyWindow(tree);Track(dst,content);
     if(SetTextColor_Hook(dst,RGB(0,0,0))==CLR_INVALID||GetTextColor(dst)!=g_text) return 6;
     DWORD before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
@@ -77,6 +158,6 @@ int main() {
     DeleteDC(src); DeleteObject(output); DeleteObject(g_bitmap); g_bitmap=nullptr;
     DeleteObject(red); DeleteObject(green); DeleteObject(blue); ReleaseDC(nullptr,screen);
     DestroyWindow(other); DestroyWindow(root);
-    std::puts("PASS: root-aligned image, partial repaint, tree normal background, preserved hover/selection states, preview erase/undo, text contrast, scoped HWNDs, 500-paint GDI lifetime");
+    std::puts("PASS: root-aligned image; outer DUI empty preview; transparent header/status/scrollbar paths; preserved hover/selection including nested white fills; static text transparency; real uxtheme buffered paint, alpha commit/cancel and DC cleanup; document exclusion; text contrast; 500-paint GDI lifetime");
     return 0;
 }

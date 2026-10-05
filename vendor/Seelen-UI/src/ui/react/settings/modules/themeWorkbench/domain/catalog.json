@@ -11688,9 +11688,9 @@
     {
       "id": "themestudio-explorer-background",
       "name": "ThemeStudio Explorer background",
-      "description": "Theme image in the native Explorer file list and navigation pane",
+      "description": "Theme image in the native Explorer panes, headers, scrollbars and empty previews",
       "author": "ThemeStudio contributors",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "include": [
         "explorer.exe"
       ],
@@ -11700,7 +11700,7 @@
       "license": "MIT",
       "source": "https://github.com/yky0013/ThemeStudio",
       "sourceKind": "themestudio",
-      "sha256": "3e8caf7b8d9989597993c4e9acbe756c0b8e7943e616f57e8653ffabe850e816",
+      "sha256": "f054dd582cd32bf05ca32b3d3fe31e01bcb3e1c980a6ed5edfb3e19336445aa5",
       "themeChoices": []
     }
   ]

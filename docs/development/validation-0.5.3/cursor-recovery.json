@@ -1,0 +1,10 @@
+{
+  "expected": "19B1A6496B50B3CFB18E8265B49905C14823306ACA0FF5B8F54E7682A83DB3F6",
+  "actual": "19B1A6496B50B3CFB18E8265B49905C14823306ACA0FF5B8F54E7682A83DB3F6",
+  "loadedArrowMatches": true,
+  "chineseLauncherPassed": true,
+  "englishLauncherPassed": true,
+  "codePage": 936,
+  "missingAssetFailsBeforeMutation": true,
+  "verifyOnlyPreservesRegistry": true
+}

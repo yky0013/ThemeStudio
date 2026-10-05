@@ -1,0 +1,3 @@
+
+> theme-studio@0.5.3 check
+> tsc --noEmit

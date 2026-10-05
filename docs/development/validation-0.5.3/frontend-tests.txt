@@ -1,0 +1,38 @@
+
+> theme-studio@0.5.3 test
+> tsx --test tests/*.test.ts
+
+✔ an unresolved overlap cannot silently bind a Seelen component (1.4804ms)
+✔ the user's split wallpaper choice binds Seelen wallpaper without choosing a taskbar (0.9873ms)
+✔ custom cursor/icon choices replace theme accessories within one combined plan (2.3427ms)
+✔ Mac selection and its color selection produce one Seelen activation (0.3582ms)
+✔ locked drafts reject racing edits; completing an apply leaves no second apply pending (0.2349ms)
+✔ desktop writes require POST, JSON and the current private session token (0.8916ms)
+✔ desktop host permits only scoped personalization operations (0.2201ms)
+✔ install and upgrade have no automatic desktop engine lifecycle action (2.1363ms)
+✔ installer only consumes explicit application payload directories (0.3976ms)
+✔ configuration round trip keeps Unicode names and mod version identity (1.5122ms)
+✔ adding or removing a mod never mutates the input and never adds duplicates (0.134ms)
+✔ import rejects invalid versions, duplicates and prototype keys (0.369ms)
+✔ oversized and malformed input do not replace the input recipe (0.26ms)
+✔ missing resources and changed mod source are reported before application (0.4234ms)
+✔ unknown preset fails validation (0.2159ms)
+✔ catalog search includes localized names and target process (1.4705ms)
+✔ catalog has unique ids, real source hashes and all three style modules (1.0967ms)
+✔ upstream spring reaches approximately 95% at its configured settling time (1.3627ms)
+✔ spring result is frame-rate independent for a constant target (1.4341ms)
+✔ long stalls are clamped and pointer dead zone filters small movement (1.2578ms)
+✔ global pointer normalization handles negative monitor origins and independent displays (0.2762ms)
+✔ constant auto-zoom covers viewport corners over all presets, sizes and tilt samples (4.0796ms)
+✔ matrix maps padded source center to viewport center and preserves finite homogeneous coordinates (0.4621ms)
+✔ source theme values round-trip with strict user configuration validation (0.5416ms)
+✔ recipe persists the combination and rejects contradictory enablement (0.5858ms)
+✔ an imported static-only pack never tries to apply a missing video (1.078ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 749.2594

@@ -1,7 +1,7 @@
 ; Theme Studio offline installer. User data is owned by the application,
 ; outside {app}, and is intentionally retained on uninstall.
 #define AppName "桌面主题工作室"
-#define AppVersion "0.5.2"
+#define AppVersion "0.5.3"
 
 [Setup]
 AppId={{34717904-40BD-47C3-9AE5-4CA3B55820B5}
@@ -36,7 +36,7 @@ SetupLogging=yes
 InfoBeforeFile=安装说明.txt
 VersionInfoDescription=桌面主题工作室精简安装程序
 VersionInfoProductName={#AppName}
-VersionInfoVersion=0.5.2.0
+VersionInfoVersion=0.5.3.0
 SetupIconFile=..\assets\brand\theme-studio.ico
 
 [Languages]

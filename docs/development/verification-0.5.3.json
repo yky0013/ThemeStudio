@@ -1,0 +1,72 @@
+{
+  "version": "0.5.3",
+  "date": "2026-10-05",
+  "frontendTests": 26,
+  "backendTests": 98,
+  "typeCheck": true,
+  "nativePreview": {
+    "checks": [
+      {
+        "sevenPacks": true,
+        "retiredPacksAbsent": true
+      },
+      {
+        "liveThemeSelection": true,
+        "liveOpacity": true
+      },
+      {
+        "idlePaneAndStatusTransparent": true
+      },
+      {
+        "themeModalPreview": true,
+        "themeDefaultLinksExplorer": true
+      },
+      {
+        "previewReadOnly": true,
+        "operations": [
+          "runtime.state",
+          "templates.list",
+          "templates.list",
+          "state",
+          "wallpaper.status",
+          "updates.state",
+          "appearance.state",
+          "explorer.state",
+          "explorer.state",
+          "app.ready",
+          "templates.list",
+          "explorer.state",
+          "app.qa-trace"
+        ]
+      }
+    ],
+    "errors": [],
+    "nativeSystemApplyTested": false,
+    "passed": true
+  },
+  "nativeMod": {
+    "compiledLocally": true,
+    "disabled": true,
+    "version": "1.2.0",
+    "sourceSha256": "f054dd582cd32bf05ca32b3d3fe31e01bcb3e1c980a6ed5edfb3e19336445aa5"
+  },
+  "isolatedExplorerPaintVerified": true,
+  "realBufferedPaintAlphaAndCancelVerified": true,
+  "explorerVisualLiveVerified": false,
+  "installerInstallUninstallTested": false,
+  "cursorRecovery": {
+    "expected": "19B1A6496B50B3CFB18E8265B49905C14823306ACA0FF5B8F54E7682A83DB3F6",
+    "actual": "19B1A6496B50B3CFB18E8265B49905C14823306ACA0FF5B8F54E7682A83DB3F6",
+    "loadedArrowMatches": true,
+    "chineseLauncherPassed": true,
+    "englishLauncherPassed": true,
+    "codePage": 936,
+    "missingAssetFailsBeforeMutation": true,
+    "verifyOnlyPreservesRegistry": true
+  },
+  "installer": "ThemeStudio-0.5.3-Windows-x64-Setup.exe",
+  "installerBytes": 168837475,
+  "installerSha256": "5ecc265e1b27de607b30acfd3b11fe40efc169b5ed9bd63dda0677942a1a445b",
+  "packagedFrontendMatchesBuild": true,
+  "packagedNativeSourceMatchesCatalog": true
+}

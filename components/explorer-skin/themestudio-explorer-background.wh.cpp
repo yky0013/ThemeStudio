@@ -1,8 +1,8 @@
 // ==WindhawkMod==
 // @id themestudio-explorer-background
 // @name ThemeStudio Explorer background
-// @description Theme image in the native Explorer file list and navigation pane
-// @version 1.1.0
+// @description Theme image in the native Explorer panes, headers, scrollbars and empty previews
+// @version 1.2.0
 // @author ThemeStudio contributors
 // @license MIT
 // @include explorer.exe
@@ -47,22 +47,29 @@ Hold Escape while enabling to skip loading; disable this mod to restore painting
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+#include <vector>
 
 // Immutable while hooks are active. A setting change requests a Windhawk reload.
 HBITMAP g_bitmap = nullptr;
 BITMAP g_info{};
 COLORREF g_text = RGB(228, 237, 250);
 COLORREF g_caption = RGB(8, 27, 50);
-HBRUSH g_panelBrush = nullptr;
 std::atomic<bool> g_stopping{false};
 std::mutex g_mutex;
 std::mutex g_renderMutex;
 std::unordered_map<HDC, HWND> g_dcWindows;
+struct PaintBuffer { HDC dc; std::vector<RECT> opaque; };
+std::unordered_map<HPAINTBUFFER, PaintBuffer> g_paintBuffers;
 std::unordered_map<HWND, std::array<int,4>> g_layouts;
 struct CaptionState { DWORD dark, background, text; bool hasDark, hasBackground, hasText; };
 std::unordered_map<HWND, CaptionState> g_captions;
 std::unordered_set<HWND> g_subclassed;
 thread_local bool g_drawing = false;
+thread_local unsigned g_nativeDrawing = 0;
+struct NativeDrawing {
+    NativeDrawing() { ++g_nativeDrawing; }
+    ~NativeDrawing() { --g_nativeDrawing; }
+};
 
 bool ClassIs(HWND window, PCWSTR expected) {
     WCHAR name[128]{};
@@ -76,19 +83,22 @@ bool IsPreviewHost(HWND window) {
 }
 bool IsPreviewSurface(HWND window) {
     if (IsPreviewHost(window)) return true;
-    // Paint the empty host/placeholder, never a document viewer or RichEdit content.
-    if (!ClassIs(window,L"DirectUIHWND") && !ClassIs(window,L"Static")) return false;
-    for (HWND parent=GetParent(window);parent;parent=GetParent(parent)) {
-        if (IsPreviewHost(parent)) return true;
-        if (ClassIs(parent,L"CabinetWClass")) break;
-    }
-    return false;
+    // Only the host's own label is a placeholder. Never walk through a loaded
+    // document handler (which can itself contain Static/DirectUI controls).
+    return ClassIs(window,L"Static") && IsPreviewHost(GetParent(window));
+}
+bool IsShellDirectUI(HWND window) {
+    if (!ClassIs(window,L"DirectUIHWND")) return false;
+    HWND parent=GetParent(window);
+    // The outer DUI owns the empty preview, columns, status and scrollbar strips.
+    // A loaded document's DUI/RichEdit/WebView belongs to its preview handler.
+    return ClassIs(parent,L"SHELLDLL_DefView") || ClassIs(parent,L"DUIViewWndClassName");
 }
 bool IsSurface(HWND window) {
     if (!IsExplorer(window)) return false;
-    // Do not touch desktop icons, dialogs, menus or other processes.
-    return (ClassIs(window, L"DirectUIHWND") && ClassIs(GetParent(window), L"SHELLDLL_DefView")) ||
-           ClassIs(window,L"SysTreeView32") || ClassIs(window,L"SysHeader32") ||
+    return IsShellDirectUI(window) || ClassIs(window,L"SHELLDLL_DefView") ||
+           ClassIs(window,L"DUIViewWndClassName") || ClassIs(window,L"SysTreeView32") ||
+           ClassIs(window,L"SysHeader32") || ClassIs(window,L"ScrollBar") ||
            ClassIs(window,L"msctls_statusbar32") || IsPreviewSurface(window);
 }
 void InstallSurfaceSubclass(HWND window);
@@ -166,6 +176,50 @@ BOOL WINAPI DeleteDC_Hook(HDC dc) {
     return DeleteDC_Original(dc);
 }
 
+// Not every control obtains its DC through BeginPaint/CreateCompatibleDC.
+decltype(&GetDC) GetDC_Original;
+HDC WINAPI GetDC_Hook(HWND window) {
+    HDC dc=GetDC_Original(window); Track(dc,window); return dc;
+}
+decltype(&GetDCEx) GetDCEx_Original;
+HDC WINAPI GetDCEx_Hook(HWND window,HRGN region,DWORD flags) {
+    HDC dc=GetDCEx_Original(window,region,flags); Track(dc,window); return dc;
+}
+decltype(&ReleaseDC) ReleaseDC_Original;
+int WINAPI ReleaseDC_Hook(HWND window,HDC dc) {
+    { std::lock_guard<std::mutex> guard(g_mutex); g_dcWindows.erase(dc); }
+    return ReleaseDC_Original(window,dc);
+}
+decltype(&BeginBufferedPaint) BeginBufferedPaint_Original;
+HPAINTBUFFER WINAPI BeginBufferedPaint_Hook(HDC target,const RECT* rect,BP_BUFFERFORMAT format,
+                                           BP_PAINTPARAMS* params,HDC* output) {
+    HPAINTBUFFER buffer=BeginBufferedPaint_Original(target,rect,format,params,output);
+    HWND window=WindowForDC(target);
+    if(buffer && output && *output && window) {
+        Track(*output,window);
+        std::lock_guard<std::mutex> guard(g_mutex); g_paintBuffers[buffer]={*output,{}};
+    }
+    return buffer;
+}
+decltype(&EndBufferedPaint) EndBufferedPaint_Original;
+HRESULT WINAPI EndBufferedPaint_Hook(HPAINTBUFFER buffer,BOOL update) {
+    std::vector<RECT> opaque;
+    { std::lock_guard<std::mutex> guard(g_mutex);
+      auto found=g_paintBuffers.find(buffer);
+      if(found!=g_paintBuffers.end()) {
+          g_dcWindows.erase(found->second.dc); opaque=std::move(found->second.opaque);g_paintBuffers.erase(found);
+      }
+    }
+    // GDI text can clear alpha after the background was drawn. Mark only our
+    // painted areas opaque just before commit; untouched buffer pixels retain alpha.
+    if(update)for(const auto& area:opaque)BufferedPaintSetAlpha(buffer,&area,255);
+    return EndBufferedPaint_Original(buffer,update);
+}
+void RecordOpaqueArea(HDC dc,const RECT& area) {
+    std::lock_guard<std::mutex> guard(g_mutex);
+    for(auto& [buffer,context]:g_paintBuffers)if(context.dc==dc){context.opaque.push_back(area);break;}
+}
+
 // Drawing only backgrounds keeps native hit testing, selection and file actions intact.
 void PaintImage(HDC dc, HWND window, const RECT* clip) {
     if (g_drawing || g_stopping || !g_bitmap || !window || !clip) return;
@@ -191,8 +245,11 @@ void PaintImage(HDC dc, HWND window, const RECT* clip) {
         if (saved) {
             IntersectClipRect(dc, clip->left, clip->top, clip->right, clip->bottom);
             SetStretchBltMode(dc, HALFTONE); SetBrushOrgEx(dc, 0, 0, nullptr);
-            StretchBlt(dc, (client.right-width)/2-offset.x, (client.bottom-height)/2-offset.y,
-                       width, height, source, 0, 0, g_info.bmWidth, g_info.bmHeight, SRCCOPY);
+            if(StretchBlt(dc, (client.right-width)/2-offset.x, (client.bottom-height)/2-offset.y,
+                       width, height, source, 0, 0, g_info.bmWidth, g_info.bmHeight, SRCCOPY)) {
+                RECT area{};
+                if(GetClipBox(dc,&area)!=ERROR && !IsRectEmpty(&area))RecordOpaqueArea(dc,area);
+            }
             RestoreDC(dc, saved);
         }
         SelectObject(source, old); DeleteDC_Original(source);
@@ -201,6 +258,17 @@ void PaintImage(HDC dc, HWND window, const RECT* clip) {
 }
 
 LRESULT CALLBACK SurfaceSubclass(HWND window, UINT message, WPARAM wParam, LPARAM lParam, DWORD_PTR) {
+    if(message==WM_NCDESTROY) {
+        // Destroying a parent need not call the exported DestroyWindow for each
+        // child. Forget its HWND so a reused handle gets a fresh subclass.
+        { std::lock_guard<std::mutex> guard(g_mutex);
+          g_subclassed.erase(window);
+          for(auto it=g_dcWindows.begin();it!=g_dcWindows.end();) {
+              if(it->second==window)it=g_dcWindows.erase(it);else ++it;
+          }
+        }
+        { std::lock_guard<std::mutex> guard(g_renderMutex);g_layouts.erase(window); }
+    }
     if (!g_stopping) {
         if (message==WM_ERASEBKGND && IsSurface(window)) {
             RECT rect{}; GetClientRect(window,&rect);
@@ -209,14 +277,15 @@ LRESULT CALLBACK SurfaceSubclass(HWND window, UINT message, WPARAM wParam, LPARA
         }
         if (message==WM_CTLCOLORSTATIC && IsPreviewSurface((HWND)lParam)) {
             ::SetTextColor((HDC)wParam,g_text); SetBkMode((HDC)wParam,TRANSPARENT);
-            return (LRESULT)g_panelBrush;
+            RECT rect{}; GetClientRect((HWND)lParam,&rect);
+            PaintImage((HDC)wParam,(HWND)lParam,&rect);
+            return (LRESULT)GetStockObject(NULL_BRUSH);
         }
     }
     return DefSubclassProc(window,message,wParam,lParam);
 }
 void InstallSurfaceSubclass(HWND window) {
-    if (g_stopping || !IsExplorer(window) ||
-        (!IsPreviewSurface(window) && !ClassIs(window,L"msctls_statusbar32"))) return;
+    if (g_stopping || !IsSurface(window)) return;
     { std::lock_guard<std::mutex> guard(g_mutex); if(g_subclassed.count(window)) return; }
 #ifndef THEMESTUDIO_PAINT_TEST
     if (WindhawkUtils::SetWindowSubclassFromAnyThread(window,SurfaceSubclass,0)) {
@@ -233,38 +302,88 @@ bool ThemeClassIs(HTHEME theme, PCWSTR wanted) {
     return length>=match && !_wcsicmp(name+length-match,wanted) &&
         (length==match || (length>=match+2 && name[length-match-1]==L':' && name[length-match-2]==L':'));
 }
+bool PaintNormalScrollbar(HDC dc,HWND window,int part,int state,const RECT& area) {
+    const bool track=part>=SBP_LOWERTRACKHORZ && part<=SBP_UPPERTRACKVERT;
+    const bool thumb=part==SBP_THUMBBTNHORZ || part==SBP_THUMBBTNVERT;
+    const bool grip=part==SBP_GRIPPERHORZ || part==SBP_GRIPPERVERT;
+    const bool disabledArrow=part==SBP_ARROWBTN && (state==ABS_UPDISABLED || state==ABS_DOWNDISABLED ||
+                                                 state==ABS_LEFTDISABLED || state==ABS_RIGHTDISABLED);
+    const bool arrow=disabledArrow || (part==SBP_ARROWBTN && (state==ABS_UPNORMAL || state==ABS_DOWNNORMAL ||
+                                         state==ABS_LEFTNORMAL || state==ABS_RIGHTNORMAL));
+    if(!arrow && !((track||thumb||grip) && (state==SCRBS_NORMAL || state==SCRBS_DISABLED))) return false;
+    PaintImage(dc,window,&area);
+    int saved=SaveDC(dc);
+    if(saved && (thumb||arrow)) {
+        // Track is transparent; retain an explicit, readable drag handle/arrow.
+        COLORREF ink=(disabledArrow || (!arrow && state==SCRBS_DISABLED)) ?
+            RGB((GetRValue(g_text)+GetRValue(g_caption))/2,(GetGValue(g_text)+GetGValue(g_caption))/2,
+                (GetBValue(g_text)+GetBValue(g_caption))/2) : g_text;
+        HBRUSH brush=CreateSolidBrush(ink);
+        HPEN pen=CreatePen(PS_SOLID,1,ink);
+        auto oldBrush=SelectObject(dc,brush); auto oldPen=SelectObject(dc,pen);
+        if(thumb) {
+            RECT r=area;
+            if(part==SBP_THUMBBTNVERT) { int inset=std::max<LONG>(2,(r.right-r.left)/3); r.left+=inset;r.right-=inset; }
+            else { int inset=std::max<LONG>(2,(r.bottom-r.top)/3); r.top+=inset;r.bottom-=inset; }
+            RoundRect(dc,r.left,r.top,r.right,r.bottom,5,5);
+        } else {
+            int x=(area.left+area.right)/2,y=(area.top+area.bottom)/2;
+            POINT points[3]{};
+            if(state==ABS_UPNORMAL || state==ABS_UPDISABLED) { points[0]={x-3,y+2};points[1]={x,y-2};points[2]={x+3,y+2}; }
+            if(state==ABS_DOWNNORMAL || state==ABS_DOWNDISABLED) { points[0]={x-3,y-2};points[1]={x,y+2};points[2]={x+3,y-2}; }
+            if(state==ABS_LEFTNORMAL || state==ABS_LEFTDISABLED) { points[0]={x+2,y-3};points[1]={x-2,y};points[2]={x+2,y+3}; }
+            if(state==ABS_RIGHTNORMAL || state==ABS_RIGHTDISABLED) { points[0]={x-2,y-3};points[1]={x+2,y};points[2]={x-2,y+3}; }
+            Polyline(dc,points,3);
+        }
+        SelectObject(dc,oldPen);SelectObject(dc,oldBrush);DeleteObject(pen);DeleteObject(brush);
+    }
+    if(saved)RestoreDC(dc,saved);
+    return true;
+}
 bool ReplaceNormalBackground(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const RECT* clip) {
-    if(g_stopping || g_drawing || !rect) return false;
+    if(g_stopping || g_drawing || g_nativeDrawing || !rect) return false;
     HWND window=WindowForDC(dc);
     if(!window) return false;
+    RECT area=*rect;
+    if(clip && !IntersectRect(&area,rect,clip)) return false;
+    if(ThemeClassIs(theme,L"ScrollBar")) {
+        int saved=SaveDC(dc);
+        if(!saved)return false;
+        IntersectClipRect(dc,area.left,area.top,area.right,area.bottom);
+        bool painted=PaintNormalScrollbar(dc,window,part,state,*rect);
+        RestoreDC(dc,saved);return painted;
+    }
     const bool normalTree=ClassIs(window,L"SysTreeView32") && ThemeClassIs(theme,L"TreeView") &&
         part==TVP_TREEITEM && state==TREIS_NORMAL;
-    const bool normalHeader=ClassIs(window,L"SysHeader32") && ThemeClassIs(theme,L"Header") &&
-        part==HP_HEADERITEM && state==HIS_NORMAL;
-    const bool pane=IsPreviewSurface(window) && ThemeClassIs(theme,L"ReadingPane") && part==1;
-    const bool status=ClassIs(window,L"msctls_statusbar32") && ThemeClassIs(theme,L"Status");
+    const bool normalHeader=ThemeClassIs(theme,L"Header") &&
+        (ClassIs(window,L"SysHeader32")||IsShellDirectUI(window)) &&
+        ((part==HP_HEADERITEM || part==HP_HEADERITEMLEFT || part==HP_HEADERITEMRIGHT) && state==HIS_NORMAL);
+    const bool pane=(IsPreviewSurface(window)||IsShellDirectUI(window)) && ThemeClassIs(theme,L"ReadingPane") && part==1;
+    const bool status=(ClassIs(window,L"msctls_statusbar32")||IsShellDirectUI(window)) &&
+        ThemeClassIs(theme,L"Status") && (part==SP_PANE || part==SP_GRIPPERPANE);
     if(!normalTree && !normalHeader && !pane && !status) return false;
-    RECT area=*rect;
-    if(clip && !IntersectRect(&area,rect,clip)) return true;
     PaintImage(dc,window,&area);
     return true;
 }
+
 decltype(&DrawThemeBackground) DrawThemeBackground_Original;
 HRESULT WINAPI DrawThemeBackground_Hook(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const RECT* clip) {
     if(ReplaceNormalBackground(theme,dc,part,state,rect,clip)) return S_OK;
     // HOT / SELECTED / SELECTEDNOTFOCUS / HOTSELECTED keep their existing rendering.
+    NativeDrawing native; // Nested FillRect/ExtTextOut must not remove selection or glyphs.
     return DrawThemeBackground_Original(theme,dc,part,state,rect,clip);
 }
 decltype(&DrawThemeBackgroundEx) DrawThemeBackgroundEx_Original;
 HRESULT WINAPI DrawThemeBackgroundEx_Hook(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const DTBGOPTS* options) {
     const RECT* clip=options && options->dwSize==sizeof(DTBGOPTS) && (options->dwFlags&DTBG_CLIPRECT) ? &options->rcClip : nullptr;
     if(ReplaceNormalBackground(theme,dc,part,state,rect,clip)) return S_OK;
+    NativeDrawing native;
     return DrawThemeBackgroundEx_Original(theme,dc,part,state,rect,options);
 }
 decltype(&FillRect) FillRect_Original;
 int WINAPI FillRect_Hook(HDC dc, const RECT* rect, HBRUSH brush) {
     int result = FillRect_Original(dc, rect, brush);
-    if (g_drawing || g_stopping) return result;
+    if (g_drawing || g_stopping || g_nativeDrawing) return result;
     HWND window = WindowForDC(dc);
     // Only neutral surface brushes are replaced. Selection/focus brushes retain
     // their native color, including a full-row selection in Details view.
@@ -281,7 +400,7 @@ int WINAPI FillRect_Hook(HDC dc, const RECT* rect, HBRUSH brush) {
 }
 decltype(&SetTextColor) SetTextColor_Original;
 COLORREF WINAPI SetTextColor_Hook(HDC dc, COLORREF color) {
-    return SetTextColor_Original(dc, !g_stopping && WindowForDC(dc) ? g_text : color);
+    return SetTextColor_Original(dc, !g_stopping && !g_nativeDrawing && WindowForDC(dc) ? g_text : color);
 }
 bool IsSelectedTreeRow(HWND window,const RECT* rect) {
     if(!rect || !ClassIs(window,L"SysTreeView32"))return false;
@@ -293,30 +412,50 @@ bool IsSelectedTreeRow(HWND window,const RECT* rect) {
 }
 decltype(&ExtTextOutW) ExtTextOutW_Original;
 BOOL WINAPI ExtTextOutW_Hook(HDC dc,int x,int y,UINT flags,const RECT* rect,LPCWSTR text,UINT length,const INT* spacing) {
-    HWND window=!g_stopping&&!g_drawing?WindowForDC(dc):nullptr;
+    HWND window=!g_stopping&&!g_drawing&&!g_nativeDrawing?WindowForDC(dc):nullptr;
     COLORREF background=GetBkColor(dc);
     bool neutral=background==GetSysColor(COLOR_WINDOW)||background==RGB(255,255,255)||
         background==RGB(25,25,25)||background==RGB(30,30,30)||background==RGB(32,32,32)||background==g_caption;
     // Common-controls can clear an unselected row through ETO_OPAQUE without
     // calling FillRect or DrawThemeBackground. Keep selected row painting intact.
-    if(window&&(ClassIs(window,L"SysTreeView32")||IsPreviewSurface(window))&&neutral&&!IsSelectedTreeRow(window,rect)) {
+    if(window&&neutral&&!IsSelectedTreeRow(window,rect)) {
         if((flags&ETO_OPAQUE)&&rect)PaintImage(dc,window,rect);
         int mode=SetBkMode(dc,TRANSPARENT);
+        COLORREF color=SetTextColor_Original(dc,g_text);
         BOOL result=ExtTextOutW_Original(dc,x,y,flags&~ETO_OPAQUE,rect,text,length,spacing);
-        SetBkMode(dc,mode);return result;
+        SetTextColor_Original(dc,color);SetBkMode(dc,mode);return result;
     }
     return ExtTextOutW_Original(dc,x,y,flags,rect,text,length,spacing);
 }
 decltype(&DrawThemeTextEx) DrawThemeTextEx_Original;
 HRESULT WINAPI DrawThemeTextEx_Hook(HTHEME theme, HDC dc, int part, int state, LPCWSTR text,
                                   int length, DWORD flags, LPRECT rect, const DTTOPTS* opts) {
-    if (!g_stopping && WindowForDC(dc)) {
+    if (!g_stopping && !g_nativeDrawing && WindowForDC(dc)) {
         DTTOPTS copy{};
         if (opts && opts->dwSize == sizeof(copy)) copy = *opts;
         copy.dwSize = sizeof(copy); copy.dwFlags |= DTT_TEXTCOLOR; copy.crText = g_text;
         return DrawThemeTextEx_Original(theme, dc, part, state, text, length, flags, rect, &copy);
     }
     return DrawThemeTextEx_Original(theme, dc, part, state, text, length, flags, rect, opts);
+}
+
+// Some headers and empty-preview labels use the older theme text API.
+decltype(&DrawThemeText) DrawThemeText_Original;
+HRESULT WINAPI DrawThemeText_Hook(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,
+                                 int length,DWORD flags,DWORD flags2,LPCRECT rect) {
+    if(!g_stopping && !g_nativeDrawing && WindowForDC(dc) && rect && !flags2) {
+        RECT copy=*rect; DTTOPTS opts{};opts.dwSize=sizeof(opts);
+        opts.dwFlags=DTT_TEXTCOLOR;opts.crText=g_text;
+        return DrawThemeTextEx_Original(theme,dc,part,state,text,length,flags,&copy,&opts);
+    }
+    return DrawThemeText_Original(theme,dc,part,state,text,length,flags,flags2,rect);
+}
+
+decltype(&CreateWindowExW) CreateWindowExW_Original;
+HWND WINAPI CreateWindowExW_Hook(DWORD ex,PCWSTR cls,PCWSTR title,DWORD style,int x,int y,int width,int height,
+                               HWND parent,HMENU menu,HINSTANCE instance,LPVOID param) {
+    HWND window=CreateWindowExW_Original(ex,cls,title,style,x,y,width,height,parent,menu,instance,param);
+    InstallSurfaceSubclass(window);return window;
 }
 
 BOOL CALLBACK RedrawChild(HWND window, LPARAM) { InstallSurfaceSubclass(window); InvalidateRect(window,nullptr,TRUE); return TRUE; }
@@ -353,10 +492,15 @@ BOOL Wh_ModInit() {
         if (end && !*end) g_caption = RGB((rgb>>16)&255, (rgb>>8)&255, rgb&255);
     }
     Wh_FreeStringSetting(color);
-    g_panelBrush=CreateSolidBrush(g_caption);
     GetThemeClass_Original=(GetThemeClass_t)GetProcAddress(GetModuleHandleW(L"uxtheme.dll"),MAKEINTRESOURCEA(74));
     bool ok = WindhawkUtils::SetFunctionHook(BeginPaint, BeginPaint_Hook, &BeginPaint_Original) &&
         WindhawkUtils::SetFunctionHook(EndPaint, EndPaint_Hook, &EndPaint_Original) &&
+        WindhawkUtils::SetFunctionHook(GetDC,GetDC_Hook,&GetDC_Original) &&
+        WindhawkUtils::SetFunctionHook(GetDCEx,GetDCEx_Hook,&GetDCEx_Original) &&
+        WindhawkUtils::SetFunctionHook(ReleaseDC,ReleaseDC_Hook,&ReleaseDC_Original) &&
+        WindhawkUtils::SetFunctionHook(BeginBufferedPaint,BeginBufferedPaint_Hook,&BeginBufferedPaint_Original) &&
+        WindhawkUtils::SetFunctionHook(EndBufferedPaint,EndBufferedPaint_Hook,&EndBufferedPaint_Original) &&
+        WindhawkUtils::SetFunctionHook(CreateWindowExW,CreateWindowExW_Hook,&CreateWindowExW_Original) &&
         WindhawkUtils::SetFunctionHook(DestroyWindow, DestroyWindow_Hook, &DestroyWindow_Original) &&
         WindhawkUtils::SetFunctionHook(CreateCompatibleDC, CreateCompatibleDC_Hook, &CreateCompatibleDC_Original) &&
         WindhawkUtils::SetFunctionHook(DeleteDC, DeleteDC_Hook, &DeleteDC_Original) &&
@@ -365,12 +509,13 @@ BOOL Wh_ModInit() {
         WindhawkUtils::SetFunctionHook(ExtTextOutW,ExtTextOutW_Hook,&ExtTextOutW_Original) &&
         WindhawkUtils::SetFunctionHook(DrawThemeBackground,DrawThemeBackground_Hook,&DrawThemeBackground_Original) &&
         WindhawkUtils::SetFunctionHook(DrawThemeBackgroundEx,DrawThemeBackgroundEx_Hook,&DrawThemeBackgroundEx_Original) &&
-        WindhawkUtils::SetFunctionHook(DrawThemeTextEx, DrawThemeTextEx_Hook, &DrawThemeTextEx_Original);
-    if (!ok) { DeleteObject(g_bitmap); g_bitmap=nullptr; if(g_panelBrush)DeleteObject(g_panelBrush); return FALSE; }
+        WindhawkUtils::SetFunctionHook(DrawThemeTextEx, DrawThemeTextEx_Hook, &DrawThemeTextEx_Original) &&
+        WindhawkUtils::SetFunctionHook(DrawThemeText,DrawThemeText_Hook,&DrawThemeText_Original);
+    if (!ok) { DeleteObject(g_bitmap); g_bitmap=nullptr; return FALSE; }
     return TRUE;
 }
 void Wh_ModAfterInit() { EnumWindows(RedrawExplorer, 0); }
 void Wh_ModBeforeUninit() { g_stopping=true; WindhawkUtils::RemoveAllWindowSubclasses(); RestoreCaptions(); EnumWindows(RedrawExplorer,0); }
-void Wh_ModUninit() { if(g_bitmap)DeleteObject(g_bitmap);g_bitmap=nullptr;if(g_panelBrush)DeleteObject(g_panelBrush);g_panelBrush=nullptr;EnumWindows(RedrawExplorer,0); }
+void Wh_ModUninit() { if(g_bitmap)DeleteObject(g_bitmap);g_bitmap=nullptr;EnumWindows(RedrawExplorer,0); }
 BOOL Wh_ModSettingsChanged(BOOL* reload) { *reload = TRUE; return TRUE; }
 #endif
