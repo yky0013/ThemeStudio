@@ -2,12 +2,12 @@
 // @id themestudio-explorer-background
 // @name ThemeStudio Explorer background
 // @description Theme image in the native Explorer panes, headers, scrollbars and empty previews
-// @version 1.2.0
+// @version 1.2.1
 // @author ThemeStudio contributors
 // @license MIT
 // @include explorer.exe
 // @architecture x86-64
-// @compilerOptions -luser32 -lgdi32 -luxtheme -ldwmapi -lcomctl32
+// @compilerOptions -luser32 -lgdi32 -luxtheme -ldwmapi -lcomctl32 -lmsimg32
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==
@@ -340,6 +340,45 @@ bool PaintNormalScrollbar(HDC dc,HWND window,int part,int state,const RECT& area
     if(saved)RestoreDC(dc,saved);
     return true;
 }
+bool IsIdleHeaderBackground(int part,int state) {
+    // HEADERITEM has separate idle states for a sort column and an icon column.
+    // The LEFT/RIGHT parts instead use their own three-state enums. Do not
+    // classify sort arrows/dropdowns as background or erase hover/press feedback.
+    // Explorer also paints the empty header strip before individual columns.
+    if(part==0)return state==0 || state==HIS_NORMAL;
+    if(part==HP_HEADERITEM) {
+        return state==HIS_NORMAL || state==HIS_SORTEDNORMAL ||
+               state==HIS_ICONNORMAL || state==HIS_ICONSORTEDNORMAL;
+    }
+    return (part==HP_HEADERITEMLEFT && state==HILS_NORMAL) ||
+           (part==HP_HEADERITEMRIGHT && state==HIRS_NORMAL);
+}
+BYTE HeaderFeedbackAlpha(int part,int state) {
+    if(part==HP_HEADERITEM) {
+        if(state==HIS_HOT || state==HIS_SORTEDHOT || state==HIS_ICONHOT || state==HIS_ICONSORTEDHOT)return 32;
+        if(state==HIS_PRESSED || state==HIS_SORTEDPRESSED || state==HIS_ICONPRESSED || state==HIS_ICONSORTEDPRESSED)return 64;
+    }
+    if(part==HP_HEADERITEMLEFT || part==HP_HEADERITEMRIGHT) {
+        if(state==HILS_HOT)return 32;
+        if(state==HILS_PRESSED)return 64;
+    }
+    return 0;
+}
+void PaintHeaderFeedback(HDC dc,const RECT& area,BYTE alpha) {
+    // Keep the bitmap readable during hover/press as well. A small translucent
+    // highlight avoids a light native fill beneath Explorer's pale GDI labels.
+    HDC layer=CreateCompatibleDC_Original(dc);
+    HBITMAP pixel=CreateCompatibleBitmap(dc,1,1);
+    if(layer && pixel) {
+        auto previous=SelectObject(layer,pixel);
+        SetPixelV(layer,0,0,g_text);
+        BLENDFUNCTION blend{AC_SRC_OVER,0,alpha,0};
+        AlphaBlend(dc,area.left,area.top,area.right-area.left,area.bottom-area.top,layer,0,0,1,1,blend);
+        SelectObject(layer,previous);
+    }
+    if(pixel)DeleteObject(pixel);
+    if(layer)DeleteDC_Original(layer);
+}
 bool ReplaceNormalBackground(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const RECT* clip) {
     if(g_stopping || g_drawing || g_nativeDrawing || !rect) return false;
     HWND window=WindowForDC(dc);
@@ -355,14 +394,22 @@ bool ReplaceNormalBackground(HTHEME theme,HDC dc,int part,int state,const RECT* 
     }
     const bool normalTree=ClassIs(window,L"SysTreeView32") && ThemeClassIs(theme,L"TreeView") &&
         part==TVP_TREEITEM && state==TREIS_NORMAL;
-    const bool normalHeader=ThemeClassIs(theme,L"Header") &&
-        (ClassIs(window,L"SysHeader32")||IsShellDirectUI(window)) &&
-        ((part==HP_HEADERITEM || part==HP_HEADERITEMLEFT || part==HP_HEADERITEMRIGHT) && state==HIS_NORMAL);
+    const bool header=ThemeClassIs(theme,L"Header") &&
+        (ClassIs(window,L"SysHeader32")||IsShellDirectUI(window));
+    BYTE headerAlpha=header?HeaderFeedbackAlpha(part,state):0;
+    const bool normalHeader=header && (IsIdleHeaderBackground(part,state)||headerAlpha);
     const bool pane=(IsPreviewSurface(window)||IsShellDirectUI(window)) && ThemeClassIs(theme,L"ReadingPane") && part==1;
+    // Observed in the native Explorer: PreviewPane parts 3/4, state 0 are
+    // the navigation/file and file/preview vertical separators respectively.
+    // Scope to shell-owned DirectUI; document previews and resize hit testing
+    // remain native. Other parts/states still use the original theme renderer.
+    const bool splitter=IsShellDirectUI(window) && ThemeClassIs(theme,L"PreviewPane") &&
+        (part==3 || part==4) && state==0;
     const bool status=(ClassIs(window,L"msctls_statusbar32")||IsShellDirectUI(window)) &&
         ThemeClassIs(theme,L"Status") && (part==SP_PANE || part==SP_GRIPPERPANE);
-    if(!normalTree && !normalHeader && !pane && !status) return false;
+    if(!normalTree && !normalHeader && !pane && !splitter && !status) return false;
     PaintImage(dc,window,&area);
+    if(headerAlpha)PaintHeaderFeedback(dc,area,headerAlpha);
     return true;
 }
 

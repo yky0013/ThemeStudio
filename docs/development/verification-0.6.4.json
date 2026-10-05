@@ -1,0 +1,31 @@
+{
+  "version": "0.6.4",
+  "date": "2026-10-05",
+  "branch": "main",
+  "frontendTests": 26,
+  "backendTests": 106,
+  "typeCheck": true,
+  "nativeMod": {
+    "compiledLocally": true,
+    "disabled": true,
+    "version": "1.2.1",
+    "sourceSha256": "3c1b88a10a163a815607a8e2138a1aab73b48cddfa3c1d2ea8781894679d1a76"
+  },
+  "isolatedExplorerPaintVerified": true,
+  "baselineSortedHeaderRegressionReproduced": true,
+  "sharedNativeModRealExplorerSurfacesVerified": true,
+  "realExplorerVisualHostVersion": "0.6.4",
+  "independentBranchLiveInjectionTested": true,
+  "fullXamlThemeIntegrationVisualTested": false,
+  "installerInstallUninstallTested": false,
+  "windowsBuild": "26200.8037",
+  "temporaryModuleUnloaded": true,
+  "normalAppearanceProfileUnchanged": true,
+  "packagedFrontendMatchesBuild": true,
+  "packagedNativeSourceMatchesCatalog": true,
+  "installer": "ThemeStudio-0.6.4-Windows-x64-Setup.exe",
+  "installerBytes": 149063583,
+  "installerSha256": "058fbbe83cfa080a98c09f9d6b83e992da008cfa0e5686c33203f6f1eec3916c",
+  "releaseClassification": "prerelease",
+  "localScreenshots": "Retained outside source archive; native paint trace and validation summaries included"
+}

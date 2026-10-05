@@ -13,6 +13,9 @@ HRESULT WINAPI TestTextEx(HTHEME,HDC,int,int,LPCWSTR,int,DWORD,LPRECT,const DTTO
 HRESULT WINAPI TestOriginalTheme(HTHEME,HDC dc,int,int,const RECT* rect,const RECT*){
     HBRUSH brush=CreateSolidBrush(RGB(50,90,160));FillRect_Original(dc,rect,brush);DeleteObject(brush);return S_OK;
 }
+HRESULT WINAPI TestOriginalThemeEx(HTHEME theme,HDC dc,int part,int state,const RECT* rect,const DTBGOPTS*) {
+    return TestOriginalTheme(theme,dc,part,state,rect,nullptr);
+}
 BOOL WINAPI TestOpaqueText(HDC dc,int,int,UINT flags,const RECT* rect,LPCWSTR,UINT,const INT*){
     if((flags&ETO_OPAQUE)&&rect){HBRUSH brush=CreateSolidBrush(GetBkColor(dc));FillRect_Original(dc,rect,brush);DeleteObject(brush);}return TRUE;
 }
@@ -87,9 +90,67 @@ int main() {
         DrawThemeBackground_Hook((HTHEME)1,dst,part,HIS_NORMAL,&target,nullptr);
         if(GetPixel(dst,20,30)!=RGB(30,180,70))return 23;
     }
+    // The active sort column uses SORTEDNORMAL, not NORMAL. Reproduce the
+    // reported white Name header with a native renderer that fills it white.
+    DrawThemeBackground_Original=TestNestedWhiteTheme;
+    for(int state:{HIS_SORTEDNORMAL,HIS_ICONNORMAL,HIS_ICONSORTEDNORMAL}) {
+        DrawThemeBackground_Hook((HTHEME)1,dst,HP_HEADERITEM,state,&target,nullptr);
+        if(GetPixel(dst,20,30)!=RGB(30,180,70)) {
+            std::printf("FAIL: idle header state %d retained an opaque native background\n",state);
+            return 43;
+        }
+    }
+    // Check actual destination pixels and clip handling for both uxtheme entry
+    // points, then verify readable feedback and preserved native glyph paths.
+    DrawThemeBackground_Original=TestOriginalTheme;
+    DrawThemeBackgroundEx_Original=TestOriginalThemeEx;
+    FillRect_Original(dst,&target,blue);
+    DTBGOPTS clipped{sizeof(clipped),DTBG_CLIPRECT,{10,20,50,45}};
+    DrawThemeBackgroundEx_Hook((HTHEME)1,dst,HP_HEADERITEM,HIS_SORTEDNORMAL,&target,&clipped);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70) || GetPixel(dst,60,30)!=RGB(50,90,160))return 44;
+    for(int state:{HIS_HOT,HIS_PRESSED,HIS_SORTEDHOT,HIS_SORTEDPRESSED,
+                   HIS_ICONHOT,HIS_ICONPRESSED,HIS_ICONSORTEDHOT,HIS_ICONSORTEDPRESSED}) {
+        DrawThemeBackground_Hook((HTHEME)1,dst,HP_HEADERITEM,state,&target,nullptr);
+        COLORREF feedback=GetPixel(dst,20,30);
+        if(GetRValue(feedback)<=30 || GetRValue(feedback)>=90 || GetGValue(feedback)<=180 ||
+           GetGValue(feedback)>=205 || GetBValue(feedback)<=70 || GetBValue(feedback)>=125)return 45;
+    }
+    for(int part:{HP_HEADERSORTARROW,HP_HEADERDROPDOWN,HP_HEADERDROPDOWNFILTER,HP_HEADEROVERFLOW}) {
+        DrawThemeBackground_Hook((HTHEME)1,dst,part,1,&target,nullptr);
+        if(GetPixel(dst,20,30)!=RGB(50,90,160))return 46;
+    }
+    DrawThemeBackground_Hook((HTHEME)1,dst,0,HIS_NORMAL,&target,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(30,180,70))return 47;
+    testTheme=L"Explorer::PreviewPane";
+    for(int part:{3,4}) {
+        DrawThemeBackground_Original=TestNestedWhiteTheme;
+        RECT separator{10,0,15,200};
+        FillRect_Original(dst,&target,blue);
+        DrawThemeBackground_Hook((HTHEME)1,dst,part,0,&separator,nullptr);
+        if(GetPixel(dst,12,30)!=RGB(30,180,70) || GetPixel(dst,12,80)!=RGB(210,40,60) ||
+           GetPixel(dst,16,30)!=RGB(50,90,160))return 48;
+        DrawThemeBackgroundEx_Hook((HTHEME)1,dst,part,0,&target,&clipped);
+        if(GetPixel(dst,20,30)!=RGB(30,180,70) || GetPixel(dst,60,30)!=RGB(50,90,160))return 49;
+        DrawThemeBackground_Original=TestOriginalTheme;
+        // A loaded preview host has its own content: never erase its parts.
+        Track(dst,preview);
+        DrawThemeBackground_Hook((HTHEME)1,dst,part,0,&target,nullptr);
+        if(GetPixel(dst,20,30)!=RGB(50,90,160))return 50;
+        Track(dst,outer);
+        DrawThemeBackground_Hook((HTHEME)1,dst,part,1,&target,nullptr);
+        if(GetPixel(dst,20,30)!=RGB(50,90,160))return 51;
+    }
+    DrawThemeBackground_Hook((HTHEME)1,dst,1,0,&target,nullptr);
+    if(GetPixel(dst,20,30)!=RGB(50,90,160))return 52;
+    testTheme=L"Explorer::Header";
     DrawThemeBackground_Original=TestNestedWhiteTheme;
     DrawThemeBackground_Hook((HTHEME)1,dst,HP_HEADERITEM,HIS_PRESSED,&target,nullptr);
-    if(GetPixel(dst,20,30)!=GetSysColor(COLOR_WINDOW))return 24;
+    if(GetPixel(dst,20,30)==GetSysColor(COLOR_WINDOW))return 24;
+    // Navigation selection still delegates even if native painting fills white.
+    Track(dst,tree);testTheme=L"Explorer::TreeView";
+    DrawThemeBackground_Hook((HTHEME)1,dst,TVP_TREEITEM,TREIS_SELECTED,&target,nullptr);
+    if(GetPixel(dst,20,30)!=GetSysColor(COLOR_WINDOW))return 53;
+    Track(dst,outer);
     DrawThemeBackground_Original=TestOriginalTheme;
     testTheme=L"Explorer::Status";
     DrawThemeBackground_Hook((HTHEME)1,dst,SP_PANE,0,&target,nullptr);
@@ -147,7 +208,11 @@ int main() {
     DestroyWindow(preview);DestroyWindow(tree);Track(dst,content);
     if(SetTextColor_Hook(dst,RGB(0,0,0))==CLR_INVALID||GetTextColor(dst)!=g_text) return 6;
     DWORD before=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
-    for(int i=0;i<500;i++) FillRect_Hook(dst,&target,(HBRUSH)(COLOR_WINDOW+1));
+    testTheme=L"Explorer::Header";
+    for(int i=0;i<500;i++) {
+        FillRect_Hook(dst,&target,(HBRUSH)(COLOR_WINDOW+1));
+        DrawThemeBackground_Hook((HTHEME)1,dst,HP_HEADERITEM,HIS_SORTEDHOT,&target,nullptr);
+    }
     DWORD after=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
     if(after>before+1) return 7;
     // A DC for an unrelated window is never tracked or styled.
@@ -158,6 +223,6 @@ int main() {
     DeleteDC(src); DeleteObject(output); DeleteObject(g_bitmap); g_bitmap=nullptr;
     DeleteObject(red); DeleteObject(green); DeleteObject(blue); ReleaseDC(nullptr,screen);
     DestroyWindow(other); DestroyWindow(root);
-    std::puts("PASS: root-aligned image; outer DUI empty preview; transparent header/status/scrollbar paths; preserved hover/selection including nested white fills; static text transparency; real uxtheme buffered paint, alpha commit/cancel and DC cleanup; document exclusion; text contrast; 500-paint GDI lifetime");
+    std::puts("PASS: root-aligned image; outer DUI empty preview; sorted/icon header idle states and empty strip; both PreviewPane splitters; clipped DrawThemeBackground/Ex; translucent hot/pressed headers and native sort/dropdown glyphs; header/status/scrollbar paths; preserved navigation selection including nested white fills; static text transparency; real uxtheme buffered paint, alpha commit/cancel and DC cleanup; document exclusion; text contrast; 500-paint GDI lifetime including header feedback");
     return 0;
 }
