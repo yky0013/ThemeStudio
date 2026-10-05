@@ -1,0 +1,22 @@
+{
+  "windowsDisplayVersion": "25H2",
+  "windowsBuild": "26200.8037",
+  "sharedModVersion": "1.2.1",
+  "baselineWhiteHeaderAndSplittersReproduced": true,
+  "baselinePixelTestFailedAsExpected": 43,
+  "realExplorerEmptyMusicVerified": true,
+  "realExplorerDetailsVerified": true,
+  "realExplorerSortChangeVerified": true,
+  "realExplorerHeaderHoverReadable": true,
+  "realExplorerNavigationSelectionPreserved": true,
+  "realExplorerFullThemeStylerTested": false,
+  "paneResizeVerified": false,
+  "nativeProfileRestored": true,
+  "nativeTestModuleUnloaded": true,
+  "normalProfileUnchanged": true,
+  "screenshotEvidenceLocalOnly": [
+    "explorer-details-fixed.png",
+    "explorer-header-hover-fixed.png",
+    "explorer-music-fixed.png"
+  ]
+}

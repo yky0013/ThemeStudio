@@ -35,6 +35,7 @@ try {
     Copy-Item -LiteralPath 'docs\development\explorer-image-update.md' -Destination (Join-Path $studioRelease 'docs\explorer-image-update.md') -Force
     Copy-Item -LiteralPath 'docs\development\unified-appearance-update.md' -Destination (Join-Path $studioRelease 'docs\unified-appearance-update.md') -Force
     Copy-Item -LiteralPath 'docs\development\transparent-surfaces-update.md' -Destination (Join-Path $studioRelease 'docs\transparent-surfaces-update.md') -Force
+    Copy-Item -LiteralPath 'docs\development\explorer-header-splitter-update.md' -Destination (Join-Path $studioRelease 'docs\explorer-header-splitter-update.md') -Force
     Copy-Item -LiteralPath 'tools\asus-cursor-recovery' -Destination (Join-Path $studioRelease 'docs') -Recurse -Force
     $studioRuntimeOutput = Join-Path $studioRelease 'runtimes'
     New-Item -ItemType Directory -Path $studioRuntimeOutput -Force | Out-Null

@@ -1,5 +1,9 @@
 # 桌面主题工作室 · Theme Studio
 
+## 0.5.4 排序列与分隔条修复
+
+修复“名称”排序列白块、文件区两侧白色分隔条及表头悬停浅底浅字；真实 Explorer 本机核对通过。说明与边界见 [修订记录](docs/development/explorer-header-splitter-update.md)。安装/卸载及跨 Windows build 回归待完成，仍为 prerelease。
+
 ## 0.5.3 空预览与普通区域背景修订
 
 补齐原生 Explorer 外层容器、缓冲画布、透明提示文字和滚动条路径，保留选中/悬停状态；修复独立天选姬恢复入口。详见 [修订说明](docs/development/transparent-surfaces-update.md)。真实 Explorer 现场视觉验收待完成，本版为 prerelease。

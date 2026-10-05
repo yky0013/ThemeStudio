@@ -1,0 +1,104 @@
+
+> theme-studio@0.5.4 build
+> tsx tools/build.ts
+
+Theme Studio built with Seelen navigation/media and Windhawk card components; 645 source-backed mods.
+{"components": 87, "missingNotices": []}
+----------------------------------------------------------------------
+Ran 98 tests in 12.744s
+
+OK
+243 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.8
+243 INFO: Python: 3.14.0
+277 INFO: Platform: Windows-11-10.0.26200-SP0
+277 INFO: Python environment: E:\desktop\windows\.themestudio-0.5.4-work\.venv
+278 INFO: wrote build\spec\ThemeStudio.Backend.spec
+291 INFO: Module search paths (PYTHONPATH):
+['E:\\desktop\\windows\\.themestudio-0.5.4-work',
+ 'C:\\Program Files\\PerkinElmerInformatics\\ChemOffice2018\\ChemScript\\Lib',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314\\python314.zip',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314\\DLLs',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314\\Lib',
+ 'C:\\Users\\yky\\AppData\\Local\\Programs\\Python\\Python314',
+ 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv',
+ 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages',
+ 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\win32',
+ 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\win32\\lib',
+ 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\pythonwin',
+ 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\components\\icon-workbench',
+ 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\components\\image-to-ico']
+726 INFO: checking Analysis
+726 INFO: Building Analysis because Analysis-00.toc is non existent
+726 INFO: Looking for Python shared library...
+726 INFO: Using Python shared library: C:\Users\yky\AppData\Local\Programs\Python\Python314\python314.dll
+726 INFO: Running Analysis Analysis-00.toc
+726 INFO: Target bytecode optimization level: 0
+726 INFO: Initializing module dependency graph...
+730 INFO: Initializing module graph hook caches...
+768 INFO: Analyzing modules for base_library.zip ...
+2500 INFO: Processing standard module hook 'hook-encodings.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+3274 INFO: Processing standard module hook 'hook-math.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+5362 INFO: Processing standard module hook 'hook-difflib.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+5385 INFO: Processing standard module hook 'hook-heapq.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+5598 INFO: Processing standard module hook 'hook-pickle.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+8037 INFO: Caching module dependency graph...
+8080 INFO: Analyzing E:\desktop\windows\.themestudio-0.5.4-work\components\icon-workbench\desktop_bridge.py
+8165 INFO: Processing standard module hook 'hook-_ctypes.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+8275 INFO: Processing standard module hook 'hook-platform.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+8354 INFO: Processing standard module hook 'hook-PIL.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+8585 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+9175 INFO: Processing standard module hook 'hook-xml.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+9218 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+9638 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+10314 INFO: Processing standard module hook 'hook-pythoncom.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+10476 INFO: Processing standard module hook 'hook-pywintypes.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+10617 INFO: Processing pre-safe-import-module hook 'hook-win32com.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\pre_safe_import_module'
+10776 INFO: Processing standard module hook 'hook-win32com.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+12582 INFO: Analyzing hidden import 'win32timezone'
+12641 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+12643 INFO: SetuptoolsInfo: initializing cached setuptools info...
+13420 INFO: Processing module hooks (post-graph stage)...
+14415 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+14640 INFO: Performing binary vs. data reclassification (3 entries)
+14646 INFO: Looking for ctypes DLLs
+14703 INFO: Analyzing run-time hooks ...
+14705 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+14724 INFO: Including run-time hook 'pyi_rth_pywintypes.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+14735 INFO: Including run-time hook 'pyi_rth_pythoncom.py' from 'E:\\desktop\\windows\\.themestudio-0.5.4-work\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+14742 INFO: Creating base_library.zip...
+14768 INFO: Looking for dynamic libraries
+15011 INFO: Extra DLL search directories (AddDllDirectory): []
+15011 INFO: Extra DLL search directories (PATH): []
+16040 INFO: Warnings written to E:\desktop\windows\.themestudio-0.5.4-work\build\pyinstaller\ThemeStudio.Backend\warn-ThemeStudio.Backend.txt
+16067 INFO: Graph cross-reference written to E:\desktop\windows\.themestudio-0.5.4-work\build\pyinstaller\ThemeStudio.Backend\xref-ThemeStudio.Backend.html
+16128 INFO: checking PYZ
+16129 INFO: Building PYZ because PYZ-00.toc is non existent
+16129 INFO: Building PYZ (ZlibArchive) E:\desktop\windows\.themestudio-0.5.4-work\build\pyinstaller\ThemeStudio.Backend\PYZ-00.pyz
+16361 INFO: Building PYZ (ZlibArchive) E:\desktop\windows\.themestudio-0.5.4-work\build\pyinstaller\ThemeStudio.Backend\PYZ-00.pyz completed successfully.
+16376 INFO: checking PKG
+16376 INFO: Building PKG because PKG-00.toc is non existent
+16376 INFO: Building PKG (CArchive) ThemeStudio.Backend.pkg
+16414 INFO: Building PKG (CArchive) ThemeStudio.Backend.pkg completed successfully.
+16415 INFO: Bootloader E:\desktop\windows\.themestudio-0.5.4-work\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\run.exe
+16415 INFO: checking EXE
+16415 INFO: Building EXE because EXE-00.toc is non existent
+16416 INFO: Building EXE from EXE-00.toc
+16416 INFO: Copying bootloader EXE to E:\desktop\windows\.themestudio-0.5.4-work\build\pyinstaller\ThemeStudio.Backend\ThemeStudio.Backend.exe
+16507 INFO: Copying icon to EXE
+16560 INFO: Copying 0 resources to EXE
+16560 INFO: Embedding manifest in EXE
+16604 INFO: Appending PKG archive to EXE
+16664 INFO: Fixing EXE headers
+16940 INFO: Building EXE from EXE-00.toc completed successfully.
+16942 INFO: checking COLLECT
+16943 INFO: Building COLLECT because COLLECT-00.toc is non existent
+16943 INFO: Building COLLECT COLLECT-00.toc
+17213 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+17216 INFO: Build complete! The results are available in: E:\desktop\windows\.themestudio-0.5.4-work\build\backend
+
+E:\desktop\windows\.themestudio-0.5.4-work\release\ThemeStudio-0.5.4\ThemeStudio.exe
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          95B3CB1302913B5EDC9F210942A2A227162E9A05FE7AFF3243BAE8F070CCD764       E:\desktop\windows\.themestudio-…
+E:\desktop\windows\.themestudio-0.5.4-work\installers\ThemeStudio-0.5.4-Windows-x64-Setup.exe
