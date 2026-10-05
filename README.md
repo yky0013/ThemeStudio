@@ -1,5 +1,9 @@
 # 桌面主题工作室 · Theme Studio
 
+## 0.6.3 空预览与普通区域背景修订
+
+补齐原生 Explorer 外层容器、缓冲画布、透明提示文字和滚动条路径，保留选中/悬停状态；修复独立天选姬恢复入口。详见 [修订说明](docs/development/transparent-surfaces-update.md)。真实 Explorer 现场视觉验收待完成，本版为 prerelease。
+
 ## 0.6.2 统一应用与两级恢复
 
 修正 Explorer 导航栏普通背景和预览窗格白色填充；整套外观集中到一个应用入口，增加独立初始外观恢复，保留恢复上一次。实现与验证见 [修订说明](docs/development/unified-appearance-update.md) 和 [验证记录](docs/development/verification-0.6.2.json)。Explorer 现场注入验收仍待完成，发布标为测试版。

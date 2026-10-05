@@ -21,6 +21,14 @@
     slider.value='55';slider.dispatchEvent(new Event('input',{bubbles:true}));await pause(100);
     if(document.querySelector('#workbench-explorer figure img').style.opacity!=='0.55')throw new Error('Opacity preview did not change');
     result.checks.push({liveThemeSelection:true,liveOpacity:true});
+    const windowPreview=image.parentElement;
+    const pane=windowPreview.querySelector('aside:last-of-type');
+    const status=windowPreview.lastElementChild;
+    for(const element of [pane,status,...windowPreview.querySelectorAll('aside')]) {
+      if(getComputedStyle(element).backgroundColor!=='rgba(0, 0, 0, 0)')throw new Error('Idle preview surface has an opaque background');
+    }
+    result.checks.push({idlePaneAndStatusTransparent:true});
+
     document.querySelector('button[aria-label="预览鸣潮"]').click();await pause(100);
     const dialog=document.querySelector('[role=dialog]');
     [...dialog.querySelectorAll('button')].find(b=>b.textContent==='文件资源管理器').click();await pause(100);

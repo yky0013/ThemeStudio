@@ -33,14 +33,14 @@ def frame_settings(image_path, tint):
     settings = {'theme': '', 'backgroundTranslucentEffect': 'none', 'backgroundTranslucentEffectRegion': '',
                 'explorerFrameContainerHeight': 0}
     targets = [
-        ('Grid#FileExplorerRoot', ['RequestedTheme=2', 'Background=' + tint]),
-        ('Grid#NavigationBarControlGrid', ['RequestedTheme=2', 'Background=' + tint]),
-        ('FileExplorerExtensions.CommandBarControl_Wave1 > Grid, Grid#CommandBarControlRootGrid', ['RequestedTheme=2', 'Background=' + tint]),
+        ('Grid#FileExplorerRoot', ['RequestedTheme=2', 'Background:=' + brush]),
+        ('Grid#NavigationBarControlGrid', ['RequestedTheme=2', 'Background=Transparent']),
+        ('FileExplorerExtensions.CommandBarControl_Wave1 > Grid, Grid#CommandBarControlRootGrid', ['RequestedTheme=2', 'Background=Transparent']),
         ('CommandBar#FileExplorerCommandBar', ['RequestedTheme=2', 'Background=Transparent']),
         ('Grid#HomeViewRootGrid', ['RequestedTheme=2', 'Background:=' + brush]),
         ('Microsoft.UI.Xaml.Controls.Grid#GalleryRootGrid', ['RequestedTheme=2', 'Background:=' + brush]),
-        ('Grid#DetailsViewControlRootGrid', ['RequestedTheme=2', 'Background=' + tint]),
-        ('FileExplorerExtensions.FileExplorerTabControl', ['RequestedTheme=2', 'Background=' + tint]),
+        ('Grid#DetailsViewControlRootGrid', ['RequestedTheme=2', 'Background=Transparent']),
+        ('FileExplorerExtensions.FileExplorerTabControl', ['RequestedTheme=2', 'Background=Transparent']),
     ]
     for i, (target, styles) in enumerate(targets):
         settings[f'controlStyles[{i}].target'] = target
