@@ -1,15 +1,15 @@
 ; Theme Studio offline installer. User data is owned by the application,
 ; outside {app}, and is intentionally retained on uninstall.
-#define AppName "桌面主题工作室"
+#define AppName "桌面主题工作室 · NoSeelen 体验版"
 #define AppVersion "0.6.4"
 
 [Setup]
-AppId={{34717904-40BD-47C3-9AE5-4CA3B55820B5}
-AppMutex=Local\ThemeStudio.Application
+AppId={{2A8C2E70-74B7-4586-B297-88D40A6E4299}
+AppMutex=Local\ThemeStudio.NoSeelen.Application
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppPublisher=Theme Studio
-DefaultDirName={autopf}\ThemeStudio
+DefaultDirName={autopf}\ThemeStudio-NoSeelen
 DefaultGroupName={#AppName}
 DisableDirPage=no
 DisableProgramGroupPage=yes
@@ -23,7 +23,7 @@ Uninstallable=yes
 UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\ThemeStudio.exe
 OutputDir=..\installers
-OutputBaseFilename=ThemeStudio-{#AppVersion}-Windows-x64-Setup
+OutputBaseFilename=ThemeStudio-NoSeelen-{#AppVersion}-Trial1-Windows-x64-Setup
 WizardStyle=modern
 Compression=lzma2/ultra64
 LZMANumBlockThreads=1
@@ -36,7 +36,7 @@ SetupLogging=yes
 InfoBeforeFile=安装说明.txt
 VersionInfoDescription=桌面主题工作室精简安装程序
 VersionInfoProductName={#AppName}
-VersionInfoVersion=0.6.4.0
+VersionInfoVersion=0.6.4.1
 SetupIconFile=..\assets\brand\theme-studio.ico
 
 [Languages]
@@ -71,7 +71,7 @@ Type: filesandordirs; Name: "{app}\wwwroot\templates\blue-archive"
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"
-Name: "{group}\图文使用教程"; Filename: "{app}\wwwroot\help\index.html"
+Name: "{group}\全部功能试用清单"; Filename: "{app}\wwwroot\help\trial-checklist.html"
 Name: "{group}\卸载桌面主题工作室"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
@@ -120,8 +120,17 @@ function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
   ExitCode: Integer;
   Attempt: Integer;
+  Edition: AnsiString;
 begin
   Result := '';
+  if FileExists(ExpandConstant('{app}\ThemeStudio.exe')) then begin
+    Edition := '';
+    if (not LoadStringFromFile(ExpandConstant('{app}\resources\application.json'), Edition)) or
+       (Pos('"no-seelen"', Edition) = 0) then begin
+      Result := '此目录已包含主线或其他版本。请返回上一步，为 NoSeelen 体验版选择独立目录。';
+      Exit;
+    end;
+  end;
   if HasWebView then begin
     Log('WebView2 Runtime already present; bundled runtime skipped.');
     Exit;

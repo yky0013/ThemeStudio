@@ -7,6 +7,7 @@ import cssModules from "esbuild-css-modules-plugin";
 import sveltePlugin from "esbuild-svelte";
 import { createHash } from "node:crypto";
 import yaml from "js-yaml";
+import { execFileSync } from "node:child_process";
 import ModSourceUtils from "../vendor/windhawk-mods/modSourceUtils.ts";
 
 const project = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -26,6 +27,7 @@ const mods = modFiles.map(({file, root, local}) => {
   return { id: metadata.id!, name: metadata.name || metadata.id!, description: metadata.description || "", author: metadata.author || "", version: metadata.version || "", include: metadata.include || [], architecture: metadata.architecture || [], license: metadata.license || (/Source code is published under The GNU General Public License v3\.0\./.test(source) ? "GPL-3.0" : "MIT (repository default)"), source: local ? 'https://github.com/yky0013/ThemeStudio' : `https://github.com/ramensoftware/windhawk-mods/blob/${provenance.Commit}/mods/${file}`, sourceKind: local ? 'themestudio' : 'upstream', sha256: createHash("sha256").update(source).digest("hex"), themeChoices };
 });
 fs.writeFileSync(path.join(project, "vendor/Seelen-UI/src/ui/react/settings/modules/themeWorkbench/domain/catalog.json"), JSON.stringify({ sourceCommit: provenance.Commit, mods }, null, 2) + "\n");
+execFileSync(path.join(project, '.venv/Scripts/python.exe'), ['tools/build-trial-checklist.py'], { cwd: project, stdio: 'inherit' });
 await esbuild.build({ absWorkingDir: project, entryPoints: { app: "src/app/main.tsx", wallpaper: "src/app/wallpaper.ts" }, bundle: true, minify: true,
   format: "esm", platform: "browser", target: "es2022", outdir: "dist", metafile: true,
   jsx: "automatic", jsxImportSource: "preact", loader: { ".yml": "text" }, nodePaths: [modules],

@@ -30,7 +30,7 @@ export function RuntimePanel({ client, recipe, native, onState, unified }:
     if (!native) return;
     void refresh().catch((failure) => setError(String(failure)));
     const timer = setInterval(() => {
-      const panel = document.getElementById("workbench-seelen");
+      const panel = document.getElementById("workbench-windhawk");
       const bounds = panel?.getBoundingClientRect();
       if (!running.current && !document.hidden && bounds && bounds.top < innerHeight && bounds.bottom > 0) void refresh().catch(() => {});
     }, 15000);
@@ -56,11 +56,6 @@ export function RuntimePanel({ client, recipe, native, onState, unified }:
     {error && <p role="alert" className={cs.engineError}>{error}</p>}
     {busy && <p role="status">{progress}</p>}
     <div className={cs.engineCards}>
-      <div><h4>Seelen Dock / Toolbar</h4><p>{rt("seelen_chosen")}</p>
-        <p role="status">{rt(state?.seelen.dock && state?.seelen.toolbar ? "seelen_active" : state?.seelen.available ? "seelen_off" : "unavailable")}</p>
-        {!unified&&<div className={cs.engineActions}><button disabled={!native || busy || !state?.seelen.available} onClick={() => void run("runtime.seelen.apply", { seelen: recipe.seelen })}>{rt("seelen_enable")}</button>
-          <button disabled={!native || busy || (!state?.seelen.dock && !state?.seelen.toolbar)} onClick={() => void run("runtime.seelen.stop")}>{rt("seelen_disable")}</button></div>}
-      </div>
       <div><h4>Windhawk</h4><p>{rt("mod_selection", { count: recipe.windhawk.length })}</p>
         <p role="status">{rt(state?.windhawk.running ? "windhawk_active" : state?.windhawk.available ? "windhawk_off" : "unavailable")}</p>
         {!unified&&<div className={cs.engineActions}><button disabled={!native || busy || !recipe.windhawk.length || !state?.windhawk.compiler} onClick={() => void run("runtime.windhawk.apply", { mods: recipe.windhawk })}>{rt("mods_enable")}</button>

@@ -1,0 +1,25 @@
+{
+  "branch": "experiment/no-seelen-20261007",
+  "baseCommit": "b692673878190524ef11501075fd084411348154",
+  "version": "0.6.4",
+  "build": "no-seelen.1",
+  "date": "2026-10-07",
+  "installer": {
+    "name": "ThemeStudio-NoSeelen-0.6.4-Trial1-Windows-x64-Setup.exe",
+    "bytes": 116437885,
+    "sha256": "08f0112523011b4f07fcce715673d606f07972ea83b2942645ba3cae9f2d130a"
+  },
+  "frontendTests": 27,
+  "backendTests": 106,
+  "typecheck": "passed",
+  "installerCompilation": "passed",
+  "nativeStartup": "blocked_by_automatic_approval_review",
+  "nativeStartupRejection": "blocked by policy",
+  "installUninstallRegression": "not_run",
+  "liveAppearanceChanges": "not_run",
+  "seelenRuntimeBundled": false,
+  "trialPoints": 97,
+  "moduleRecords": 645,
+  "genericSelectableMods": 643,
+  "payloadFiles": 9356
+}

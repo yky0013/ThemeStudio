@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from runtime_adapter import RuntimeAdapter, desktop_profile, observed_desktop_mode
+from runtime_adapter import RuntimeAdapter
 
 
 class RuntimeAdapterTests(unittest.TestCase):
@@ -43,7 +43,8 @@ class RuntimeAdapterTests(unittest.TestCase):
                     patch('runtime_adapter.loaded_libraries', return_value={'local@mouse-trail.dll'}):
                 state = adapter.state()
                 self.assertEqual(state, adapter.state())
-            self.assertEqual(state['seelen']['themes'], ['@user/custom'])
+            self.assertTrue(state['seelen']['removed'])
+            self.assertFalse(state['seelen']['available'])
             mods = {item['id']: item for item in state['windhawk']['mods']}
             self.assertEqual(len(mods), 2)
             self.assertTrue(mods['local@mouse-trail']['enabled'])
@@ -53,45 +54,40 @@ class RuntimeAdapterTests(unittest.TestCase):
             after = {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in Path(folder).rglob('*') if path.is_file()}
             self.assertEqual(before, after)
 
-    def test_desktop_modes_preserve_apps_and_unrelated_settings(self):
-        before = {'language': 'zh-CN', 'byWidget': {'@seelen/weg': {'position': 'Left', 'size': 32, 'shortcuts': {'x': ['A']}}, 'notes': {'enabled': True}}}
-        mac = desktop_profile(before, 'mac')
-        self.assertEqual(before['byWidget']['@seelen/weg']['position'], 'Left')
-        self.assertEqual(mac['byWidget']['@seelen/weg']['mode'], 'MinContent')
-        self.assertEqual(mac['byWidget']['@seelen/weg']['position'], 'Bottom')
-        self.assertEqual(mac['byWidget']['@seelen/fancy-toolbar']['position'], 'Top')
-        self.assertFalse(mac['byWidget']['@seelen/wallpaper-manager']['enabled'])
-        self.assertEqual(observed_desktop_mode(True, mac), 'mac')
-        windows = desktop_profile(mac, 'windows')
-        self.assertEqual(observed_desktop_mode(False, mac), 'windows')
-        self.assertEqual(observed_desktop_mode(True, windows), 'windows')
-        self.assertEqual(windows['byWidget']['notes'], before['byWidget']['notes'])
-        self.assertEqual(windows['byWidget']['@seelen/weg']['shortcuts'], {'x': ['A']})
-
-    def test_unknown_desktop_mode_is_rejected_before_engine_changes(self):
+    def test_removed_seelen_requests_cannot_change_an_external_profile(self):
         with tempfile.TemporaryDirectory() as folder:
             adapter = RuntimeAdapter(folder)
-            with patch.object(adapter, 'seelen_apply') as enable, patch.object(adapter, 'seelen_stop') as stop:
-                with self.assertRaises(ValueError): adapter.dispatch('runtime.desktop.apply', {'mode': 'unknown'})
-                enable.assert_not_called(); stop.assert_not_called()
+            with patch('runtime_adapter.subprocess.Popen', side_effect=AssertionError('engine started')), \
+                    patch('runtime_adapter.atomic_json', side_effect=AssertionError('profile changed')):
+                for operation in ('runtime.desktop.apply', 'runtime.seelen.apply', 'runtime.seelen.stop'):
+                    with self.assertRaisesRegex(ValueError, '已移除'):
+                        adapter.dispatch(operation, {'mode': 'mac', 'seelen': {'activeThemes': ['@default/theme']}})
+            self.assertEqual(list(Path(folder).iterdir()), [])
 
-    def test_saved_windows_choice_survives_applying_other_settings(self):
+    def test_uninstall_leaves_external_seelen_processes_and_files_alone(self):
         with tempfile.TemporaryDirectory() as folder:
             adapter = RuntimeAdapter(folder)
-            with patch.object(adapter, '_managed', return_value={'desktopMode': 'windows'}), \
-                    patch.object(adapter, 'seelen_apply') as enable, patch.object(adapter, 'seelen_stop', return_value={}) as stop, \
-                    patch.object(adapter, 'windhawk_apply', return_value={'mods': []}):
-                adapter.dispatch('runtime.apply', {'recipe': {'seelen': {}, 'windhawk': []}})
-                enable.assert_not_called(); stop.assert_called_once()
+            with patch('runtime_adapter.process_images', return_value=[(42, r'C:\External\seelen-ui.exe')]), \
+                    patch.object(adapter, '_run', side_effect=AssertionError('external process changed')), \
+                    patch('runtime_adapter.atomic_json', side_effect=AssertionError('profile changed')):
+                self.assertTrue(adapter.shutdown()['stopped'])
 
     def test_applying_an_empty_mod_selection_disables_previous_managed_mods(self):
         with tempfile.TemporaryDirectory() as folder:
             adapter = RuntimeAdapter(folder)
-            with patch.object(adapter, 'seelen_apply', return_value={'running': True}), \
-                    patch.object(adapter, 'windhawk_apply', return_value={'mods': []}) as apply_mods:
+            with patch.object(adapter, 'windhawk_apply', return_value={'mods': []}) as apply_mods:
                 result = adapter.dispatch('runtime.apply', {'recipe': {'seelen': {}, 'windhawk': []}})
             apply_mods.assert_called_once_with([])
             self.assertEqual(result['windhawk']['mods'], [])
+
+    def test_other_windhawk_installation_blocks_activation_before_any_writes(self):
+        with tempfile.TemporaryDirectory() as folder:
+            adapter = RuntimeAdapter(folder)
+            with patch('runtime_adapter.process_images', return_value=[(7, r'C:\Mainline\windhawk.exe')]), \
+                    patch.object(adapter, '_wh', side_effect=AssertionError('CLI mutated another profile')):
+                with self.assertRaisesRegex(ValueError, '另一个 Windhawk'):
+                    adapter.windhawk_apply([])
+            self.assertEqual(list(Path(folder).iterdir()), [])
 
     def test_source_integrity_accepts_windows_checkout_line_endings(self):
         with tempfile.TemporaryDirectory() as folder:

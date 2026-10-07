@@ -1,5 +1,12 @@
 # 桌面主题工作室 · Theme Studio
 
+> 当前分支：`experiment/no-seelen-20261007`，基于 0.6.4 的 NoSeelen 体验版 1。
+> 移除 Seelen 运行引擎、Dock、顶部栏、Mac 桌面切换及专属主题入口；保留已有媒体/界面组件的源码和许可。
+> 独立 AppId、安装目录、应用互斥锁、用户数据目录。拒绝安装进主线目录，不接收主线更新。
+> 不与其他 Windhawk 引擎同时激活。请先恢复当前外观，再切换其他版本体验。
+> 全部功能清单由 `tools/build-trial-checklist.py` 生成，随包位于 `wwwroot/help/trial-checklist.html`。
+> 以下历史说明是主线的版本记录；Seelen 功能及主线更新说明不适用于本实验分支。
+
 ## 0.6.4 排序列与分隔条修复
 
 修复“名称”排序列白块、文件区两侧白色分隔条及表头悬停浅底浅字；真实 Explorer 本机核对通过。说明与边界见 [修订记录](docs/development/explorer-header-splitter-update.md)。安装/卸载及跨 Windows build 回归待完成，仍为 prerelease。

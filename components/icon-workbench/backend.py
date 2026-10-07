@@ -64,7 +64,7 @@ def new_sibling(path: Path, prefix: str) -> Path:
 
 
 def default_storage() -> Path:
-    return Path(os.environ["LOCALAPPDATA"]) / "ThemeStudio"
+    return Path(os.environ["LOCALAPPDATA"]) / "ThemeStudio-NoSeelen"
 
 
 @contextmanager

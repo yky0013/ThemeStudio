@@ -24,9 +24,9 @@ from template_adapter import current_wallpaper, set_wallpaper
 from runtime_adapter import read_json, process_images
 
 ALLOWED = {'templates.apply','icons.apply','cursors.apply','wallpaper.apply','wallpaper.stop','wallpaper.pause',
-           'explorer.apply','runtime.desktop.apply','runtime.seelen.apply','runtime.seelen.stop',
+           'explorer.apply',
            'runtime.windhawk.apply','runtime.windhawk.stop'}
-ALL_DOMAINS = ['cursors','wallpaper','icons','windhawk','seelen','explorer']
+ALL_DOMAINS = ['cursors','wallpaper','icons','windhawk','explorer']
 
 
 def cursor_identity(state):
@@ -126,9 +126,6 @@ class AppearanceAdapter:
             result['windhawk']={item['id']:{'enabled':item['enabled'],'settings':self._mod_settings(item['id'])}
                                for item in runtime._installed_mods_readonly()}
             result['windhawkEngine']=any(canonical(image)==canonical(runtime.windhawk_user/'windhawk.exe') for _,image in process_images())
-        if 'seelen' in domains:
-            result['seelen']={'settings':read_json(runtime.seelen_settings),
-                'running':any(canonical(image)==canonical(runtime.seelen/'seelen-ui.exe') for _,image in process_images())}
         if 'explorer' in domains:
             result['explorer']={'images':read_json(self.data/'explorer-images/current.json'),
                                 'legacy':read_json(self.data/'explorer-appearance.json')}
@@ -162,7 +159,7 @@ class AppearanceAdapter:
             elif op.startswith('wallpaper.'):domains.add('wallpaper')
             elif op=='explorer.apply':domains.update(['explorer','windhawk'])
             elif op.startswith('runtime.windhawk.'):domains.add('windhawk')
-            else:domains.add('seelen')
+            else:raise ValueError('此实验分支不支持该外观操作。')
         return sorted(domains),sorted(paths)
 
     def _all_icon_paths(self):
@@ -189,8 +186,6 @@ class AppearanceAdapter:
                 result.setdefault('icons',{})[path]={**self._blob(backup),'details':item.get('before')}
                 managed.add(path)
         runtime=self.bridge.runtime;manager=runtime._managed()
-        if manager.get('seelen',{}).get('baselineRecorded'):
-            result['seelen']={'settings':manager['seelen'].get('baseline'),'running':False};sources.append('旧版桌面布局备份')
         # ThemeStudio's owned Windhawk profile has no enabled mods before its first use.
         # Preserve the prior dedicated Explorer preset when a legacy record proves it existed.
         for key in result.get('windhawk',{}):result['windhawk'][key]['enabled']=False
@@ -262,11 +257,6 @@ class AppearanceAdapter:
         return False
 
     def _preflight(self,target,allow_external=False):
-        if 'seelen' in target:
-            runtime=self.bridge.runtime
-            current=self.capture(['seelen'],[],None)['seelen']
-            if current!=target['seelen'] and any(Path(image).name.casefold()=='seelen-ui.exe' and canonical(image)!=canonical(runtime.seelen/'seelen-ui.exe') for _,image in process_images()):
-                raise ValueError('另一个版本的 Seelen 正在运行，请先退出后恢复。')
         for path,item in target.get('icons',{}).items():
             backup=self._blob_path(item)
             if Path(path).is_file():
@@ -318,14 +308,6 @@ class AppearanceAdapter:
                 if observed==expected:break
                 time.sleep(.1)
             else:raise RuntimeError('运行组件的恢复状态尚未确认，恢复记录已保留。')
-        if 'seelen' in target:
-            runtime=self.bridge.runtime;desired=target['seelen']
-            current=self.capture(['seelen'],[],None)['seelen']
-            if current!=desired:
-                runtime._stop_seelen_processes()
-                if desired['settings'] is None:runtime.seelen_settings.unlink(missing_ok=True)
-                else:atomic_json(runtime.seelen_settings,desired['settings'])
-                if desired['running']:runtime._start_seelen()
         changed=[]
         for value,item in target.get('icons',{}).items():
             path=Path(value)

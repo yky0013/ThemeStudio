@@ -22,3 +22,9 @@ docs/research/**/*.exe
 docs/research/**/*.zip
 docs/research/**/*.7z
 docs/research/**/*.Msix
+
+# Generated from tools/build-trial-checklist.py and the pinned module catalog.
+/docs/guide/trial-checklist.html
+/docs/guide/trial-checklist.txt
+/docs/guide/trial-features.json
+/output/playwright/

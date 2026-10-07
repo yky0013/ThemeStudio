@@ -1,7 +1,7 @@
 {
   "name": "theme-studio",
   "version": "0.6.4",
-  "description": "Desktop Theme Studio based on Seelen UI and Windhawk source",
+  "description": "Theme Studio NoSeelen experimental branch: everyday Windows appearance with Windhawk",
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-or-later",

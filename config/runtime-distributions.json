@@ -1,19 +1,5 @@
 {
   "schemaVersion": 1,
-  "seelen": {
-    "version": "2.8.6",
-    "sourceCommit": "079c38584d48ef02e800d6f596bbef97bd00e327",
-    "sourceDirectory": "vendor/runtime-sources/Seelen-UI-2.8.6",
-    "sourceArchiveSha256": "5e3255d79bbf2481edbb8726d2ab030f2f67fbd701f933d019954deedb06765b",
-    "asset": "https://github.com/eythaann/Seelen-UI/releases/download/v2.8.6/Seelen.UI_2.8.6.0_x64.Msix",
-    "assetSha256": "5a21fa2d96b3021f3ed33d210ed7b8fea50fd7c5189d0d65d3e6b95352f08b41",
-    "deployment": "Original signed executable payload and static resources, with package-registration metadata omitted for the upstream unpackaged mode.",
-    "files": {
-      "seelen-ui.exe": "5e03f93b15c24247075722d16eaf0301eb3f5517a9bbafc7ea5af30083e7176f",
-      "slu.exe": "de2362d20f73e7a885d0e6e1fc6049510841db92d6ebb384bb1b2d71905711af",
-      "slu-service.exe": "f55cc6ead12f5b67b3207795a163d217b1ada4ac1d0ca206c08e7be227793e2d"
-    }
-  },
   "windhawk": {
     "version": "2.0.0-alpha.6",
     "sourceCommit": "aef1a9f1e77f30c8fd96c5dd29373c38181486bf",

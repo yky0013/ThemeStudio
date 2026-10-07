@@ -24,19 +24,9 @@
       }
     },
     "taskbar": {
-      "status": "chosen_by_user",
-      "provider": "seelen",
-      "desktopModes": { "windows": "native_windows_taskbar", "mac": "seelen_dock_and_top_toolbar", "userSelectable": true },
-      "selectedAt": "2026-09-27",
-      "components": [
-        "dock",
-        "toolbar"
-      ],
-      "candidates": [
-        "seelen",
-        "windhawk",
-        "deferred"
-      ]
+      "status": "experiment_no_seelen",
+      "provider": "native_windows",
+      "optionalMods": "windhawk"
     },
     "startLauncher": {
       "status": "not_in_current_scope",
@@ -98,5 +88,13 @@
     "runtimeVerified": true,
     "version": "0.2.0",
     "evidence": "docs/development/verification-0.2.0"
+  },
+  "experiment": {
+    "branch": "experiment/no-seelen-20261007",
+    "baseVersion": "0.6.4",
+    "build": "no-seelen.1",
+    "seelenRuntime": false,
+    "profile": "ThemeStudio-NoSeelen",
+    "mainlineUpdates": false
   }
 }

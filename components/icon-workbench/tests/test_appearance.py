@@ -73,7 +73,9 @@ class AppearanceTests(unittest.TestCase):
         self.assertEqual(self.machine['cursors'],{'value':'original'})
 
     def test_duplicate_or_nonappearance_operations_fail_before_snapshot(self):
-        for operations in (self.operation*2,[{'operation':'pets.launch','payload':{}}],[]):
+        for operations in (self.operation*2,[{'operation':'pets.launch','payload':{}}],
+                           [{'operation':'runtime.seelen.apply','payload':{}}],
+                           [{'operation':'runtime.desktop.apply','payload':{'mode':'mac'}}],[]):
             with self.assertRaises(ValueError):self.adapter.begin(operations,None)
         self.assertFalse(self.adapter.baseline.exists())
 

@@ -22,3 +22,15 @@ test('installer only consumes explicit application payload directories', () => {
     assert.ok(files.includes(`\\${name}\\*"`));
   }
 });
+
+test('trial installs alongside mainline with independent identity and profile', () => {
+  assert.ok(!script.includes('34717904-40BD-47C3-9AE5-4CA3B55820B5'));
+  assert.match(script, /DefaultDirName=\{autopf\}\\ThemeStudio-NoSeelen/);
+  assert.match(script, /AppMutex=Local\\ThemeStudio\.NoSeelen\.Application/);
+  const host = fs.readFileSync(new URL('../src/host/ThemeStudio.cs', import.meta.url), 'utf8');
+  assert.ok(host.includes('LocalApplicationData), "ThemeStudio-NoSeelen"'));
+  const runtime = JSON.parse(fs.readFileSync(new URL('../config/runtime-distributions.json', import.meta.url), 'utf8'));
+  assert.ok(runtime.windhawk && !runtime.seelen);
+  const packaging = fs.readFileSync(new URL('../tools/package.ps1', import.meta.url), 'utf8');
+  assert.ok(!packaging.includes('seelen-engine') && !packaging.includes('seelen-themes'));
+});

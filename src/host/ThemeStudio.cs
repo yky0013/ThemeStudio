@@ -18,8 +18,8 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("Theme Studio")]
 [assembly: AssemblyProduct("桌面主题工作室")]
-[assembly: AssemblyVersion("0.6.4.0")]
-[assembly: AssemblyFileVersion("0.6.4.0")]
+[assembly: AssemblyVersion("0.6.4.1")]
+[assembly: AssemblyFileVersion("0.6.4.1")]
 
 internal static class Program
 {
@@ -44,7 +44,7 @@ internal static class Program
         if (wallpaperData != null) { WallpaperRuntime.Run(wallpaperData); return; }
         if (stopRuntimes)
         {
-            var data = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ThemeStudio");
+            var data = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ThemeStudio-NoSeelen");
             try
             {
                 new NativeWallpaperClient(data).Stop().GetAwaiter().GetResult();
@@ -55,7 +55,7 @@ internal static class Program
             catch { Environment.ExitCode = 1; }
             return;
         }
-        using (var applicationMutex = new Mutex(false, "Local\\ThemeStudio.Application"))
+        using (var applicationMutex = new Mutex(false, "Local\\ThemeStudio.NoSeelen.Application"))
             Application.Run(new StudioWindow(smoke, smoke == null ? null : qaScript));
     }
 }
@@ -71,7 +71,7 @@ internal sealed class StudioWindow : Form
     private readonly WebView2 view = new WebView2 { Dock = DockStyle.Fill };
     private readonly SemaphoreSlim bridgeLock = new SemaphoreSlim(1, 1);
     private readonly SemaphoreSlim appearanceLock = new SemaphoreSlim(1, 1);
-    private readonly HashSet<string> operations = new HashSet<string> { "state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.save", "cursors.apply", "cursors.restore", "cursors.factory", "recipe.export", "runtime.state", "runtime.apply", "runtime.seelen.apply", "runtime.seelen.stop", "runtime.windhawk.apply", "runtime.windhawk.stop" };
+    private readonly HashSet<string> operations = new HashSet<string> { "state", "icons.import", "icons.assign", "icons.apply", "icons.restore", "cursors.import", "cursors.save", "cursors.apply", "cursors.restore", "cursors.factory", "recipe.export", "runtime.state", "runtime.apply", "runtime.windhawk.apply", "runtime.windhawk.stop" };
     private Process backend;
     private StreamWriter backendInput;
     private int activeRequests;
@@ -92,7 +92,7 @@ internal sealed class StudioWindow : Form
         foreach (var op in new[] { "explorer.state", "explorer.apply", "explorer.restore", "pets.state", "pets.launch", "pets.remove" }) operations.Add(op);
         smokeDirectory = smoke;
         qaScript = script;
-        dataDirectory = smoke == null ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ThemeStudio") : Path.Combine(smoke, "data");
+        dataDirectory = smoke == null ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ThemeStudio-NoSeelen") : Path.Combine(smoke, "data");
         scanDirectory = smoke == null ? null : Path.Combine(smoke, "desktop");
 #if TUTORIAL_MODE
         dataDirectory = Path.Combine(Application.StartupPath, "demo", "data");
@@ -100,7 +100,7 @@ internal sealed class StudioWindow : Form
 #endif
         Directory.CreateDirectory(dataDirectory);
         wallpaper = new NativeWallpaperClient(dataDirectory);
-        Text = "桌面主题工作室";
+        Text = "桌面主题工作室 · NoSeelen 体验版";
         Width = 1360; Height = 920; MinimumSize = new Size(900, 650);
         StartPosition = FormStartPosition.CenterScreen;
         AutoScaleDimensions = new SizeF(96F, 96F);
@@ -621,7 +621,7 @@ internal sealed class StudioWindow : Form
     {
         var destination = smokeDirectory ?? Path.Combine(dataDirectory, "diagnostics");
         Directory.CreateDirectory(destination);
-        var report = new { product = "Theme Studio", version = "0.6.4", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
+        var report = new { product = "Theme Studio NoSeelen", version = "0.6.4", build = "no-seelen.1", ready = success, time = DateTimeOffset.Now.ToString("o"), dataDirectory = dataDirectory,
             executable = Application.ExecutablePath, nativeWebView = true, backend = "bundled executable", ui = payload, error = error };
         File.WriteAllText(Path.Combine(destination, "native-runtime.json"), json.Serialize(report), new UTF8Encoding(false));
     }

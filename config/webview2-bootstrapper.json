@@ -1,7 +1,7 @@
 {
   "source": "https://go.microsoft.com/fwlink/p/?LinkId=2124703",
-  "downloaded": "2026-09-28T21:59:38.1128539+08:00",
+  "downloaded": "2026-10-07",
   "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
   "requiresInternetWhenRuntimeMissing": true,
-  "sha256": "81c01751c8cc385a5991abb104205d42ac70094350ee8fb9e8ea580b51bb9554"
+  "sha256": "aa38a8cfce6179b87181609b1c730a29eaf26138fc833af5759e67576770f3a3"
 }

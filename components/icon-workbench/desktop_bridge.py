@@ -184,7 +184,9 @@ class DesktopBridge:
                     return self.pets.launch(payload.get('id'))
                 return self.pets.remove(payload.get('id'))
         if operation.startswith('updates.'):
-            return self.updater.dispatch(operation, payload)
+            if operation == 'updates.state':
+                return {'currentVersion': self.updater.current, 'prepared': None, 'channel': 'no-seelen'}
+            raise ValueError('实验分支不接收主线更新，请使用对应实验分支的安装包。')
         if operation == 'templates.list':
             return self.templates.list()
         if operation == 'templates.import':

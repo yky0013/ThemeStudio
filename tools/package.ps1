@@ -42,10 +42,7 @@ try {
     Copy-Item -LiteralPath 'tools\asus-cursor-recovery' -Destination (Join-Path $studioRelease 'docs') -Recurse -Force
     $studioRuntimeOutput = Join-Path $studioRelease 'runtimes'
     New-Item -ItemType Directory -Path $studioRuntimeOutput -Force | Out-Null
-    if (-not (Test-Path -LiteralPath '.cache\runtimes\seelen-engine\seelen-ui.exe') -or -not (Test-Path -LiteralPath '.cache\runtimes\windhawk\Compiler\bin\clang++.exe')) { throw 'Pinned upstream runtime payloads are missing; prepare-runtimes must complete before packaging.' }
-    $seelenOutput = Join-Path $studioRuntimeOutput 'seelen'
-    New-Item -ItemType Directory -Path $seelenOutput -Force | Out-Null
-    foreach ($runtimeFile in Get-ChildItem -LiteralPath '.cache\runtimes\seelen-engine' -Force) { Copy-Item -LiteralPath $runtimeFile.FullName -Destination $seelenOutput -Recurse -Force }
+    if (-not (Test-Path -LiteralPath '.cache\runtimes\windhawk\Compiler\bin\clang++.exe')) { throw 'Pinned Windhawk payload is missing.' }
     $windhawkOutput = Join-Path $studioRuntimeOutput 'windhawk'
     New-Item -ItemType Directory -Path $windhawkOutput -Force | Out-Null
     foreach ($runtimeFile in @('windhawk.exe','windhawk-cli.exe','windhawk-core.dll','windhawk-ui.exe','windhawk-mod.exe','windhawk-mod-elevated.exe','windhawk-mod-uiaccess.exe','ModsRuntime')) { Copy-Item -LiteralPath (Join-Path '.cache\runtimes\windhawk' $runtimeFile) -Destination $windhawkOutput -Recurse -Force }
@@ -64,23 +61,13 @@ try {
     }
     $studioResources = Join-Path $studioRelease 'resources'
     New-Item -ItemType Directory -Path $studioResources -Force | Out-Null
-    @{ version = (Get-Content -LiteralPath 'package.json' -Raw | ConvertFrom-Json).version } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $studioResources 'application.json') -Encoding utf8
+    @{ channel = 'no-seelen'; build = 'no-seelen.1'; version = (Get-Content -LiteralPath 'package.json' -Raw | ConvertFrom-Json).version } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $studioResources 'application.json') -Encoding utf8
     Copy-Item -LiteralPath 'config\runtime-distributions.json' -Destination $studioResources -Force
     Copy-Item -LiteralPath 'vendor\Seelen-UI\src\ui\react\settings\modules\themeWorkbench\domain\catalog.json' -Destination (Join-Path $studioResources 'mod-catalog.json') -Force
     $modOutput = Join-Path $studioResources 'windhawk-mods'
     New-Item -ItemType Directory -Path $modOutput -Force | Out-Null
     Get-ChildItem -LiteralPath 'vendor\windhawk-mods\mods' -File | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $modOutput -Force }
     Copy-Item -LiteralPath 'components\explorer-skin\themestudio-explorer-background.wh.cpp' -Destination $modOutput -Force
-    $themeOutput = Join-Path $studioResources 'seelen-themes'
-    New-Item -ItemType Directory -Path $themeOutput -Force | Out-Null
-    Get-ChildItem -LiteralPath 'vendor\Seelen-UI\src\static\themes' -Force | ForEach-Object {
-        $destination = Join-Path $themeOutput $_.Name
-        if ($_.PSIsContainer) {
-            New-Item -ItemType Directory -Path $destination -Force | Out-Null
-            Get-ChildItem -LiteralPath $_.FullName -Force | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $destination -Recurse -Force }
-        } else { Copy-Item -LiteralPath $_.FullName -Destination $destination -Force }
-    }
-    Copy-Item -LiteralPath 'vendor\runtime-sources\Seelen-UI-2.8.6\LICENSE' -Destination (Join-Path $studioRelease 'licenses\Seelen-Runtime-2.8.6-AGPL.txt') -Force
     $global:LASTEXITCODE = 0 # Robocopy success includes exit codes 1 through 7.
     Write-Output (Join-Path $studioRelease 'ThemeStudio.exe')
 } finally { Pop-Location }

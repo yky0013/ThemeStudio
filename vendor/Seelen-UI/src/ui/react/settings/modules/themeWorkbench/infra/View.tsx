@@ -28,10 +28,11 @@ export interface WorkbenchProps {
   desktopClient?: DesktopClient;
   embedded?: boolean;
   unified?: boolean;
+  showSeelen?: boolean;
   renderMod?: (mod: ModResource, selected: ModDraft | undefined, onSelect: (selected: boolean) => void, onTheme: (theme: string) => void) => ComponentChildren;
 }
 
-export function WorkbenchView({ mods, themes, icons, initial, native, onApply, onExport, renderSettings, renderRuntime, desktopClient, embedded, unified, renderMod }: WorkbenchProps) {
+export function WorkbenchView({ mods, themes, icons, initial, native, onApply, onExport, renderSettings, renderRuntime, desktopClient, embedded, unified, showSeelen = true, renderMod }: WorkbenchProps) {
   const { t } = useTranslation();
   const tt = (key: string, options?: Record<string, unknown>) => t(`theme_workbench.${key}`, options);
   const [recipe, setRecipe] = useState(initial);
@@ -54,12 +55,13 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
   const dirty = JSON.stringify(recipe) !== JSON.stringify(saved);
   const visible = filterMods(mods, query).filter((mod) => !showSelected || recipe.windhawk.some((item) => item.id === mod.id));
 
-  useEffect(()=>{if(unified)appearanceDraft.seelen={...recipe.seelen};},[recipe.seelen,unified]);
+  useEffect(()=>{if(unified && showSeelen)appearanceDraft.seelen={...recipe.seelen};},[recipe.seelen,unified,showSeelen]);
   const update = (next: ThemeRecipe) => {
+    if (!showSeelen) next = {...next, seelen: {activeThemes: next.seelen.activeThemes.filter(id=>id===PARALLAX_THEME_ID), activeIconPacks: []}};
     if(unified){
       if(JSON.stringify(recipe.windhawk)!==JSON.stringify(next.windhawk))appearanceDraft.set('windhawk',{label:tt('windhawk'),operation:'runtime.windhawk.apply',payload:{mods:next.windhawk}});
       const clean=(items:string[])=>items.filter(id=>id!==PARALLAX_THEME_ID);
-      if(JSON.stringify(clean(recipe.seelen.activeThemes))!==JSON.stringify(clean(next.seelen.activeThemes))){
+      if(showSeelen && JSON.stringify(clean(recipe.seelen.activeThemes))!==JSON.stringify(clean(next.seelen.activeThemes))){
         appearanceDraft.seelen={...next.seelen};
         appearanceDraft.set('seelen',appearanceDraft.effectiveDesktopMode==='mac'?{label:tt('seelen'),operation:'runtime.seelen.apply',payload:{seelen:next.seelen}}:null);
       }
@@ -148,7 +150,7 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
       {message && <Alert type={message.error ? "error" : "success"} showIcon title={message.text} />}
       {!!problems.length && <Alert type="warning" showIcon title={tt("dependencies_missing")} description={problems.join(" · ")} />}
       {!embedded && <nav className={cs.anchors}>
-        {["overview", ...(desktopClient ? ["desktop", "cursors"] : []), "parallax", "seelen", "windhawk"].map((id) => <a key={id} href={`#workbench-${id}`} onClick={(event) => {
+        {["overview", ...(desktopClient ? ["desktop", "cursors"] : []), "parallax", ...(showSeelen ? ["seelen"] : []), "windhawk"].map((id) => <a key={id} href={`#workbench-${id}`} onClick={(event) => {
           event.preventDefault(); document.getElementById(`workbench-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
         }}>{tt(id === "parallax" ? "parallax.title" : id === "desktop" ? "desktop_settings.icons_title" : id === "cursors" ? "desktop_settings.cursors_title" : id)}</a>)}
       </nav>}
@@ -171,7 +173,7 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
       </section>}
       {desktopClient && <DesktopPanel client={desktopClient} unified={unified} />}
       <ParallaxPanel settings={parallax} onChange={changeParallax} desktopClient={desktopClient} desktopNative={native} unified={unified} />
-      <section id="workbench-seelen" className={groupStyles.group}>
+      {showSeelen && <section id="workbench-seelen" className={groupStyles.group}>
         <div className={cs.sectionTitle}><h2>{tt("seelen")}</h2><span>{tt("seelen_description")}</span></div>
         <h3>{tt("themes")}</h3>
         <div className={cs.resourceGrid}>{themes.map((item) => <label key={item.id} className={cs.resourceCard}>
@@ -185,8 +187,9 @@ export function WorkbenchView({ mods, themes, icons, initial, native, onApply, o
         </label>)}</div>
         {renderSettings}
         {visiblePanels["workbench-seelen"] && renderRuntime?.(recipe)}
-      </section>
+      </section>}
       <section id="workbench-windhawk" className={groupStyles.group}>
+        {!showSeelen && visiblePanels["workbench-windhawk"] && renderRuntime?.(recipe)}
         <div className={cs.sectionTitle}><h2>{tt("windhawk")}</h2><span>{tt("catalog_count", { count: mods.length })}</span></div>
         <Alert type="info" title={tt("windhawk_notice")} />
         <div className={cs.searchRow}>
