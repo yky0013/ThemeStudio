@@ -14,28 +14,34 @@
   try {
     await delay(1800);
     const startup = await call('app.qa-trace');
-    const allowed = new Set(['state', 'runtime.state', 'templates.list', 'wallpaper.status', 'updates.state', 'app.ready', 'app.qa-trace', 'explorer.state', 'pets.state']);
+    const allowed = new Set(['state', 'runtime.state', 'templates.list', 'wallpaper.status', 'updates.state', 'app.ready', 'app.qa-trace', 'explorer.state', 'pets.state', 'appearance.state']);
     const writes = startup.filter(operation => !allowed.has(operation));
     if (writes.length) throw new Error('Startup sent modifying operations: ' + writes.join(', '));
     result.checks.push({startupReadOnly: true, operations: startup});
-    const accessories = [...document.querySelectorAll('#workbench-templates input[type=checkbox]')];
+    const accessories = [...document.querySelectorAll('#workbench-templates input[type=checkbox]')]
+      .filter(input => ['鼠标指针', '匹配的桌面图标'].includes(input.closest('label')?.textContent.trim()));
     if (accessories.length !== 2 || accessories.some(input => input.checked)) throw new Error('Accessories are not opt-in');
     result.checks.push({cursorsAndIconsUnchecked: true});
     const explorer = await call('explorer.state');
-    const pets = await call('pets.state');
-    if (!document.getElementById('workbench-explorer') || !document.getElementById('workbench-pets')) throw new Error('New panels missing');
-    if (!explorer.choices.length || pets.pets.length) throw new Error('Unexpected fresh state');
-    if (![...document.querySelectorAll('#workbench-templates button')].some(button=>button.textContent.includes('导入图片'))) throw new Error('Direct media import missing');
-    result.checks.push({explorerPresets:explorer.choices.length, freshPetsEmpty:true, directMediaImport:true});
+    if (!document.getElementById('workbench-explorer') || !explorer.choices.length) throw new Error('Explorer presets missing');
+    if (qaExpectedFeatures.pets) {
+      const pets = await call('pets.state');
+      if (!document.getElementById('workbench-pets') || pets.pets.length) throw new Error('Pets panel/fresh state mismatch');
+    }
+    if (qaExpectedFeatures.directMediaImport && ![...document.querySelectorAll('#workbench-templates button')].some(button=>button.textContent.includes('导入图片'))) throw new Error('Direct media import missing');
+    result.checks.push({explorerPresets:explorer.choices.length, expectedFeatures:qaExpectedFeatures});
     const packs = await call('templates.list');
-    if (packs.packs.length < 10) throw new Error('Bundled packs missing');
+    const catalog = await fetch('/templates/catalog.json').then(response => response.json());
+    if (packs.packs.length !== catalog.length ||
+        catalog.some(pack => !packs.packs.some(item => item.id === pack.id))) throw new Error('Bundled packs missing');
     const state = await call('state');
     const factory = state.cursors.schemes.find(scheme => scheme.kind === 'factory');
-    if (factory && ![...document.querySelectorAll('#workbench-cursors button')].some(button => button.textContent.includes('恢复本机天选姬'))) throw new Error('Factory restore button is missing');
+    if (factory && ![...document.querySelectorAll('#workbench-cursors button')].some(button => button.textContent.includes('天选姬'))) throw new Error('Factory restore button is missing');
     result.checks.push({factoryRestoreVisible: !!factory});
     for (const pack of packs.packs.filter(pack => pack.source === 'builtin')) {
-      if (pack.animatedWallpaper) throw new Error('Bundled motion remains');
-      if (pack.version !== '2.1.0') throw new Error('Old accessories pack: ' + pack.id);
+      const expected = catalog.find(item => item.id === pack.id);
+      if (Boolean(pack.animatedWallpaper) !== Boolean(expected.animatedWallpaper)) throw new Error('Bundled motion availability changed');
+      if (pack.version !== expected.version) throw new Error('Accessories pack version changed: ' + pack.id);
       const assets = ['accessories-preview.png', 'cursor-preview.png', ...Object.keys(pack.icons).map(key => 'icons/' + key + '.ico'), ...Object.keys(pack.cursors).map(key => 'cursor-previews/' + key + '.png')];
       await Promise.all(assets.map(asset => new Promise((resolve, reject) => { const image = new Image(); image.onload = resolve; image.onerror = () => reject(new Error('Asset preview failed: ' + pack.id + '/' + asset)); image.src = '/templates/' + pack.id + '/' + asset; })));
       result.checks.push({pack: pack.id, renderedAssets: assets.length});

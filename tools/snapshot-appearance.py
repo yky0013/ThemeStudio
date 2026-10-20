@@ -67,8 +67,11 @@ def snapshot():
     files = []
     for folder in (Path(os.environ['APPDATA']) / 'Microsoft/Windows/Themes', Path(os.environ['LOCALAPPDATA']) / 'Microsoft/Windows/Themes'):
         if folder.is_dir(): files.extend(path for path in folder.rglob('*') if path.is_file())
-    seelen = Path(os.environ['APPDATA']) / 'com.seelen.seelen-ui'
-    files.extend(path for path in seelen.glob('settings*') if path.is_file())
+    root = Path(__file__).resolve().parents[1]
+    edition = json.loads((root / 'config/build-edition.json').read_text(encoding='utf-8-sig'))
+    if edition['channel'] != 'no-seelen':
+        seelen = Path(os.environ['APPDATA']) / 'com.seelen.seelen-ui'
+        files.extend(path for path in seelen.glob('settings*') if path.is_file())
     for folder in (Path(os.environ['USERPROFILE']) / 'Desktop', Path(os.environ['PUBLIC']) / 'Desktop'):
         if folder.is_dir(): files.extend(path for path in folder.iterdir() if path.is_file() and path.suffix.lower() in {'.lnk', '.url'})
     result['files'] = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(set(files))}

@@ -17,7 +17,7 @@ use crate::{
         self,
         constants::SEELEN_COMMON,
         icon_extractor::{request_icon_extraction_from_file, request_icon_extraction_from_umid},
-        pwsh::PwshScript,
+        start_layout::export_start_layout,
     },
     widgets::{
         permissions::{WidgetPerm, request_widget_permission},
@@ -161,11 +161,7 @@ async fn install_last_available_update() -> Result<()> {
 #[tauri::command(async)]
 async fn get_native_start_menu() -> Result<StartMenuLayout> {
     let output_path = SEELEN_COMMON.app_cache_dir().join("start-layout.json");
-    let output_path_str = output_path.to_string_lossy().to_string();
-
-    let script =
-        PwshScript::new(format!("Export-StartLayout -Path '{}'", output_path_str)).inline_command();
-    script.execute().await?;
+    export_start_layout(&output_path)?;
 
     let file = std::fs::File::open(&output_path)?;
     let mut layout: StartMenuLayout = serde_json::from_reader(file)?;

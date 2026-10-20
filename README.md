@@ -1,5 +1,28 @@
 # 桌面主题工作室 · Theme Studio
 
+## 2026-10-20 语言迁移
+
+当前交付：`ThemeStudio-0.6.5-Windows-x64-Setup.exe`。安装包位于 `installers/`，开发目录可双击 `启动.cmd`。
+
+构建、打包、依赖准备和当前版本验证统一使用 Python；独立天选姬指针恢复工具为 C# EXE。
+主界面 C# + TypeScript、业务后端 Python 与原有功能保持不变。安装后的应用无需安装开发用 Python 或 Node.js。
+
+```text
+python tools/studio.py setup
+python tools/studio.py prepare-runtimes
+python tools/studio.py check
+python tools/studio.py test
+python tools/studio.py test-tools
+python tools/studio.py build-installer
+python tools/studio.py compile-host --diagnostic
+python tools/qa.py preserve-theme
+```
+
+`python tools/studio.py --help`、`python tools/qa.py --help` 提供完整入口。
+旧 PowerShell 开发脚本仅在 `docs/history/powershell-tools` 留作历史资料，不参与当前构建，也不随安装包分发。
+各系列的功能差异和第三方引擎依赖边界见 `docs/development/no-powershell-migration.md`。
+
+
 ## 0.6.4 排序列与分隔条修复
 
 修复“名称”排序列白块、文件区两侧白色分隔条及表头悬停浅底浅字；真实 Explorer 本机核对通过。说明与边界见 [修订记录](docs/development/explorer-header-splitter-update.md)。安装/卸载及跨 Windows build 回归待完成，仍为 prerelease。
@@ -103,17 +126,17 @@
 
 ## 构建
 
-首次运行 `tools/setup.ps1`，准备当前项目的 npm、Python 依赖和固定 WebView2 SDK。SDK 版本、官方下载地址与 SHA-256 位于 `config/webview2-sdk.json`，校验后解压到 `.cache/webview2`。
+首次运行 `tools/studio.py setup`，准备当前项目的 npm、Python 依赖和固定 WebView2 SDK。SDK 版本、官方下载地址与 SHA-256 位于 `config/webview2-sdk.json`，校验后解压到 `.cache/webview2`。
 
-```powershell
+```text
 npm.cmd run check
 npm.cmd test
 npm.cmd run build
-.\tools\package.ps1 -SkipFrontend
-.\tools\build-installer.ps1 -SkipPackage
+python tools/studio.py package --skip-frontend
+python tools/studio.py build-installer --skip-package
 ```
 
-开发调试：运行 `tools/start-dev.ps1`，只在本机 4327 端口启动新项目的服务。发布 EXE 使用内嵌 WebView2 和自己的后端，不需要 Node/Python 开发环境。
+开发调试：运行 `tools/studio.py start-dev`，只在本机 4327 端口启动新项目的服务。发布 EXE 使用内嵌 WebView2 和自己的后端，不需要 Node/Python 开发环境。
 
 ## 来源与许可
 
@@ -123,4 +146,4 @@ npm.cmd run build
 
 源码及安装包发布于 [yky0013/ThemeStudio](https://github.com/yky0013/ThemeStudio)。[v0.1.1 发布页](https://github.com/yky0013/ThemeStudio/releases/tag/v0.1.1) 保存与安装包匹配的源码、旧工作区源码和 Git 元数据、清理前项目数据，以及 SHA-256 校验记录。旧开发入口、运行环境和本机数据按用户要求清理，清理证据见 `docs/handoff/`。
 
-安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；0.3.0 精简安装包的官方引导安装器来源及哈希在 `config/webview2-bootstrapper.json`，运行 `tools/fetch-bootstrapper.ps1` 准备。`config/webview2-runtime.json` 保留历史完整离线运行库信息。分发时同时提供匹配源码压缩包，保留许可证及作者声明。本仓库保存对应版本源码、素材、测试和验证记录；安装包、构建时源码归档与校验文件同步至 GitHub Releases。
+安装器使用 Inno Setup 6.7.3（放入 `.tools/inno-6.7.3`）；0.3.0 精简安装包的官方引导安装器来源及哈希在 `config/webview2-bootstrapper.json`，运行 `tools/studio.py fetch-bootstrapper` 准备。`config/webview2-runtime.json` 保留历史完整离线运行库信息。分发时同时提供匹配源码压缩包，保留许可证及作者声明。本仓库保存对应版本源码、素材、测试和验证记录；安装包、构建时源码归档与校验文件同步至 GitHub Releases。
