@@ -35,14 +35,16 @@
         "date": "2026-10-20",
         "reason": "Replace internal PowerShell implementation with fixed-scope C# native actions; preserve explicit user terminal/script functionality.",
         "before": "5a2bb38088cc97475331f2ef898e06039083fed991e371b24e7bebffc183c9e6",
-        "after": "0b4781edb1ed1b35b78645a1bb522da18c6d21d62defa4e53169afe79ce04f42"
+        "after": "0b4781edb1ed1b35b78645a1bb522da18c6d21d62defa4e53169afe79ce04f42",
+        "hashNormalization": "CRLF-to-LF"
       },
       {
         "path": "mods/uwp-assets-redirect.wh.cpp",
         "date": "2026-10-20",
         "reason": "Replace internal PowerShell implementation with fixed-scope C# native actions; preserve explicit user terminal/script functionality.",
         "before": "234baa0de8ec8260970e54f74832dde737a1437c26b79b768a5a30ba642a4d94",
-        "after": "f4cea76dba2e2e3daef2ebadbdae91548ab6c73b88864a022bec1ad3c922f8ee"
+        "after": "f4cea76dba2e2e3daef2ebadbdae91548ab6c73b88864a022bec1ad3c922f8ee",
+        "hashNormalization": "CRLF-to-LF"
       }
     ],
     "added": []
@@ -54,19 +56,22 @@
         "path": "src/background/exposed.rs",
         "reason": "Native Start layout export and verified original static signatures",
         "before": "bf9388b49c41bae032988a4ebd7eb045bfb341bdd1b48b5f67d96f475e1aec5b",
-        "after": "fe0c8b828f89958d6438a8ce16a788a2aa31ecfc95041efef3f83f3374ca7f88"
+        "after": "fe0c8b828f89958d6438a8ce16a788a2aa31ecfc95041efef3f83f3374ca7f88",
+        "hashNormalization": "CRLF-to-LF"
       },
       {
         "path": "src/background/utils/mod.rs",
         "reason": "Native Start layout export and verified original static signatures",
         "before": "42e44f52628e8303d32ceee0232be9f7fc0046d3bbf2a782b280801f18412d32",
-        "after": "845150a12d36ade16c50956b7f412f10aa72334e20fa0ea3c33d4c13e00f6876"
+        "after": "845150a12d36ade16c50956b7f412f10aa72334e20fa0ea3c33d4c13e00f6876",
+        "hashNormalization": "CRLF-to-LF"
       },
       {
         "path": "src/build.rs",
         "reason": "Native Start layout export and verified original static signatures",
         "before": "e9a782af89d8fe708aa009fce31acdfc7d0913c1cd06b7d8263df025b877179c",
-        "after": "528ddc976d7665fe9031830fb2dfa164842ec9619f7acddfa56f7cd403f98405"
+        "after": "528ddc976d7665fe9031830fb2dfa164842ec9619f7acddfa56f7cd403f98405",
+        "hashNormalization": "CRLF-to-LF"
       }
     ],
     "added": [
