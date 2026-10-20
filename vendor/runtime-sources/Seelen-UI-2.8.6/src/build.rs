@@ -14,7 +14,27 @@ fn main() {
     let sums_path = target_dir.join("SHA256SUMS");
     checksums.write(&sums_path).unwrap();
 
-    if !cfg!(debug_assertions) {
+    // ThemeStudio changes native code only. Reuse the original, verified upstream
+    // signature for byte-identical static assets; never disable runtime integrity.
+    println!("cargo:rerun-if-env-changed=THEMESTUDIO_VERIFIED_STATIC_DIR");
+    if let Some(directory) = std::env::var_os("THEMESTUDIO_VERIFIED_STATIC_DIR") {
+        let directory = PathBuf::from(directory);
+        let original_sums = std::fs::read(directory.join("SHA256SUMS"))
+            .expect("Verified upstream SHA256SUMS missing");
+        let signature = std::fs::read_to_string(directory.join("SHA256SUMS.sig"))
+            .expect("Verified upstream static signature missing");
+        let original = CheckSums::parse(&original_sums).expect("Invalid upstream checksums");
+        assert!(
+            original.compare(&checksums).is_empty(),
+            "Static assets differ from the signed upstream files; refusing native-only build"
+        );
+        slu_utils::signature::verify_minisign(
+            &original_sums, &signature,
+            "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ4QjU1RUI0NEM0NzBERUIKUldUckRVZE10RjYxU0lpaERvdklYL05DVlg0Sk9EVngvaEgzZjMvU1NNemJTZXZ1K0dNVXU3ZkQK",
+        ).expect("Upstream static signature is not valid");
+        std::fs::write(&sums_path, original_sums).unwrap();
+        std::fs::write(sums_path.with_extension("sig"), signature).unwrap();
+    } else if !cfg!(debug_assertions) {
         sign_sha256sums(&sums_path);
     } else {
         std::fs::write(

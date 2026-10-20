@@ -1,0 +1,42 @@
+{
+  "schema": "seelen-build-env/v1",
+  "rustup_toolchain": "nightly-2026-05-22-x86_64-pc-windows-msvc",
+  "cargo_home": "${PROJECT_ROOT}\\.tools\\seelen-build\\cargo-home",
+  "rustup_home": "${PROJECT_ROOT}\\.tools\\seelen-build\\rustup-home",
+  "deno_exe": "${PROJECT_ROOT}\\.tools\\seelen-build\\deno\\deno.exe",
+  "windows_sdk_root": "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10",
+  "windows_sdk_version": "10.0.26100.0",
+  "windows_sdk_bin_x64": "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\bin\\10.0.26100.0\\x64",
+  "msvc_root": "${PROJECT_ROOT}\\.tools\\seelen-build\\msvc-fetch\\vs2022_17.14\\VC\\Tools\\MSVC\\14.44.35207",
+  "include": [
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\Include\\10.0.26100.0\\ucrt",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\Include\\10.0.26100.0\\shared",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\Include\\10.0.26100.0\\um",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\Include\\10.0.26100.0\\winrt"
+  ],
+  "lib": [
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\Lib\\10.0.26100.0\\ucrt\\x64",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\Lib\\10.0.26100.0\\um\\x64"
+  ],
+  "path_prepend": [
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\cargo-home\\bin",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\rustup-home\\toolchains\\nightly-2026-05-22-x86_64-pc-windows-msvc\\lib\\rustlib\\x86_64-pc-windows-msvc\\bin",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\deno",
+    "C:\\Program Files\\nodejs",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\cmake\\cmake-4.4.4-windows-x86_64\\bin",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\nasm\\nasm-3.02",
+    "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\bin\\10.0.26100.0\\x64"
+  ],
+  "tool_env": {
+    "CC": "${PROJECT_ROOT}\\.tools\\seelen-build\\msvc-fetch\\vs2022_17.14\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+    "CXX": "${PROJECT_ROOT}\\.tools\\seelen-build\\msvc-fetch\\vs2022_17.14\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+    "AR": "${PROJECT_ROOT}\\.tools\\seelen-build\\msvc-fetch\\vs2022_17.14\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\lib.exe",
+    "RC": "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\rc.exe",
+    "MT": "${PROJECT_ROOT}\\.tools\\seelen-build\\sdk-extracted\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\mt.exe",
+    "CMAKE": "${PROJECT_ROOT}\\.tools\\seelen-build\\cmake\\cmake-4.4.4-windows-x86_64\\bin\\cmake.exe",
+    "CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER": "rust-lld.exe",
+    "NASM": "${PROJECT_ROOT}\\.tools\\seelen-build\\nasm\\nasm-3.02\\nasm.exe",
+    "AWS_LC_SYS_PREBUILT_NASM": "0"
+  },
+  "proxy_for_download_only": null
+}

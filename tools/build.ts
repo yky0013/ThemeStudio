@@ -16,6 +16,9 @@ const parser = new ModSourceUtils(modRoot);
 const provenance = JSON.parse(fs.readFileSync(path.join(project, "vendor/upstream-snapshots/windhawk-mods-source.json"), "utf8").replace(/^\uFEFF/, ""));
 const modFiles = fs.readdirSync(modRoot).filter((file) => file.endsWith(".wh.cpp")).sort().map(file => ({file, root: modRoot, local: false}));
 modFiles.push({file: 'themestudio-explorer-background.wh.cpp', root: path.join(project, 'components/explorer-skin'), local: true});
+const nativePatchedMods = new Set(['net-toggle', 'uwp-assets-redirect']);
+const buildEdition = JSON.parse(fs.readFileSync(path.join(project, 'config/build-edition.json'), 'utf8'));
+const sourceBranch = buildEdition.channel === 'no-seelen' ? 'experiment/no-seelen-20261007' : buildEdition.channel === 'maintenance-0.5' ? 'maintenance/0.5' : 'main';
 const mods = modFiles.map(({file, root, local}) => {
   const source = fs.readFileSync(path.join(root, file), "utf8").replace(/\r\n/g, "\n");
   const metadata = parser.extractMetadata(source, "zh-CN");
@@ -23,7 +26,7 @@ const mods = modFiles.map(({file, root, local}) => {
   const declarations = block ? yaml.load(block[1]!) as Record<string, unknown>[] : [];
   const options = Array.isArray(declarations) ? declarations.find((item) => Object.hasOwn(item, "theme"))?.$options : undefined;
   const themeChoices = Array.isArray(options) ? options.flatMap((item) => typeof item === "object" && item ? Object.entries(item).map(([id, label]) => ({ id, label: String(label) })) : []) : [];
-  return { id: metadata.id!, name: metadata.name || metadata.id!, description: metadata.description || "", author: metadata.author || "", version: metadata.version || "", include: metadata.include || [], architecture: metadata.architecture || [], license: metadata.license || (/Source code is published under The GNU General Public License v3\.0\./.test(source) ? "GPL-3.0" : "MIT (repository default)"), source: local ? 'https://github.com/yky0013/ThemeStudio' : `https://github.com/ramensoftware/windhawk-mods/blob/${provenance.Commit}/mods/${file}`, sourceKind: local ? 'themestudio' : 'upstream', sha256: createHash("sha256").update(source).digest("hex"), themeChoices };
+  return { id: metadata.id!, name: metadata.name || metadata.id!, description: metadata.description || "", author: metadata.author || "", version: metadata.version || "", include: metadata.include || [], architecture: metadata.architecture || [], license: metadata.license || (/Source code is published under The GNU General Public License v3\.0\./.test(source) ? "GPL-3.0" : "MIT (repository default)"), source: nativePatchedMods.has(metadata.id!) ? `https://github.com/yky0013/ThemeStudio/blob/${sourceBranch}/vendor/windhawk-mods/mods/${file}` : local ? 'https://github.com/yky0013/ThemeStudio' : `https://github.com/ramensoftware/windhawk-mods/blob/${provenance.Commit}/mods/${file}`, sourceKind: local ? 'themestudio' : nativePatchedMods.has(metadata.id!) ? 'themestudio-patch' : 'upstream', sha256: createHash("sha256").update(source).digest("hex"), themeChoices };
 });
 fs.writeFileSync(path.join(project, "vendor/Seelen-UI/src/ui/react/settings/modules/themeWorkbench/domain/catalog.json"), JSON.stringify({ sourceCommit: provenance.Commit, mods }, null, 2) + "\n");
 await esbuild.build({ absWorkingDir: project, entryPoints: { app: "src/app/main.tsx", wallpaper: "src/app/wallpaper.ts" }, bundle: true, minify: true,

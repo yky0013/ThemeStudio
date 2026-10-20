@@ -137,7 +137,7 @@ def main():
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text(encoding='utf-8-sig'))
     tag, commit = manifest['tag'], manifest['commit']
-    if manifest['repository'] != REPOSITORY or not re.fullmatch(r'v\d+\.\d+\.\d+', tag) or not re.fullmatch(r'[0-9a-f]{40}', commit):
+    if manifest['repository'] != REPOSITORY or not re.fullmatch(r'v\d+\.\d+\.\d+(?:-no-seelen\.\d+)?', tag) or not re.fullmatch(r'[0-9a-f]{40}', commit):
         raise ValueError('Invalid repository, version or commit.')
     if not manifest.get('prerelease', True) and not manifest.get('realExplorerVisualVerified', False):
         raise ValueError('Unverified Explorer visuals must remain a prerelease.')

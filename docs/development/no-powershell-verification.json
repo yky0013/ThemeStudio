@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-20",
+  "version": "0.5.5",
+  "build": "0.5.5.0",
+  "channel": "maintenance-0.5",
+  "localBuildBaseline": "119b6cf74def8f609ec4418dbd846f2c129c7e7f",
+  "upstreamBaseCommit": "119b6cf74def8f609ec4418dbd846f2c129c7e7f",
+  "installer": {
+    "name": "ThemeStudio-0.5.5-Windows-x64-Setup.exe",
+    "bytes": 168871295,
+    "sha256": "641de745b8a25fcf9a871b1138290030ef8d505e9b8214c5a0b0e3d6f361cde7"
+  },
+  "tests": {
+    "frontend": 26,
+    "backend": 100,
+    "buildPipeline": 11,
+    "nativeActionsReadOnly": 6,
+    "cursorRecovery": "passed",
+    "nativeUiChecks": 12,
+    "nativeUiMode": "diagnostic-asInvoker",
+    "appearanceUnchanged": true,
+    "seelenCore": 79,
+    "nativeStartLayout": 3,
+    "seelenHelpLaunches": 3
+  },
+  "payload": {
+    "powershellFiles": 0,
+    "seelenIncluded": true,
+    "packagedInputFiles": 9701,
+    "manifestSha256": "2c57df9361433ac85d52fb995c96f4fb481195251a709abf12906cc1a4bc1a52",
+    "scope": "Exact Inno Setup input roots, not an installed-system observation",
+    "stagingFilesIncludingDiagnostics": 9703
+  },
+  "nativeActionHelperSha256": "639f705faa01e45035abd6b5a795665cb72cb26bf8a53b6be6bdae37b6589837",
+  "seelenNativeBuild": {
+    "upstreamCommit": "079c38584d48ef02e800d6f596bbef97bd00e327",
+    "variant": "themestudio-native-start-layout.1",
+    "files": {
+      "seelen-ui.exe": "3b438b9c1b080b54227022e894c2a89d1554cb14f253c15b422162ca8d565f86",
+      "slu.exe": "854453539c275280c3d1344fdc926426974e45fe4c835cca03e05710d8801c52",
+      "slu-service.exe": "486de7fc11f6d806ee7690be8f2571a557c105254a7af164f5ef81863d9b639b",
+      "sluhk.dll": "5cdbba86d6ba4c7226955c4c68596f91a32c18800b93864d944a4aec69fb2ff3"
+    },
+    "cargoLockSha256": "3b75ac49406422e6db2aee0b06b46c9d36279e75dc693caf7b35e6be1f48acd6",
+    "originalStaticIntegrityPreserved": true,
+    "authenticode": "Local rebuild; not the original signed upstream executables",
+    "nativeSourceSha256": {
+      "src/background/utils/start_layout.rs": "75c9a06f23c38d942a134492e76af13f75ee8f69155861475e5802adf42959b0",
+      "src/background/utils/mod.rs": "845150a12d36ade16c50956b7f412f10aa72334e20fa0ea3c33d4c13e00f6876",
+      "src/background/exposed.rs": "fe0c8b828f89958d6438a8ce16a788a2aa31ecfc95041efef3f83f3374ca7f88",
+      "src/build.rs": "528ddc976d7665fe9031830fb2dfa164842ec9619f7acddfa56f7cd403f98405"
+    }
+  },
+  "compatibility": "Explicit user-selected PowerShell terminal/script features remain available.",
+  "notRun": [
+    "Administrator install/uninstall lifecycle",
+    "Live network enable/disable/reset",
+    "WindowsApps ACL modification",
+    "All optional mods and all Windows versions",
+    "Live Seelen Dock/toolbar activation"
+  ],
+  "typecheck": "passed"
+}

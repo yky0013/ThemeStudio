@@ -2,7 +2,7 @@
 // @id              net-toggle
 // @name            Net-Toggle
 // @description     Internet kill switch with primary/secondary DNS monitoring in your system tray
-// @version         2.1.1
+// @version         2.1.1-native-actions.1
 // @author          BlackPaw
 // @github          https://github.com/BlackPaw21
 // @donateUrl       https://ko-fi.com/blackpaw21
@@ -152,6 +152,7 @@ One click drops your connection. Click it again, and you're back online.
 #include <propidl.h>
 #include <iphlpapi.h>
 #include <math.h>
+#include <string>
 
 #define TRAY_ICON_ID 1
 #define WM_TRAY_CALLBACK (WM_USER + 1)
@@ -171,7 +172,7 @@ static const GUID NETTOGGLE_TRAY_GUID =
 
 const DWORD CLICK_DEBOUNCE_MS = 10000;
 
-static const DWORD POWERSHELL_TIMEOUT_MS  = 60000;  // 60s max for any PS command
+static const DWORD NATIVE_ACTION_TIMEOUT_MS = 60000;  // 60s max for one helper action
 static const DWORD NETWATCH_POLL_INTERVAL = 15000;  // 15s per fallback poll tick
 static const DWORD NETWATCH_POLL_RETRIES  = 4;      // 4 × 15s = 60s then retry NotifyAddrChange
 static const int   MIN_PING_INTERVAL_SEC  = 5;
@@ -271,21 +272,60 @@ BOOL CheckActualNetworkState() {
     return count > 0;
 }
 
-BOOL RunPowerShellCommand(LPCWSTR psCommand, BOOL targetState) {
-    Wh_Log(L"Executing PowerShell command");
+static bool ResolveNativeActionsPath(std::wstring& pathOut) {
+    pathOut.clear();
 
-    WCHAR cmdArgs[2048];
-    if (wsprintfW(cmdArgs, L"-NoProfile -NonInteractive -WindowStyle Hidden -Command \"%s\"", psCommand) <= 0) {
-        Wh_Log(L"Failed to format command");
-        return FALSE;
+    HMODULE module = nullptr;
+    if (!GetModuleHandleExW(
+            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            reinterpret_cast<LPCWSTR>(&ResolveNativeActionsPath), &module)) {
+        Wh_Log(L"GetModuleHandleExW failed for native action helper: %lu",
+               GetLastError());
+        return false;
     }
 
+    WCHAR modulePath[32768] = {};
+    DWORD length = GetModuleFileNameW(module, modulePath, ARRAYSIZE(modulePath));
+    if (!length || length >= ARRAYSIZE(modulePath)) {
+        Wh_Log(L"GetModuleFileNameW failed for native action helper: %lu",
+               GetLastError());
+        return false;
+    }
+
+    std::wstring directory(modulePath, length);
+    size_t separator = directory.find_last_of(L"\\/");
+    if (separator == std::wstring::npos) {
+        Wh_Log(L"Native action helper module has no directory");
+        return false;
+    }
+    directory.resize(separator);
+    pathOut = directory + L"\\ThemeStudio.NativeActions.exe";
+    if (GetFileAttributesW(pathOut.c_str()) == INVALID_FILE_ATTRIBUTES) {
+        Wh_Log(L"Native action helper not found beside mod: %s", pathOut.c_str());
+        pathOut.clear();
+        return false;
+    }
+    return true;
+}
+
+static bool RunNativeAction(PCWSTR action) {
+    std::wstring helperPath;
+    if (!ResolveNativeActionsPath(helperPath)) {
+        return false;
+    }
+
+    std::wstring arguments = L"\"";
+    arguments += action;
+    arguments += L"\"";
+
     SHELLEXECUTEINFOW sei = {sizeof(sei)};
-    sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NO_CONSOLE;
+    sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC |
+                SEE_MASK_FLAG_NO_UI;
     sei.hwnd = nullptr;
     sei.lpVerb = L"runas";
-    sei.lpFile = L"powershell.exe";
-    sei.lpParameters = cmdArgs;
+    sei.lpFile = helperPath.c_str();
+    sei.lpParameters = arguments.c_str();
     sei.nShow = SW_HIDE;
 
     if (!ShellExecuteExW(&sei)) {
@@ -293,42 +333,39 @@ BOOL RunPowerShellCommand(LPCWSTR psCommand, BOOL targetState) {
         if (error == ERROR_CANCELLED) {
             Wh_Log(L"UAC prompt cancelled by user");
         } else {
-            Wh_Log(L"ShellExecuteEx failed: %d", error);
+            Wh_Log(L"Native action helper launch failed: %lu", error);
         }
-        return FALSE;
+        return false;
     }
-
-    Wh_Log(L"UAC cleared. Waiting for PowerShell to complete...");
 
     if (!sei.hProcess) {
-        Wh_Log(L"No process handle returned");
-        return FALSE;
+        Wh_Log(L"Native action helper returned no process handle");
+        return false;
     }
 
-    DWORD waitResult = WaitForSingleObject(sei.hProcess, POWERSHELL_TIMEOUT_MS);
+    DWORD waitResult = WaitForSingleObject(sei.hProcess, NATIVE_ACTION_TIMEOUT_MS);
     if (waitResult == WAIT_TIMEOUT) {
-        Wh_Log(L"Process timed out, terminating");
-        TerminateProcess(sei.hProcess, 1);
+        // Do not terminate a reset helper after the caller's bounded wait.
+        // The broker owns rollback/re-enable and must be allowed to finish.
+        Wh_Log(L"Native action helper wait timed out; leaving helper running for recovery");
         CloseHandle(sei.hProcess);
-        return FALSE;
+        return false;
+    }
+    if (waitResult != WAIT_OBJECT_0) {
+        Wh_Log(L"Native action helper wait failed: %lu", GetLastError());
+        CloseHandle(sei.hProcess);
+        return false;
     }
 
     DWORD exitCode = 1;
     if (!GetExitCodeProcess(sei.hProcess, &exitCode)) {
-        LogLastError(L"GetExitCodeProcess");
+        LogLastError(L"GetExitCodeProcess(native action helper)");
         CloseHandle(sei.hProcess);
-        return FALSE;
+        return false;
     }
-
     CloseHandle(sei.hProcess);
-    Wh_Log(L"Process exited with code: %d", exitCode);
-    if (exitCode == 0) {
-        InterlockedExchange(&g_networkIsUp, targetState ? 1 : 0);
-        return TRUE;
-    } else {
-        Wh_Log(L"PowerShell command failed (exit %d) — network state unchanged", exitCode);
-        return FALSE;
-    }
+    Wh_Log(L"Native action '%s' exited with code %lu", action, exitCode);
+    return exitCode == 0;
 }
 
 // ==============================================================================
@@ -355,7 +392,8 @@ enum DnsOverall {
 // for DoT (853) / DoH (443) endpoints and explicit TCP:53 checks, a refused
 // connection means the service is down. ICMP (IcmpSendEcho) is deliberately
 // avoided: IcmpCreateFile fails with ERROR_INVALID_HANDLE (6) inside this
-// process after Disable-NetAdapter removes all adapters from the IP stack —
+// process after the native helper disables all adapters and removes them from
+// the IP stack —
 // the ICMP kernel device path doesn't recover until the process restarts.
 // Winsock sockets are not affected by adapter disable/enable cycles.
 static BOOL ProbeTcpConnect(DWORD ipAddr, WORD port) {
@@ -765,11 +803,8 @@ DWORD WINAPI WorkerThreadProc(LPVOID lpParam) {
     BOOL enable = (BOOL)(UINT_PTR)lpParam;
 
     Wh_Log(L"Toggling network adapters: %s", enable ? L"ENABLE" : L"DISABLE");
-    LPCWSTR command = enable
-        ? L"Get-NetAdapter -Physical | Enable-NetAdapter -Confirm:$false"
-        : L"Get-NetAdapter -Physical | Disable-NetAdapter -Confirm:$false";
-
-    BOOL success = RunPowerShellCommand(command, enable);
+    BOOL success = RunNativeAction(enable ? L"network-enable"
+                                            : L"network-disable");
 
     if (success) {
         success = TRUE;
@@ -784,7 +819,7 @@ DWORD WINAPI WorkerThreadProc(LPVOID lpParam) {
     if (IsWindow(g_trayHwnd)) {
         PostMessageW(g_trayHwnd, WM_UPDATE_TRAY_STATE, (WPARAM)(InterlockedOr(&g_networkIsUp, 0) == 1), 0);
         // After a successful enable the NetWatch poll fallback may miss the state
-        // change (g_networkIsUp was already pre-set to 1 by RunPowerShellCommand).
+        // change (g_networkIsUp was already pre-set by the native helper).
         // Trigger a recovery ping explicitly so DNS state updates promptly.
         if (success && enable && InterlockedOr(&g_networkIsUp, 0)) {
             PostMessageW(g_trayHwnd, WM_TRIGGER_PING, 0, 0);
@@ -805,32 +840,12 @@ DWORD WINAPI ResetWorkerThreadProc(LPVOID) {
     // Full adapter cycle: kills all active connections, flushes DNS, restores adapters.
     // ipconfig /release+renew omitted — adapter disable/enable already resets DHCP state.
     // netsh winsock/ip reset excluded — they require a reboot to take effect.
-    WCHAR cmdArgs[] =
-        L"-NoProfile -NonInteractive -WindowStyle Hidden -Command \""
-        L"Get-NetAdapter -Physical | Disable-NetAdapter -Confirm:$false; "
-        L"Start-Sleep -Seconds 2; "
-        L"ipconfig /flushdns; "
-        L"Get-NetAdapter -Physical | Enable-NetAdapter -Confirm:$false\"";
-
-    SHELLEXECUTEINFOW sei = {sizeof(sei)};
-    sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NO_CONSOLE;
-    sei.hwnd = nullptr;
-    sei.lpVerb = L"runas";
-    sei.lpFile = L"powershell.exe";
-    sei.lpParameters = cmdArgs;
-    sei.nShow = SW_HIDE;
-
-    BOOL resetOk = FALSE;
-    if (ShellExecuteExW(&sei)) {
-        if (sei.hProcess) {
-            WaitForSingleObject(sei.hProcess, POWERSHELL_TIMEOUT_MS);
-            CloseHandle(sei.hProcess);
-        }
+    BOOL resetOk = RunNativeAction(L"network-reset");
+    if (resetOk) {
         Wh_Log(L"Network reset completed");
-        resetOk = TRUE;
         InterlockedExchange(&g_networkIsUp, 1);
     } else {
-        Wh_Log(L"Network reset failed to start or was cancelled");
+        Wh_Log(L"Network reset failed, cancelled, or was restored after an error");
     }
 
     InterlockedExchange(&g_isProcessingClick, 0);

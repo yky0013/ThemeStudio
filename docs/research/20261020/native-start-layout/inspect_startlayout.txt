@@ -1,0 +1,112 @@
+assembly=Microsoft.Windows.StartLayout.Commands, Version=10.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
+location=C:\Windows\Microsoft.Net\assembly\GAC_MSIL\Microsoft.Windows.StartLayout.Commands\v4.0_10.0.0.0__31bf3856ad364e35\Microsoft.Windows.StartLayout.Commands.dll
+references=mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35;System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+TYPE Microsoft.CodeAnalysis.EmbeddedAttribute visibility=False base=System.Attribute
+  GUID=45cc72d2-5729-39b5-8a05-370ca869cf73 isComImport=False isInterface=False isClass=True
+  ATTR System.Runtime.CompilerServices.CompilerGeneratedAttribute
+  ATTR Microsoft.CodeAnalysis.EmbeddedAttribute
+TYPE Microsoft.Windows.StartLayout.Commands.CLSID_StartLayoutCmdlet visibility=True base=System.__ComObject
+  GUID=75ab852c-0441-46d4-a205-ef0a33f98255 isComImport=True isInterface=False isClass=True
+  ATTR System.Runtime.InteropServices.ComImportAttribute
+  ATTR System.Runtime.InteropServices.GuidAttribute 75AB852C-0441-46D4-A205-EF0A33F98255
+TYPE Microsoft.Windows.StartLayout.Commands.ExportEdgeAssetsCommand visibility=True base=System.Management.Automation.PSCmdlet
+  GUID=7d78cc2c-b0d5-3ce2-b611-ec6b01347bc6 isComImport=False isInterface=False isClass=True
+  ATTR System.Management.Automation.CmdletAttribute Export, StartLayoutEdgeAssets
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_LiteralPath()
+    IL 02-7B-09-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_Path()
+    IL 02-7B-09-00-00-04-2A
+  METHOD PrivateScope, Family, Virtual, HideBySig System.Void ProcessRecord()
+    IL 02-7B-09-00-00-04-02-02-7B-0A-00-00-04-17-28-1A-00-00-06-0A-02-06-28-1B-00-00-0A-2C-15-73-0D-00-00-06-74-06-00-00-02-0B-07-2C-07-07-06-6F-11-00-00-06-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_LiteralPath(System.String value)
+    IL 02-03-7D-09-00-00-04-02-17-7D-0A-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_Path(System.String value)
+    IL 02-03-7D-09-00-00-04-2A
+  FIELD Private System.Boolean _isLiteralPath
+  FIELD Private System.String _path
+TYPE Microsoft.Windows.StartLayout.Commands.ExportStartLayoutCommand visibility=True base=System.Management.Automation.PSCmdlet
+  GUID=f5b43466-6e33-3fd1-a635-a1a34f1aab34 isComImport=False isInterface=False isClass=True
+  ATTR System.Management.Automation.CmdletAttribute Export, StartLayout
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_LiteralPath()
+    IL 02-7B-06-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_Path()
+    IL 02-7B-06-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Management.Automation.SwitchParameter get_UseDesktopApplicationID()
+    ATTR System.Runtime.CompilerServices.CompilerGeneratedAttribute
+    IL 02-7B-08-00-00-04-2A
+  METHOD PrivateScope, Family, Virtual, HideBySig System.Void ProcessRecord()
+    IL 02-7B-06-00-00-04-02-02-7B-07-00-00-04-17-28-1A-00-00-06-0A-02-06-28-1B-00-00-0A-2C-2A-73-0D-00-00-06-74-06-00-00-02-0B-07-2C-1C-02-28-16-00-00-06-28-1E-00-00-0A-2C-08-07-06-6F-0F-00-00-06-2A-07-06-6F-0E-00-00-06-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_LiteralPath(System.String value)
+    IL 02-03-7D-06-00-00-04-02-17-7D-07-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_Path(System.String value)
+    IL 02-03-7D-06-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_UseDesktopApplicationID(System.Management.Automation.SwitchParameter value)
+    ATTR System.Runtime.CompilerServices.CompilerGeneratedAttribute
+    IL 02-03-7D-08-00-00-04-2A
+  FIELD Private System.Boolean _isLiteralPath
+  FIELD Private System.String _path
+  FIELD Private System.Management.Automation.SwitchParameter <UseDesktopApplicationID>k__BackingField
+TYPE Microsoft.Windows.StartLayout.Commands.ImportStartLayoutCommand visibility=True base=System.Management.Automation.PSCmdlet
+  GUID=30ad6184-bede-38dc-8af4-462b86b471d9 isComImport=False isInterface=False isClass=True
+  ATTR System.Management.Automation.CmdletAttribute Import, StartLayout
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_LayoutLiteralPath()
+    IL 02-7B-02-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_LayoutPath()
+    IL 02-7B-02-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_MountLiteralPath()
+    IL 02-7B-04-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.String get_MountPath()
+    IL 02-7B-04-00-00-04-2A
+  METHOD PrivateScope, Family, Virtual, HideBySig System.Void ProcessRecord()
+    IL 02-7B-02-00-00-04-02-02-7B-03-00-00-04-16-28-1A-00-00-06-0A-02-7B-04-00-00-04-02-02-7B-05-00-00-04-16-28-1A-00-00-06-0B-72-01-00-00-70-0C-14-0D-73-0D-00-00-06-75-06-00-00-02-13-04-11-04-2C-46-11-04-06-6F-10-00-00-06-07-08-28-17-00-00-0A-0D-DE-20-26-28-18-00-00-0A-28-26-00-00-06-17-8D-17-00-00-01-25-16-06-A2-28-19-00-00-0A-73-1A-00-00-0A-7A-09-2C-11-02-09-28-1B-00-00-0A-2C-08-06-09-17-28-1C-00-00-0A-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_LayoutLiteralPath(System.String value)
+    IL 02-03-7D-02-00-00-04-02-17-7D-03-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_LayoutPath(System.String value)
+    IL 02-03-7D-02-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_MountLiteralPath(System.String value)
+    IL 02-03-7D-04-00-00-04-02-17-7D-05-00-00-04-2A
+  METHOD PrivateScope, Public, HideBySig, SpecialName System.Void set_MountPath(System.String value)
+    IL 02-03-7D-04-00-00-04-2A
+  FIELD Private System.Boolean _isLiteralLayoutPath
+  FIELD Private System.Boolean _isLiteralMountPath
+  FIELD Private System.String _layoutPath
+  FIELD Private System.String _mountPath
+TYPE Microsoft.Windows.StartLayout.Commands.IStartLayoutCmdlet visibility=True base=
+  GUID=0bac4102-61e9-48a5-93dd-d295aba65369 isComImport=False isInterface=True isClass=False
+  ATTR System.Runtime.InteropServices.GuidAttribute 0BAC4102-61E9-48A5-93DD-D295ABA65369
+  ATTR System.Runtime.InteropServices.InterfaceTypeAttribute 1
+  METHOD PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract System.Void ExportEdgeAssets(System.String pszFilePath)
+  METHOD PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract System.Void ExportStartLayout(System.String pszFilePath)
+  METHOD PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract System.Void ExportStartLayoutWithDesktopApplicationIDs(System.String pszFilePath)
+  METHOD PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract System.Void ValidateLayoutFile(System.String pszFilePath)
+TYPE Microsoft.Windows.StartLayout.Commands.Resources visibility=False base=System.Object
+  GUID=1bfe0d47-3a0f-3b7f-8f4e-c8d39e7ce006 isComImport=False isInterface=False isClass=True
+  ATTR System.CodeDom.Compiler.GeneratedCodeAttribute System.Resources.Tools.StronglyTypedResourceBuilder, 4.0.0.0
+  ATTR System.Diagnostics.DebuggerNonUserCodeAttribute
+  ATTR System.Runtime.CompilerServices.CompilerGeneratedAttribute
+  METHOD PrivateScope, Assembly, Static, HideBySig, SpecialName System.Globalization.CultureInfo get_Culture()
+    IL 7E-0C-00-00-04-2A
+  METHOD PrivateScope, Assembly, Static, HideBySig, SpecialName System.String get_FileNotFound()
+    IL 28-22-00-00-06-72-FA-00-00-70-7E-0C-00-00-04-6F-35-00-00-0A-2A
+  METHOD PrivateScope, Assembly, Static, HideBySig, SpecialName System.String get_InvalidLayoutFile()
+    IL 28-22-00-00-06-72-14-01-00-70-7E-0C-00-00-04-6F-35-00-00-0A-2A
+  METHOD PrivateScope, Assembly, Static, HideBySig, SpecialName System.String get_PathDidNotResolve()
+    IL 28-22-00-00-06-72-38-01-00-70-7E-0C-00-00-04-6F-35-00-00-0A-2A
+  METHOD PrivateScope, Assembly, Static, HideBySig, SpecialName System.String get_PathResolvedToMultiple()
+    IL 28-22-00-00-06-72-5C-01-00-70-7E-0C-00-00-04-6F-35-00-00-0A-2A
+  METHOD PrivateScope, Assembly, Static, HideBySig, SpecialName System.Resources.ResourceManager get_ResourceManager()
+    IL 7E-0B-00-00-04-2D-1E-72-98-00-00-70-D0-0A-00-00-02-28-32-00-00-0A-6F-33-00-00-0A-73-34-00-00-0A-80-0B-00-00-04-7E-0B-00-00-04-2A
+  METHOD PrivateScope, Assembly, Static, HideBySig, SpecialName System.Void set_Culture(System.Globalization.CultureInfo value)
+    IL 02-80-0C-00-00-04-2A
+  FIELD Private, Static System.Globalization.CultureInfo resourceCulture
+  FIELD Private, Static System.Resources.ResourceManager resourceMan
+TYPE Microsoft.Windows.StartLayout.Commands.Utils visibility=False base=System.Object
+  GUID=9168a954-7de1-37b1-b002-d9c453a9df6c isComImport=False isInterface=False isClass=True
+  METHOD PrivateScope, Assembly, Static, HideBySig System.String ResolvePath(System.String filePath, System.Management.Automation.PSCmdlet command, System.Boolean isLiteralPath, System.Boolean allowNonexistingPaths)
+    IL 73-1F-00-00-0A-0A-04-2C-52-03-6F-20-00-00-0A-6F-21-00-00-0A-02-6F-22-00-00-0A-13-04-05-2D-32-11-04-28-23-00-00-0A-2D-29-11-04-28-24-00-00-0A-2D-20-28-18-00-00-0A-28-25-00-00-06-17-8D-17-00-00-01-25-16-11-04-A2-28-19-00-00-0A-73-25-00-00-0A-7A-06-11-04-6F-26-00-00-0A-2B-3F-00-06-03-6F-20-00-00-0A-6F-21-00-00-0A-02-12-05-6F-27-00-00-0A-6F-28-00-00-0A-DE-23-13-06-05-2C-19-06-03-6F-20-00-00-0A-6F-21-00-00-0A-02-6F-22-00-00-0A-6F-26-00-00-0A-2B-03-11-06-7A-DE-00-06-6F-29-00-00-0A-17-31-1F-28-18-00-00-0A-28-28-00-00-06-17-8D-17-00-00-01-25-16-02-A2-28-19-00-00-0A-73-2A-00-00-0A-7A-06-6F-29-00-00-0A-2C-09-06-16-6F-2B-00-00-0A-2D-1F-28-18-00-00-0A-28-27-00-00-06-17-8D-17-00-00-01-25-16-02-A2-28-19-00-00-0A-73-25-00-00-0A-7A-06-16-6F-2B-00-00-0A-6F-2C-00-00-0A-0B-07-28-2D-00-00-0A-0C-07-28-2E-00-00-0A-0D-07-28-24-00-00-0A-2C-03-08-2C-2F-08-28-24-00-00-0A-2C-08-09-28-2F-00-00-0A-2C-1F-28-18-00-00-0A-28-27-00-00-06-17-8D-17-00-00-01-25-16-07-A2-28-19-00-00-0A-73-30-00-00-0A-7A-07-2A
+TYPE System.Runtime.CompilerServices.RefSafetyRulesAttribute visibility=False base=System.Attribute
+  GUID=c0fc8e51-5fb3-3c4f-af1f-b03814d6c468 isComImport=False isInterface=False isClass=True
+  ATTR System.Runtime.CompilerServices.CompilerGeneratedAttribute
+  ATTR Microsoft.CodeAnalysis.EmbeddedAttribute
+  ATTR System.AttributeUsageAttribute 2
+  FIELD Public, InitOnly System.Int32 Version

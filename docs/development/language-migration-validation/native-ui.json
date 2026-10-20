@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checks": 12,
+  "appearanceUnchanged": true,
+  "testedFiles": {
+    "backend/ThemeStudio.Backend.exe": "68291d1b6c23997025502a74d48a5fa11436433614d99557ff2bb2b7e026211d",
+    "wwwroot/app.js": "ee44457115c2216721412a2a1caae3812d0cff76198477197252bc0b6b31199a",
+    "resources/runtime-distributions.json": "266d300b7c8c4bd84c9ef32c7114e413fea156a507c8025620dc1661647404f5"
+  },
+  "hostMode": "diagnostic-asInvoker",
+  "hostSha256": "bf8d66b4d9676beac291fd69ffdd58b6cf1a50957f4c3b389e7c9c28962175e7"
+}

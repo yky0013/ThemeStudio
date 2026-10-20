@@ -7,12 +7,19 @@
     "sourceArchiveSha256": "5e3255d79bbf2481edbb8726d2ab030f2f67fbd701f933d019954deedb06765b",
     "asset": "https://github.com/eythaann/Seelen-UI/releases/download/v2.8.6/Seelen.UI_2.8.6.0_x64.Msix",
     "assetSha256": "5a21fa2d96b3021f3ed33d210ed7b8fea50fd7c5189d0d65d3e6b95352f08b41",
-    "deployment": "Original signed executable payload and static resources, with package-registration metadata omitted for the upstream unpackaged mode.",
+    "deployment": "Locally rebuilt native Start layout export; original signed static assets retained.",
     "files": {
+      "seelen-ui.exe": "3b438b9c1b080b54227022e894c2a89d1554cb14f253c15b422162ca8d565f86",
+      "slu.exe": "854453539c275280c3d1344fdc926426974e45fe4c835cca03e05710d8801c52",
+      "slu-service.exe": "486de7fc11f6d806ee7690be8f2571a557c105254a7af164f5ef81863d9b639b",
+      "sluhk.dll": "5cdbba86d6ba4c7226955c4c68596f91a32c18800b93864d944a4aec69fb2ff3"
+    },
+    "upstreamFiles": {
       "seelen-ui.exe": "5e03f93b15c24247075722d16eaf0301eb3f5517a9bbafc7ea5af30083e7176f",
       "slu.exe": "de2362d20f73e7a885d0e6e1fc6049510841db92d6ebb384bb1b2d71905711af",
       "slu-service.exe": "f55cc6ead12f5b67b3207795a163d217b1ada4ac1d0ca206c08e7be227793e2d"
-    }
+    },
+    "variant": "themestudio-native-start-layout.1"
   },
   "windhawk": {
     "version": "2.0.0-alpha.6",

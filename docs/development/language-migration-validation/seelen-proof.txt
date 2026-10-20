@@ -1,0 +1,10 @@
+   Compiling native-start-layout-rust-proof v0.0.0 (E:\desktop\windows\ThemeStudio-0.6\docs\research\20261020\native-start-layout\rust-proof)
+    Finished `test` profile [unoptimized] target(s) in 0.74s
+     Running unittests src\main.rs (E:\desktop\windows\ThemeStudio-0.6\build\start-layout-proof\x86_64-pc-windows-msvc\debug\deps\native_start_layout_rust_proof-392c7d1876a334c0.exe)
+
+running 3 tests
+test tests::rust_com_export_reports_invalid_destination_without_writing_settings ... ok
+test tests::rust_com_export_matches_existing_reference_bytes_and_pinned_list ... ok
+test tests::rust_com_export_accepts_unicode_and_space_output_path ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s

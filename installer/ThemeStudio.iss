@@ -1,7 +1,7 @@
 ; Theme Studio offline installer. User data is owned by the application,
 ; outside {app}, and is intentionally retained on uninstall.
 #define AppName "桌面主题工作室"
-#define AppVersion "0.5.4"
+#define AppVersion "0.5.5"
 
 [Setup]
 AppId={{34717904-40BD-47C3-9AE5-4CA3B55820B5}
@@ -36,7 +36,7 @@ SetupLogging=yes
 InfoBeforeFile=安装说明.txt
 VersionInfoDescription=桌面主题工作室精简安装程序
 VersionInfoProductName={#AppName}
-VersionInfoVersion=0.5.4.0
+VersionInfoVersion=0.5.5.0
 SetupIconFile=..\assets\brand\theme-studio.ico
 
 [Languages]
@@ -65,11 +65,15 @@ Source: "..\release\ThemeStudio-{#AppVersion}\docs\*"; DestDir: "{app}\docs"; Fl
 Source: "..\.cache\runtime\MicrosoftEdgeWebview2Setup.exe"; Flags: dontcopy nocompression
 
 [InstallDelete]
+; Remove only superseded recovery scripts owned by earlier versions.
+Type: files; Name: "{app}\docs\asus-cursor-recovery\restore_asus_tx_cursor.ps1"
+Type: files; Name: "{app}\docs\asus-cursor-recovery\恢复天选姬指针.ps1"
 Type: filesandordirs; Name: "{app}\wwwroot\templates\zenless-zone-zero"
 Type: filesandordirs; Name: "{app}\wwwroot\templates\arknights"
 Type: filesandordirs; Name: "{app}\wwwroot\templates\blue-archive"
 
 [Icons]
+Name: "{group}\恢复天选姬指针"; Filename: "{app}\docs\asus-cursor-recovery\AsusCursorRecovery.exe"
 Name: "{group}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"
 Name: "{group}\图文使用教程"; Filename: "{app}\wwwroot\help\index.html"
 Name: "{group}\卸载桌面主题工作室"; Filename: "{uninstallexe}"

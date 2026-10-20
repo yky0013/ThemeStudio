@@ -1,0 +1,141 @@
+{
+  "passed": true,
+  "binaryRecords": [
+    {
+      "file": "seelen-ui.exe",
+      "machine": "0x8664",
+      "requestedExecutionLevel": [],
+      "sha256": "3b438b9c1b080b54227022e894c2a89d1554cb14f253c15b422162ca8d565f86",
+      "imports": [
+        "kernel32.dll",
+        "user32.dll",
+        "powrprof.dll",
+        "ntdll.dll",
+        "oleaut32.dll",
+        "api-ms-win-core-synch-l1-2-0.dll",
+        "ole32.dll",
+        "api-ms-win-core-winrt-l1-1-0.dll",
+        "gdi32.dll",
+        "comctl32.dll",
+        "shell32.dll",
+        "dwmapi.dll",
+        "api-ms-win-shcore-scaling-l1-1-1.dll",
+        "imm32.dll",
+        "propsys.dll",
+        "advapi32.dll",
+        "api-ms-win-core-winrt-error-l1-1-0.dll",
+        "shlwapi.dll",
+        "bcryptprimitives.dll",
+        "setupapi.dll",
+        "bluetoothapis.dll",
+        "iphlpapi.dll",
+        "userenv.dll",
+        "dwrite.dll",
+        "secur32.dll",
+        "pdh.dll",
+        "ws2_32.dll",
+        "wtsapi32.dll",
+        "wlanapi.dll",
+        "bcrypt.dll",
+        "crypt32.dll",
+        "VCRUNTIME140.dll",
+        "VCRUNTIME140_1.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll"
+      ],
+      "helpExitCode": 0,
+      "helpOutputBytes": 367
+    },
+    {
+      "file": "slu.exe",
+      "machine": "0x8664",
+      "requestedExecutionLevel": [],
+      "sha256": "854453539c275280c3d1344fdc926426974e45fe4c835cca03e05710d8801c52",
+      "imports": [
+        "kernel32.dll",
+        "advapi32.dll",
+        "bcryptprimitives.dll",
+        "ntdll.dll",
+        "oleaut32.dll",
+        "ws2_32.dll",
+        "api-ms-win-core-synch-l1-2-0.dll",
+        "bcrypt.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll"
+      ],
+      "helpExitCode": 0,
+      "helpOutputBytes": 862
+    },
+    {
+      "file": "slu-service.exe",
+      "machine": "0x8664",
+      "requestedExecutionLevel": [],
+      "sha256": "486de7fc11f6d806ee7690be8f2571a557c105254a7af164f5ef81863d9b639b",
+      "imports": [
+        "kernel32.dll",
+        "user32.dll",
+        "powrprof.dll",
+        "ntdll.dll",
+        "oleaut32.dll",
+        "api-ms-win-core-synch-l1-2-0.dll",
+        "advapi32.dll",
+        "bcryptprimitives.dll",
+        "ole32.dll",
+        "shell32.dll",
+        "psapi.dll",
+        "pdh.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll"
+      ],
+      "helpExitCode": 0,
+      "helpOutputBytes": 548
+    },
+    {
+      "file": "sluhk.dll",
+      "machine": "0x8664",
+      "requestedExecutionLevel": [],
+      "sha256": "5cdbba86d6ba4c7226955c4c68596f91a32c18800b93864d944a4aec69fb2ff3",
+      "imports": [
+        "kernel32.dll",
+        "user32.dll",
+        "ntdll.dll",
+        "api-ms-win-core-synch-l1-2-0.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll"
+      ]
+    }
+  ],
+  "internalShellMarkers": [
+    {
+      "marker": "WindowsPowerShell\\v1.0\\powershell.exe",
+      "presentInOriginal": true,
+      "presentInNativeBuild": false
+    },
+    {
+      "marker": "Export-StartLayout -Path",
+      "presentInOriginal": true,
+      "presentInNativeBuild": false
+    }
+  ],
+  "appearanceUnchanged": true,
+  "engineActivated": false,
+  "serviceInstalled": false
+}
