@@ -23,7 +23,7 @@ Uninstallable=yes
 UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\ThemeStudio.exe
 OutputDir=..\installers
-OutputBaseFilename=ThemeStudio-NoSeelen-{#AppVersion}-Trial1-Windows-x64-Setup
+OutputBaseFilename=ThemeStudio-NoSeelen-{#AppVersion}-Trial2-Windows-x64-Setup
 WizardStyle=modern
 Compression=lzma2/ultra64
 LZMANumBlockThreads=1
@@ -36,7 +36,7 @@ SetupLogging=yes
 InfoBeforeFile=安装说明.txt
 VersionInfoDescription=桌面主题工作室精简安装程序
 VersionInfoProductName={#AppName}
-VersionInfoVersion=0.6.4.1
+VersionInfoVersion=0.6.4.2
 SetupIconFile=..\assets\brand\theme-studio.ico
 
 [Languages]
@@ -65,6 +65,9 @@ Source: "..\release\ThemeStudio-{#AppVersion}\docs\*"; DestDir: "{app}\docs"; Fl
 Source: "..\.cache\runtime\MicrosoftEdgeWebview2Setup.exe"; Flags: dontcopy nocompression
 
 [InstallDelete]
+; Remove only superseded recovery scripts owned by Trial1 during upgrade.
+Type: files; Name: "{app}\docs\asus-cursor-recovery\restore_asus_tx_cursor.ps1"
+Type: files; Name: "{app}\docs\asus-cursor-recovery\恢复天选姬指针.ps1"
 Type: filesandordirs; Name: "{app}\wwwroot\templates\zenless-zone-zero"
 Type: filesandordirs; Name: "{app}\wwwroot\templates\arknights"
 Type: filesandordirs; Name: "{app}\wwwroot\templates\blue-archive"
@@ -72,6 +75,7 @@ Type: filesandordirs; Name: "{app}\wwwroot\templates\blue-archive"
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"
 Name: "{group}\全部功能试用清单"; Filename: "{app}\wwwroot\help\trial-checklist.html"
+Name: "{group}\恢复天选姬指针"; Filename: "{app}\docs\asus-cursor-recovery\AsusCursorRecovery.exe"
 Name: "{group}\卸载桌面主题工作室"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\{#AppName}"; Filename: "{app}\ThemeStudio.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 

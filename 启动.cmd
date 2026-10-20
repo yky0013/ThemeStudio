@@ -1,8 +1,8 @@
 @echo off
 setlocal
-if not exist "%~dp0release\ThemeStudio-0.4.0\ThemeStudio.exe" (
-  echo Theme Studio has not been packaged yet. Run tools\package.ps1.
+if not exist "%~dp0release\ThemeStudio-0.6.4\ThemeStudio.exe" (
+  echo Run python tools\studio.py package first.
   pause
   exit /b 1
 )
-start "" "%~dp0release\ThemeStudio-0.4.0\ThemeStudio.exe"
+start "" "%~dp0release\ThemeStudio-0.6.4\ThemeStudio.exe"

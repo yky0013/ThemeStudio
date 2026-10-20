@@ -1,0 +1,8 @@
+{
+  "channel": "no-seelen",
+  "build": "no-seelen.2",
+  "installerName": "ThemeStudio-NoSeelen-{version}-Trial2-Windows-x64-Setup.exe",
+  "appId": "2A8C2E70-74B7-4586-B297-88D40A6E4299",
+  "appName": "桌面主题工作室 · NoSeelen 体验版",
+  "dataDirectory": "ThemeStudio-NoSeelen"
+}

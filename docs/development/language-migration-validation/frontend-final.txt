@@ -1,0 +1,35 @@
+✔ an unresolved overlap cannot silently bind a Seelen component (2.7545ms)
+✔ the user's split wallpaper choice binds Seelen wallpaper without choosing a taskbar (0.5285ms)
+✔ custom cursor/icon choices replace theme accessories within one combined plan (3.2552ms)
+✔ Mac selection and its color selection produce one Seelen activation (0.5902ms)
+✔ locked drafts reject racing edits; completing an apply leaves no second apply pending (0.3313ms)
+✔ desktop writes require POST, JSON and the current private session token (1.8804ms)
+✔ desktop host permits only scoped personalization operations (0.4177ms)
+✔ install and upgrade have no automatic desktop engine lifecycle action (3.4368ms)
+✔ installer only consumes explicit application payload directories (0.3839ms)
+✔ trial installs alongside mainline with independent identity and profile (4.3286ms)
+✔ configuration round trip keeps Unicode names and mod version identity (1.5337ms)
+✔ adding or removing a mod never mutates the input and never adds duplicates (0.1303ms)
+✔ import rejects invalid versions, duplicates and prototype keys (0.3936ms)
+✔ oversized and malformed input do not replace the input recipe (0.569ms)
+✔ missing resources and changed mod source are reported before application (0.5814ms)
+✔ unknown preset fails validation (0.2613ms)
+✔ catalog search includes localized names and target process (1.886ms)
+✔ catalog has unique ids, real source hashes and all three style modules (0.4475ms)
+✔ upstream spring reaches approximately 95% at its configured settling time (1.5645ms)
+✔ spring result is frame-rate independent for a constant target (2.6377ms)
+✔ long stalls are clamped and pointer dead zone filters small movement (1.5033ms)
+✔ global pointer normalization handles negative monitor origins and independent displays (0.5139ms)
+✔ constant auto-zoom covers viewport corners over all presets, sizes and tilt samples (4.5859ms)
+✔ matrix maps padded source center to viewport center and preserves finite homogeneous coordinates (0.9888ms)
+✔ source theme values round-trip with strict user configuration validation (1.2152ms)
+✔ recipe persists the combination and rejects contradictory enablement (0.97ms)
+✔ an imported static-only pack never tries to apply a missing video (1.2354ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 973.1384

@@ -9,7 +9,13 @@
     "build": "tsx tools/build.ts",
     "check": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "dev": "tsx tools/dev-server.ts"
+    "dev": "tsx tools/dev-server.ts",
+    "setup": "python tools/studio.py setup",
+    "package": "python tools/studio.py package",
+    "installer": "python tools/studio.py build-installer",
+    "test:backend": "python tools/studio.py test-backend",
+    "test:tools": "python tools/studio.py test-tools",
+    "qa:native": "python tools/qa.py preserve-theme"
   },
   "dependencies": {
     "@tauri-apps/api": "2.11.0",

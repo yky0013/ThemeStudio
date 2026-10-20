@@ -29,7 +29,22 @@
   {
     "directory": "vendor/windhawk-mods",
     "filesImported": 691,
-    "changed": [],
+    "changed": [
+      {
+        "path": "mods/net-toggle.wh.cpp",
+        "date": "2026-10-20",
+        "reason": "Replace internal PowerShell implementation with fixed-scope C# native actions; preserve explicit user terminal/script functionality.",
+        "before": "5a2bb38088cc97475331f2ef898e06039083fed991e371b24e7bebffc183c9e6",
+        "after": "0b4781edb1ed1b35b78645a1bb522da18c6d21d62defa4e53169afe79ce04f42"
+      },
+      {
+        "path": "mods/uwp-assets-redirect.wh.cpp",
+        "date": "2026-10-20",
+        "reason": "Replace internal PowerShell implementation with fixed-scope C# native actions; preserve explicit user terminal/script functionality.",
+        "before": "234baa0de8ec8260970e54f74832dde737a1437c26b79b768a5a30ba642a4d94",
+        "after": "f4cea76dba2e2e3daef2ebadbdae91548ab6c73b88864a022bec1ad3c922f8ee"
+      }
+    ],
     "added": []
   }
 ]

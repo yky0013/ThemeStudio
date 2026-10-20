@@ -128,7 +128,7 @@ for m in catalog['mods']:
         expected='目标程序：'+(', '.join(m['include']) or '按模组源码定义')+'；版本 '+m['version'],
         condition='由资源管理器页面管理，不在通用列表重复选择。' if internal else '通用列表可选择；兼容性与实际效果待逐项体验。',
         source=m['source'],internal=internal,presets=m['themeChoices']))
-data=dict(version='0.6.4 / NoSeelen 体验版 1',branch='experiment/no-seelen-20261007',
+data=dict(version='0.6.4 / NoSeelen 体验版 2',branch='experiment/no-seelen-20261007',
           mainFeatures=items,mods=mods,excluded=['Seelen Dock / 顶部栏','Mac 桌面切换','Seelen 专属主题与图标包','主线应用更新通道（避免跨分支覆盖）'])
 out=ROOT/'docs/guide';out.mkdir(parents=True,exist_ok=True)
 (out/'trial-features.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -150,7 +150,7 @@ $('scope').textContent=`清单包含 ${data.mainFeatures.length} 项日常功能
 </script></html>'''
 html=html.replace('__DATA__',json.dumps(data,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c'))
 (out/'trial-checklist.html').write_text(html,encoding='utf-8')
-lines=['ThemeStudio 0.6.4 · NoSeelen 体验版 1：全部功能试用清单',
+lines=['ThemeStudio 0.6.4 · NoSeelen 体验版 2：全部功能试用清单',
        '分支：experiment/no-seelen-20261007','HTML 版可标记状态、记备注及导出结果。','']
 last=None
 for i in items:

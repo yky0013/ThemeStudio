@@ -27,7 +27,7 @@ with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
         manifest['files'].append({'path': name, 'sha256': hashlib.sha256(content).hexdigest()})
         archive.writestr('updated-source/' + name, content)
     archive.writestr('manifest.json', json.dumps(manifest, ensure_ascii=False, indent=2))
-    archive.writestr('RESTORE.txt', 'Check out baseCommit from baseRepository in manifest.json, then copy updated-source/ over that checkout.\nThis preserves the complete source changes for this version even when the development checkout is removed.\nBuild with tools/setup.ps1, tools/prepare-runtimes.ps1, tools/fetch-bootstrapper.ps1, and tools/build-installer.ps1.\nNo personal appearance snapshots are included.\n')
+    archive.writestr('RESTORE.txt', 'Check out baseCommit from baseRepository in manifest.json, then copy updated-source/ over that checkout.\nThis preserves the complete source changes for this version even when the development checkout is removed.\nBuild with python tools/studio.py setup, prepare-runtimes, fetch-bootstrapper, and build-installer. The maintained editions also require the pinned native Seelen build toolchain documented in docs/development/native-seelen-build.md.\nNo personal appearance snapshots are included.\n')
 with zipfile.ZipFile(output) as archive:
     for item in manifest['files']:
         assert hashlib.sha256(archive.read('updated-source/' + item['path'])).hexdigest() == item['sha256']

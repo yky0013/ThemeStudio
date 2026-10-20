@@ -31,6 +31,6 @@ test('trial installs alongside mainline with independent identity and profile', 
   assert.ok(host.includes('LocalApplicationData), "ThemeStudio-NoSeelen"'));
   const runtime = JSON.parse(fs.readFileSync(new URL('../config/runtime-distributions.json', import.meta.url), 'utf8'));
   assert.ok(runtime.windhawk && !runtime.seelen);
-  const packaging = fs.readFileSync(new URL('../tools/package.ps1', import.meta.url), 'utf8');
-  assert.ok(!packaging.includes('seelen-engine') && !packaging.includes('seelen-themes'));
+  const edition = JSON.parse(fs.readFileSync(new URL('../config/build-edition.json', import.meta.url), 'utf8'));
+  assert.equal(edition.channel, 'no-seelen');
 });

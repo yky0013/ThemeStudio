@@ -1,0 +1,22 @@
+test_archive_escape_rejected_before_writing_any_entry (test_build_pipeline.BuildPipelineTests.test_archive_escape_rejected_before_writing_any_entry) ... ok
+test_first_build_and_rebuild_preserve_previous_payload (test_build_pipeline.BuildPipelineTests.test_first_build_and_rebuild_preserve_previous_payload) ... ok
+test_hash_mismatch_keeps_original_without_network (test_build_pipeline.BuildPipelineTests.test_hash_mismatch_keeps_original_without_network) ... ok
+test_json_handles_bom_without_changing_unicode (test_build_pipeline.BuildPipelineTests.test_json_handles_bom_without_changing_unicode) ... ok
+test_native_payload_is_allowed (test_build_pipeline.BuildPipelineTests.test_native_payload_is_allowed) ... ok
+test_noseelen_edition_rejects_a_regular_engine_manifest (test_build_pipeline.BuildPipelineTests.test_noseelen_edition_rejects_a_regular_engine_manifest) ... ok
+test_payload_move_cannot_escape_checkout (test_build_pipeline.BuildPipelineTests.test_payload_move_cannot_escape_checkout) ... ok
+test_process_arguments_are_not_interpreted_by_a_shell (test_build_pipeline.BuildPipelineTests.test_process_arguments_are_not_interpreted_by_a_shell) ... ok
+test_stale_powershell_and_seelen_payloads_block_packaging (test_build_pipeline.BuildPipelineTests.test_stale_powershell_and_seelen_payloads_block_packaging) ... ok
+test_unicode_archive_path_and_contents (test_build_pipeline.BuildPipelineTests.test_unicode_archive_path_and_contents) ... ok
+test_verified_cache_is_reused_offline (test_build_pipeline.BuildPipelineTests.test_verified_cache_is_reused_offline) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.099s
+
+OK
+......
+----------------------------------------------------------------------
+Ran 6 tests in 2.192s
+
+OK
+PASS: 13 OEM mappings, 4 defaults, typed backup, duplicate backup rejection, rollback, missing files.

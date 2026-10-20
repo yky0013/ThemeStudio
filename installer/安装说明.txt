@@ -1,4 +1,4 @@
-桌面主题工作室 0.6.4 · NoSeelen 体验版 1
+桌面主题工作室 0.6.4 · NoSeelen 体验版 2
 
 这是 experiment/no-seelen-20261007 分支，不修改主线。
 已移除 Seelen Dock、顶部栏、Mac 桌面切换和 Seelen 专属主题入口。

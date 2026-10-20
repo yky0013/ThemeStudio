@@ -2,7 +2,7 @@
 // @id              uwp-assets-redirect
 // @name            UWP Assets Redirect
 // @description     Replace UWP app assets (such as icons) without worrying about updates or modifying system files permissions.
-// @version         1.1
+// @version         1.1-native-actions.1
 // @author          ferrys
 // @github          https://github.com/atferrys
 // @license         GPL-3.0
@@ -240,6 +240,7 @@ You can contribute to the mod development by opening a pull request [here](https
 #include <initguid.h>
 #include <windows.h>
 #include <winternl.h>
+#include <shellapi.h>
 #include <shlobj.h>
 #include <Aclapi.h>
 #include <sddl.h>
@@ -2328,13 +2329,84 @@ constexpr WCHAR g_ownership_prompt_body[] =
     L"\n"
     L"To continue, click on \"Allow\" and respond to the UAC prompt.";
 
-constexpr WCHAR g_ownership_command[] =
-    LR"(powershell -NoProfile -WindowStyle minimized Start-Process -Wait -FilePath cmd -Verb RunAs -ArgumentList ')"
+static bool ResolveNativeActionsPath(std::wstring& pathOut) {
+    pathOut.clear();
 
-    LR"(/c title "UWP Assets Redirect - Windhawk")"
-    LR"(& echo Updating permissions, please wait...)"
-    LR"(& takeown /F \"C:\Program Files\WindowsApps\" /A)"
-    LR"(& icacls \"C:\Program Files\WindowsApps\" /grant \"%COMPUTERNAME%\%USERNAME%:(R)\"')";
+    HMODULE module = nullptr;
+    if (!GetModuleHandleExW(
+            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            reinterpret_cast<LPCWSTR>(&ResolveNativeActionsPath), &module)) {
+        Wh_Log(L"GetModuleHandleExW failed for native action helper: %lu",
+               GetLastError());
+        return false;
+    }
+
+    WCHAR modulePath[32768] = {};
+    DWORD length = GetModuleFileNameW(module, modulePath, ARRAYSIZE(modulePath));
+    if (!length || length >= ARRAYSIZE(modulePath)) {
+        Wh_Log(L"GetModuleFileNameW failed for native action helper: %lu",
+               GetLastError());
+        return false;
+    }
+
+    std::wstring directory(modulePath, length);
+    size_t separator = directory.find_last_of(L"\\/");
+    if (separator == std::wstring::npos) {
+        Wh_Log(L"Native action helper module has no directory");
+        return false;
+    }
+    directory.resize(separator);
+    pathOut = directory + L"\\ThemeStudio.NativeActions.exe";
+    if (GetFileAttributesW(pathOut.c_str()) == INVALID_FILE_ATTRIBUTES) {
+        Wh_Log(L"Native action helper not found beside mod: %s", pathOut.c_str());
+        pathOut.clear();
+        return false;
+    }
+    return true;
+}
+
+static bool RunNativeWindowsAppsAccess() {
+    std::wstring helperPath;
+    if (!ResolveNativeActionsPath(helperPath)) {
+        return false;
+    }
+
+    static constexpr WCHAR kArguments[] = L"windowsapps-access";
+    SHELLEXECUTEINFOW executeInfo = {sizeof(executeInfo)};
+    executeInfo.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC |
+                        SEE_MASK_FLAG_NO_UI;
+    executeInfo.lpVerb = L"runas";
+    executeInfo.lpFile = helperPath.c_str();
+    executeInfo.lpParameters = kArguments;
+    executeInfo.nShow = SW_HIDE;
+
+    if (!ShellExecuteExW(&executeInfo)) {
+        DWORD error = GetLastError();
+        if (error == ERROR_CANCELLED) {
+            Wh_Log(L"WindowsApps native action UAC prompt cancelled");
+        } else {
+            Wh_Log(L"WindowsApps native action launch failed: %lu", error);
+        }
+        return false;
+    }
+    if (!executeInfo.hProcess) {
+        Wh_Log(L"WindowsApps native action returned no process handle");
+        return false;
+    }
+
+    WaitForSingleObject(executeInfo.hProcess, INFINITE);
+    DWORD exitCode = 1;
+    BOOL exitRead = GetExitCodeProcess(executeInfo.hProcess, &exitCode);
+    CloseHandle(executeInfo.hProcess);
+    if (!exitRead) {
+        Wh_Log(L"GetExitCodeProcess(native WindowsApps action) failed: %lu",
+               GetLastError());
+        return false;
+    }
+    Wh_Log(L"WindowsApps native action exited with code %lu", exitCode);
+    return exitCode == 0;
+}
 
 void CheckWindowsAppsOwner() {
 
@@ -2447,16 +2519,8 @@ void CheckWindowsAppsOwner() {
 
     int button;
     if (SUCCEEDED(pTaskDialogIndirect(&promptDialogConfig, &button, nullptr, nullptr)) && button == IDYES) {
-        WCHAR commandLine[ARRAYSIZE(g_ownership_command)];
-        memcpy(commandLine, g_ownership_command, sizeof(g_ownership_command));
-        STARTUPINFO si = {
-            .cb = sizeof(si),
-        };
-        PROCESS_INFORMATION pi{};
-        if (CreateProcess(nullptr, commandLine, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
-            WaitForSingleObject(pi.hProcess, INFINITE);
-            CloseHandle(pi.hThread);
-            CloseHandle(pi.hProcess);
+        if (!RunNativeWindowsAppsAccess()) {
+            Wh_Log(L"WindowsApps native access action failed");
         }
     }
 

@@ -5645,15 +5645,15 @@
       "name": "Net-Toggle",
       "description": "Internet kill switch with primary/secondary DNS monitoring in your system tray",
       "author": "BlackPaw",
-      "version": "2.1.1",
+      "version": "2.1.1-native-actions.1",
       "include": [
         "windhawk.exe"
       ],
       "architecture": [],
       "license": "MIT",
-      "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/net-toggle.wh.cpp",
-      "sourceKind": "upstream",
-      "sha256": "5a2bb38088cc97475331f2ef898e06039083fed991e371b24e7bebffc183c9e6",
+      "source": "https://github.com/yky0013/ThemeStudio/blob/experiment/no-seelen-20261007/vendor/windhawk-mods/mods/net-toggle.wh.cpp",
+      "sourceKind": "themestudio-patch",
+      "sha256": "0b4781edb1ed1b35b78645a1bb522da18c6d21d62defa4e53169afe79ce04f42",
       "themeChoices": []
     },
     {
@@ -9566,7 +9566,7 @@
       "name": "UWP Assets Redirect",
       "description": "Replace UWP app assets (such as icons) without worrying about updates or modifying system files permissions.",
       "author": "ferrys",
-      "version": "1.1",
+      "version": "1.1-native-actions.1",
       "include": [
         "explorer.exe",
         "StartMenuExperienceHost.exe",
@@ -9578,9 +9578,9 @@
       ],
       "architecture": [],
       "license": "GPL-3.0",
-      "source": "https://github.com/ramensoftware/windhawk-mods/blob/682a7f72694eb768724bea8ef72b079aedd9c57b/mods/uwp-assets-redirect.wh.cpp",
-      "sourceKind": "upstream",
-      "sha256": "234baa0de8ec8260970e54f74832dde737a1437c26b79b768a5a30ba642a4d94",
+      "source": "https://github.com/yky0013/ThemeStudio/blob/experiment/no-seelen-20261007/vendor/windhawk-mods/mods/uwp-assets-redirect.wh.cpp",
+      "sourceKind": "themestudio-patch",
+      "sha256": "f4cea76dba2e2e3daef2ebadbdae91548ab6c73b88864a022bec1ad3c922f8ee",
       "themeChoices": []
     },
     {

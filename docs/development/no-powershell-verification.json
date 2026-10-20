@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-20",
+  "version": "0.6.4",
+  "build": "no-seelen.2",
+  "channel": "no-seelen",
+  "localBuildBaseline": "9929c0783ddd4de7af92e6b611e2119bc71e912c",
+  "upstreamBaseCommit": "a04524e1375a166976d711e9c9f01fd150efaf1b",
+  "installer": {
+    "name": "ThemeStudio-NoSeelen-0.6.4-Trial2-Windows-x64-Setup.exe",
+    "bytes": 116449688,
+    "sha256": "69d6f686277ba885ae3ed1a2720f203e3a5234a53babcf17342d685af07ef860"
+  },
+  "tests": {
+    "frontend": 27,
+    "backend": 108,
+    "buildPipeline": 11,
+    "nativeActionsReadOnly": 6,
+    "cursorRecovery": "passed",
+    "nativeUiChecks": 12,
+    "nativeUiMode": "diagnostic-asInvoker",
+    "appearanceUnchanged": true
+  },
+  "payload": {
+    "powershellFiles": 0,
+    "seelenIncluded": false,
+    "packagedInputFiles": 9359,
+    "manifestSha256": "aa5da3203071db0c793f6a488e08b4c2d20473920a5cc8b43a768cc1cf3a8e27",
+    "scope": "Exact Inno Setup input roots, not an installed-system observation",
+    "stagingFilesIncludingDiagnostics": 9361
+  },
+  "nativeActionHelperSha256": "dc39358ab4ddf86e0b7f452974914065143f62044793f2c49064fa8b74cbdf65",
+  "seelenNativeBuild": null,
+  "compatibility": "Explicit user-selected PowerShell terminal/script features remain available.",
+  "notRun": [
+    "Administrator install/uninstall lifecycle",
+    "Live network enable/disable/reset",
+    "WindowsApps ACL modification",
+    "All optional mods and all Windows versions"
+  ],
+  "typecheck": "passed"
+}

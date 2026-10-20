@@ -115,6 +115,9 @@ class RuntimeAdapter:
         self.management = self.data / 'runtime-managed.json'
         self.catalog = {item['id']: item for item in read_json(catalog_path, {}).get('mods', [])}
         self.lock = read_json(lock_path, {})
+        self.native_actions_hash = self.lock.get('windhawk', {}).get('nativeActionsSha256')
+        if not getattr(sys, 'frozen', False):
+            self.native_actions_hash = read_json(self.project / 'build' / 'native-actions.json', {}).get('sha256')
         self.progress = lambda stage, name='': None
 
     def _check(self, kind, names):
@@ -139,6 +142,7 @@ class RuntimeAdapter:
 
     def _windhawk_root(self):
         self._check('windhawk', ['windhawk.exe', 'windhawk-cli.exe', 'windhawk-core.dll'])
+        self._install_native_actions()
         self.windhawk_user.mkdir(parents=True, exist_ok=True)
         for name in ['windhawk.exe', 'windhawk-cli.exe', 'windhawk-core.dll', 'windhawk-mod.exe', 'windhawk-mod-elevated.exe', 'windhawk-mod-uiaccess.exe']:
             source, target = self.windhawk / name, self.windhawk_user / name
@@ -171,6 +175,21 @@ class RuntimeAdapter:
         engine_ini = engine / 'engine.ini'
         engine_ini.write_text('[Storage]\nPortable=1\nAppDataPath=' + str(self.windhawk_data / 'Engine') + '\n', encoding='utf-16')
         return self.windhawk_user
+
+    def _install_native_actions(self):
+        """Give patched modules a verified helper beside each architecture's DLLs."""
+        source = self.windhawk / 'ThemeStudio.NativeActions.exe'
+        if not self.native_actions_hash or not source.is_file() or file_hash(source) != self.native_actions_hash:
+            raise RuntimeError('原生系统操作组件缺失或校验失败，请重新构建或安装完整程序。')
+        for architecture in ('32', '64'):
+            folder = self.windhawk_data / 'Engine' / 'Mods' / architecture
+            folder.mkdir(parents=True, exist_ok=True)
+            target = folder / source.name
+            if not target.is_file() or file_hash(target) != self.native_actions_hash:
+                shutil.copy2(source, target)
+            configuration = source.with_suffix('.exe.config')
+            if configuration.is_file():
+                shutil.copy2(configuration, target.with_suffix('.exe.config'))
 
     def _wh(self, *arguments, timeout=120):
         root = self._windhawk_root()
